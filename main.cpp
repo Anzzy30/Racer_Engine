@@ -4,7 +4,7 @@
 #include <QDate>
 
 #ifndef QT_NO_OPENGL
-#include <Window/openglwindow.h>
+    #include <Window/openglwindow.h>
 #endif
 
 int main(int argc, char *argv[])
@@ -19,28 +19,38 @@ int main(int argc, char *argv[])
     app.setApplicationName("Racer Engine");
     app.setApplicationVersion("0.1");
 
-#ifdef QT_NO_DEBUG
-  // release mode code
-#else
-    qDebug() << "Main.cpp => main();";
-    //qInfo() << "C++ Style Info Message";
-    //qWarning() << "C++ Style Warning Message";
-    //qCritical() << "C++ Style Critical Error Message";
-    // Celui là coupe l'exécution
-    //qFatal( "C Style Fatal Error Message" );
-#endif
+    #ifdef QT_NO_DEBUG
+      // release mode code
+    #else
+        QDebug::setVerbosity(1);
+
+        if (QDebug.verbosity() >= 0)
+        {
+            qDebug() << "[0] Main.cpp => main();";
+        }
+
+        if (QDebug.verbosity() >= 1)
+        {
+            qDebug() << "[1] Advanced debugging";
+        }
+        //qInfo() << "C++ Style Info Message";
+        //qWarning() << "C++ Style Warning Message";
+        //qCritical() << "C++ Style Critical Error Message";
+        // Celui là coupe l'exécution
+        //qFatal( "C Style Fatal Error Message" );
+    #endif
 
 
 
-#ifndef QT_NO_OPENGL
-    OpenGLWindow window;
-    window.setWindowTitle("Main Window");
-    window.show();
-#else
+    #ifndef QT_NO_OPENGL
+        OpenGLWindow window;
+        window.setWindowTitle("Main Window");
+        window.show();
+    #else
 
-    QLabel note("Application needs OpenGL up to date to execute properly.");
-    note.show();
-#endif
+        QLabel note("Application needs OpenGL up to date to execute properly.");
+        note.show();
+    #endif
 
     return app.exec();
 }
