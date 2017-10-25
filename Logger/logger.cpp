@@ -30,7 +30,6 @@ namespace Logger
         if (t<=verboseTreshold)
         {
             qCritical().nospace() << "[" << t << "]" << " [CRITICAL]: " << qPrintable(str);
-            abort();
         }
     }
 
