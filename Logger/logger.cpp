@@ -1,14 +1,19 @@
 #include "logger.h"
 
+#include <QCoreApplication>
 
+#ifdef QT_DEBUG
+    #include <QDebug>
+#endif
 Logger::Logger()
 {
-#ifdef QT_DEBUG
-  qDebug() << "Logger Activated";
-#endif
 }
 
 Logger::~Logger()
 {
 
+}
+
+void Logger::Debug()
+{
 }

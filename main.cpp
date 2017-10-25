@@ -3,6 +3,10 @@
 #include <QSurfaceFormat>
 #include <QDate>
 
+#ifdef QT_DEBUG
+    #include <Logger/logger.h>
+#endif
+
 #ifndef QT_NO_OPENGL
     #include <Window/openglwindow.h>
 #endif
@@ -19,25 +23,8 @@ int main(int argc, char *argv[])
     app.setApplicationName("Racer Engine");
     app.setApplicationVersion("0.1");
 
-    #ifdef QT_NO_DEBUG
-      // release mode code
-    #else
-        QDebug::setVerbosity(1);
-
-        if (QDebug.verbosity() >= 0)
-        {
-            qDebug() << "[0] Main.cpp => main();";
-        }
-
-        if (QDebug.verbosity() >= 1)
-        {
-            qDebug() << "[1] Advanced debugging";
-        }
-        //qInfo() << "C++ Style Info Message";
-        //qWarning() << "C++ Style Warning Message";
-        //qCritical() << "C++ Style Critical Error Message";
-        // Celui là coupe l'exécution
-        //qFatal( "C Style Fatal Error Message" );
+    #ifdef QT_DEBUG
+        qDebug() << "[0] Main.cpp => main();";
     #endif
 
 

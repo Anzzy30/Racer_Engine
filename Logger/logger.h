@@ -5,10 +5,10 @@
 
 class Logger
 {
-
 public:
     explicit Logger();
     ~Logger();
+    static void Debug();
 
 };
 
