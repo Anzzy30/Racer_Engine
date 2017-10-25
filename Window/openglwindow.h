@@ -1,8 +1,6 @@
 #ifndef OPENGLWINDOW_H
 #define OPENGLWINDOW_H
 
-#include "openglwindow.h"
-
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
