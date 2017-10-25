@@ -7,7 +7,11 @@
 OpenGLWindow::OpenGLWindow(QWidget *parent) :
     QOpenGLWidget(parent)
 {
-
+#ifdef QT_NO_DEBUG
+  // release mode code
+#else
+    qDebug() << "OpenGLWindow.cpp => OpenGLWindow();";
+#endif
 }
 
 OpenGLWindow::~OpenGLWindow()

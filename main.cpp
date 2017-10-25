@@ -18,12 +18,19 @@ int main(int argc, char *argv[])
 
     app.setApplicationName("Racer Engine");
     app.setApplicationVersion("0.1");
-    qDebug() << "C++ Style Debug Message";
-    qInfo() << "C++ Style Info Message";
-    qWarning() << "C++ Style Warning Message";
-    qCritical() << "C++ Style Critical Error Message";
+
+#ifdef QT_NO_DEBUG
+  // release mode code
+#else
+    qDebug() << "Main.cpp => main();";
+    //qInfo() << "C++ Style Info Message";
+    //qWarning() << "C++ Style Warning Message";
+    //qCritical() << "C++ Style Critical Error Message";
     // Celui là coupe l'exécution
     //qFatal( "C Style Fatal Error Message" );
+#endif
+
+
 
 #ifndef QT_NO_OPENGL
     OpenGLWindow window;
