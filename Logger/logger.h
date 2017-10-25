@@ -1,14 +1,20 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include "logger.h"
+#include <QCoreApplication>
+#include <QDebug>
+#include <QString>
 
-class Logger
+namespace Logger
 {
-public:
-    explicit Logger();
-    ~Logger();
-    static void Debug();
+    void Debug(QString str,int t);
+    void Info(QString str, int t);
+    void Warning(QString str, int t);
+    void Critical(QString str, int t);
+    void SetVerbose(int vbs);
+
+    static int verboseTreshold=0;
+
 
 };
 

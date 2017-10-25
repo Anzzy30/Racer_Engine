@@ -1,19 +1,41 @@
 #include "logger.h"
-
-#include <QCoreApplication>
-
-#ifdef QT_DEBUG
-    #include <QDebug>
-#endif
-Logger::Logger()
+namespace Logger
 {
-}
+    void Debug(QString str, int t)
+    {
+        if (t<=verboseTreshold)
+        {
+            qDebug().nospace() << "[" << t << "]" << " [DEBUG]: " << qPrintable(str);
+        }
+    }
 
-Logger::~Logger()
-{
+    void Info(QString str, int t)
+    {
+        if (t<=verboseTreshold)
+        {
+            qInfo().nospace() << "[" << t << "]" << " [INFO]: " << qPrintable(str);
+        }
+    }
 
-}
+    void Warning(QString str, int t)
+    {
+        if (t<=verboseTreshold)
+        {
+            qWarning().nospace() << "[" << t << "]" << " [WARNING]: " << qPrintable(str);
+        }
+    }
 
-void Logger::Debug()
-{
+    void Critical(QString str, int t)
+    {
+        if (t<=verboseTreshold)
+        {
+            qCritical().nospace() << "[" << t << "]" << " [CRITICAL]: " << qPrintable(str);
+            abort();
+        }
+    }
+
+    void SetVerbose(int vbs)
+    {
+        verboseTreshold = vbs;
+    }
 }

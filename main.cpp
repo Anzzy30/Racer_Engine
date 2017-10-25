@@ -24,7 +24,13 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("0.1");
 
     #ifdef QT_DEBUG
-        qDebug() << "[0] Main.cpp => main();";
+        Logger::SetVerbose(3);
+        Logger::Warning("Debug testing layer 0",0);
+        Logger::Warning("Debug testing layer 1",1);
+        Logger::Warning("Debug testing layer 2",2);
+        Logger::Warning("Debug testing layer 3",3);
+        Logger::Warning("Debug testing layer 4",4);
+        Logger::Warning("Debug testing layer 5",5);
     #endif
 
 
