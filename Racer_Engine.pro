@@ -7,12 +7,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
     Window/openglwindow.cpp \
     Logger/logger.cpp \
-    main.cpp
+    GameObject/camera.cpp
 
 HEADERS += \
-    Window/openglwindow.h
     Window/openglwindow.h \
-    Logger/logger.h
+    Logger/logger.h \
+    GameObject/camera.h
 
 RESOURCES += \
     Shader/shaders.qrc
