@@ -14,9 +14,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
-    Window/openglwindow.cpp
+    Window/openglwindow.cpp \
+    Logger/logger.cpp \
+    main.cpp
 
 HEADERS += \
     openglwindow.h \
     openglwindow.h \
-    Window/openglwindow.h
+    Window/openglwindow.h \
+    Logger/logger.h
