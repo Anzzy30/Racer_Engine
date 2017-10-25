@@ -3,7 +3,7 @@
 #include <QCoreApplication>
 
 #include <math.h>
-
+#include <iostream>
 OpenGLWindow::OpenGLWindow(QWidget *parent) :
     QOpenGLWidget(parent)
 {
@@ -44,6 +44,20 @@ void OpenGLWindow::initializeGL()
 
     // Enable back face culling
     glEnable(GL_CULL_FACE);
+
+    int msec = 1000/60;
+    timer.start(msec, this);
+    // Calculate aspect ratio
+    qreal aspect = qreal(this->width()) / qreal(this->height() ? this->height() : 1);
+
+    // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
+    const qreal zNear = 1.0, zFar = 1000, fov = 45.0;
+
+    // Reset projection
+    projection.setToIdentity();
+
+    // Set perspective projection
+    projection.perspective(fov, aspect, zNear, zFar);
 }
 
 
@@ -87,14 +101,5 @@ void OpenGLWindow::paintGL()
 {
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-
-    //texture->bind();
-
-    QMatrix4x4 matrix;
-    matrix.rotate(0.0f,0.0f,0.0f,0.0f);
-    matrix.translate(0.0f, 0.0f, 0.0f);
-    matrix.rotate(45.0f,-45.0f,0.0f,0.0f);
 
 }

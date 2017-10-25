@@ -17,6 +17,12 @@ SOURCES += main.cpp \
     Window/openglwindow.cpp
 
 HEADERS += \
-    openglwindow.h \
-    openglwindow.h \
     Window/openglwindow.h
+
+
+RESOURCES += \
+    Shader/shaders.qrc
+
+LIBS += -lopengl32
+
+DISTFILES +=

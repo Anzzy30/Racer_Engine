@@ -12,8 +12,6 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 
-class GeometryEngine;
-
 class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -36,7 +34,6 @@ private:
     QOpenGLShaderProgram program;
 
     QMatrix4x4 projection;
-
 };
 
 #endif // MAINWIDGET_H
