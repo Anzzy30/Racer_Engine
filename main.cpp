@@ -24,7 +24,8 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("0.1");
 
     #ifdef QT_DEBUG
-        qDebug() << "[0] Main.cpp => main();";
+        Logger::SetVerbose(5);
+        Logger::Warning("Debug testing");
     #endif
 
 

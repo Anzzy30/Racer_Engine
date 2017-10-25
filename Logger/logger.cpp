@@ -1,19 +1,29 @@
 #include "logger.h"
-
-#include <QCoreApplication>
-
-#ifdef QT_DEBUG
-    #include <QDebug>
-#endif
-Logger::Logger()
+namespace Logger
 {
-}
+    void Debug(QString str)
+    {
+        qDebug().nospace() << "[" << verboseLvl << "]" << " [DEBUG]: " << qPrintable(str);
+    }
 
-Logger::~Logger()
-{
+    void Info(QString str)
+    {
+        qInfo().nospace() << "[" << verboseLvl << "]" << " [INFO]: " << qPrintable(str);
+    }
 
-}
+    void Warning(QString str)
+    {
+        qWarning().nospace() << "[" << verboseLvl << "]" << " [WARNING]: " << qPrintable(str);
+    }
 
-void Logger::Debug()
-{
+    void Critical(QString str)
+    {
+        qCritical().nospace() << "[" << verboseLvl << "]" << " [CRITICAL]: " << qPrintable(str);
+        abort();
+    }
+
+    void SetVerbose(int vbs)
+    {
+        verboseLvl = vbs;
+    }
 }
