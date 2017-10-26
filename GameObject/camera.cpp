@@ -2,7 +2,8 @@
 
 Camera::Camera()
 {
-
+    position = QVector3D(10,10,10);
+    lookAt = QVector3D(0,0,0);
 }
 
 float Camera::getFOV() const

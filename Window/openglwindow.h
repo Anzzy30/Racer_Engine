@@ -4,11 +4,13 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
-//#include <QQuaternion>
-//#include <QVector2D>
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <GameObject/firstpersoncamera.h>
+#include <GameObject/planetest.h>
+
+class PlaneTest;
 
 class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -27,11 +29,23 @@ protected:
 
     void initShaders();
 
+    /*=============================================== */
+    /*Supprimer et faire une classe material pour les textures */
+    void initTextures();
+    /*=============================================== */
+
 private:
     QBasicTimer timer;
     QOpenGLShaderProgram program;
 
-    QMatrix4x4 projection;
+
+
+    FirstPersonCamera camera;
+    PlaneTest *plane;
+    QOpenGLTexture *texture;
+
+
+
 };
 
 #endif // MAINWIDGET_H

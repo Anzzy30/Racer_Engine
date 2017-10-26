@@ -5,10 +5,12 @@
 #include <math.h>
 #include <iostream>
 OpenGLWindow::OpenGLWindow(QWidget *parent) :
-    QOpenGLWidget(parent)
+    QOpenGLWidget(parent),
+    plane(0),
+    texture(0)
 {
 #ifdef QT_NO_DEBUG
-  // release mode code
+    // release mode code
 #else
     qDebug() << "OpenGLWindow.cpp => OpenGLWindow();";
 #endif
@@ -19,13 +21,13 @@ OpenGLWindow::~OpenGLWindow()
     // Make sure the context is current when deleting the texture
     // and the buffers.
     makeCurrent();
-    //delete texture;
+    delete texture;
+    delete plane;
     doneCurrent();
 }
 
 void OpenGLWindow::timerEvent(QTimerEvent *)
 {
-
     update();
 }
 
@@ -33,42 +35,41 @@ void OpenGLWindow::timerEvent(QTimerEvent *)
 void OpenGLWindow::initializeGL()
 {
     initializeOpenGLFunctions();
-
     glClearColor(0, 0, 0, 1);
 
     initShaders();
-
+    initTextures();
 
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
+
 
     int msec = 1000/60;
     timer.start(msec, this);
-    // Calculate aspect ratio
-    qreal aspect = qreal(this->width()) / qreal(this->height() ? this->height() : 1);
+    plane = new PlaneTest();
 
-    // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 1.0, zFar = 1000, fov = 45.0;
-
-    // Reset projection
-    projection.setToIdentity();
-
-    // Set perspective projection
+    camera.move(0,0,0,0,0,0,0);
+    qreal aspect = qreal(this->size().width()) / qreal(this->size().height());
+    const qreal zNear = 0.1, zFar = 1000.0, fov = 45.0;
+    QMatrix4x4 projection;
     projection.perspective(fov, aspect, zNear, zFar);
+    camera.setProjectionMatrix(projection);
+
+
 }
 
 
 void OpenGLWindow::initShaders()
 {
     // Compile vertex shader
-    if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
+    if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Resources/Shader/vshader.glsl"))
         close();
 
     // Compile fragment shader
-    if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/fshader.glsl"))
+    if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Resources/Shader/fshader.glsl"))
         close();
 
     // Link shader pipeline
@@ -80,26 +81,46 @@ void OpenGLWindow::initShaders()
         close();
 }
 
+/*=============================================== */
+/*Supprimer et faire une classe material pour les textures */
+void OpenGLWindow::initTextures()
+{
+    texture = new QOpenGLTexture(QImage(":/Resources/Texture/heightmap-3.png").mirrored());
+
+    texture->setMinificationFilter(QOpenGLTexture::Nearest);
+
+    texture->setMagnificationFilter(QOpenGLTexture::Linear);
+
+    texture->setWrapMode(QOpenGLTexture::Repeat);
+}
+/*=============================================== */
 
 void OpenGLWindow::resizeGL(int w, int h)
 {
-    // Calculate aspect ratio
     qreal aspect = qreal(w) / qreal(h ? h : 1);
+    const qreal zNear = 0.1, zFar = 1000.0, fov = 45.0;
 
-    // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 0.1, zFar = 3000.0, fov = 45.0;
-
-    // Reset projection
-    projection.setToIdentity();
-
-    // Set perspective projection
+    QMatrix4x4 projection;
     projection.perspective(fov, aspect, zNear, zFar);
+    camera.setProjectionMatrix(projection);
+
 }
+
+
 
 
 void OpenGLWindow::paintGL()
 {
-    // Clear color and depth buffer
+    glViewport(0,0,this->size().width(),this->size().height());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    camera.move(0,0,0,0,0,0,0);
+    /*========================================================*/
+    /*Test camera et plane*/
+    texture->bind();
+    QMatrix4x4 mvp = camera.getProjectionMatrix()*camera.getViewMatrix();
+    program.setUniformValue("mvp_matrix", mvp);
+    program.setUniformValue("texture", 0);
 
+    plane->drawPlane(&program);
+    /*========================================================*/
 }

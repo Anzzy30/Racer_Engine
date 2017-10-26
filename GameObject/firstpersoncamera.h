@@ -7,6 +7,7 @@ class FirstPersonCamera : public Camera
 public:
     FirstPersonCamera();
     void move(float dx, float dy, int z, int s, int q, int d,int dh);
+    QMatrix4x4 getViewMatrix();
 
 private:
 

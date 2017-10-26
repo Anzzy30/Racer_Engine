@@ -4,14 +4,14 @@
 
 FirstPersonCamera::FirstPersonCamera()
 {
-
+    pitch=20;
+    yaw=0;
 }
 
 void FirstPersonCamera::move(float dx, float dy, int z, int s, int q, int d, int dh)
 {
     pitch += dy * 0.3f;
     yaw += dx * 0.3f;
-
 
     if(pitch > 89.0)
          pitch = 89.0;
@@ -58,4 +58,12 @@ void FirstPersonCamera::move(float dx, float dy, int z, int s, int q, int d, int
 
 
     position.setY(position.y() + 0.7f*dh);
+}
+
+QMatrix4x4 FirstPersonCamera::getViewMatrix()
+{
+    viewMatrix.setToIdentity();
+    viewMatrix.lookAt(QVector3D(position.x(),position.y(),position.z()),QVector3D(position.x()+lookAt.x(),position.y()+lookAt.y(),position.z()+lookAt.z()),QVector3D(0,1,0));
+
+    return viewMatrix;
 }

@@ -9,17 +9,20 @@ SOURCES += main.cpp \
     Logger/logger.cpp \
     GameObject/camera.cpp \
     GameObject/gameobject.cpp \
-    GameObject/firstpersoncamera.cpp
+    GameObject/firstpersoncamera.cpp \
+    GameObject/planetest.cpp
 
 HEADERS += \
     Window/openglwindow.h \
     Logger/logger.h \
     GameObject/camera.h \
     GameObject/gameobject.h \
-    GameObject/firstpersoncamera.h
+    GameObject/firstpersoncamera.h \
+    GameObject/planetest.h
 
 RESOURCES += \
-    Shader/shaders.qrc
-
+    shaders.qrc \
+    textures.qrc
+    textures.qrc
 LIBS += -lopengl32
 
