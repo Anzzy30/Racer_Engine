@@ -25,12 +25,7 @@ int main(int argc, char *argv[])
 
     #ifdef QT_DEBUG
         Logger::SetVerbose(3);
-        Logger::Warning("Debug testing layer 0",0);
-        Logger::Warning("Debug testing layer 1",1);
-        Logger::Warning("Debug testing layer 2",2);
-        Logger::Warning("Debug testing layer 3",3);
-        Logger::Warning("Debug testing layer 4",4);
-        Logger::Warning("Debug testing layer 5",5);
+        Logger::Info("Verbose Threshold set to 3",0);
     #endif
 
 

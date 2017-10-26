@@ -1,17 +1,12 @@
 #include "openglwindow.h"
 
-#include <QCoreApplication>
 
-#include <math.h>
-#include <iostream>
 OpenGLWindow::OpenGLWindow(QWidget *parent) :
     QOpenGLWidget(parent),
     plane(0),
     texture(0)
 {
-#ifdef QT_NO_DEBUG
-    // release mode code
-#else
+#ifdef QT_DEBUG
     qDebug() << "OpenGLWindow.cpp => OpenGLWindow();";
 #endif
 }
@@ -28,6 +23,9 @@ OpenGLWindow::~OpenGLWindow()
 
 void OpenGLWindow::timerEvent(QTimerEvent *)
 {
+    #ifdef QT_DEBUG
+        Logger::Debug("Update tick",7);
+    #endif
     update();
 }
 

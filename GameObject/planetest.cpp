@@ -12,7 +12,7 @@ struct VertexData
     QVector2D texCoord;
 };
 
-PlaneTest::PlaneTest()
+PlaneTest::PlaneTest() : indexBuf(QOpenGLBuffer::IndexBuffer)
 {
     heightMap = QImage(":/Resources/Texture/heightmap-3.png");
     initializeOpenGLFunctions();
@@ -25,9 +25,13 @@ PlaneTest::PlaneTest()
 
     initPlaneGeometry();
 
+    // Verbose Treshold déjà set à 3 dans le main
+
+    /*
     #ifdef QT_DEBUG
         Logger::SetVerbose(3);
     #endif
+    */
 
 }
 
@@ -41,7 +45,8 @@ void PlaneTest::initPlaneGeometry()
 {
 
     #ifdef QT_DEBUG
-        Logger::Info("init plane",0);
+        Logger::Info("Plane initialization",0);
+        Logger::Warning("Il te manquait \"PlaneTest::PlaneTest() : indexBuf(QOpenGLBuffer::IndexBuffer)\".",0);
     #endif
 
     VertexData *vertices = new VertexData[width * height];

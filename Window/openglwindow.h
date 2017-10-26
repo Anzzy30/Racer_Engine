@@ -1,14 +1,23 @@
 #ifndef OPENGLWINDOW_H
 #define OPENGLWINDOW_H
+// STD includes
+#include <cmath>
 
+// Qt includes
+#include <QCoreApplication>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+
+// Program includes
 #include <GameObject/firstpersoncamera.h>
 #include <GameObject/planetest.h>
+#ifdef QT_DEBUG
+    #include <Logger/logger.h>
+#endif
 
 class PlaneTest;
 
@@ -38,14 +47,9 @@ private:
     QBasicTimer timer;
     QOpenGLShaderProgram program;
 
-
-
     FirstPersonCamera camera;
     PlaneTest *plane;
     QOpenGLTexture *texture;
-
-
-
 };
 
 #endif // MAINWIDGET_H
