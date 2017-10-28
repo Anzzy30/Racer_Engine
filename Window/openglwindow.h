@@ -11,10 +11,12 @@
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <QCursor>
 
 // Program includes
 #include <GameObject/firstpersoncamera.h>
 #include <GameObject/planetest.h>
+#include <Controller/inputhandler.h>
 #ifdef QT_DEBUG
     #include <Logger/logger.h>
 #endif
@@ -33,10 +35,20 @@ protected:
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
+
+
+    void keyPressEvent(QKeyEvent *event)override;
+    void keyReleaseEvent(QKeyEvent *event)override;
+
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
     void initShaders();
+    void initBind();
 
     /*=============================================== */
     /*Supprimer et faire une classe material pour les textures */
@@ -47,7 +59,10 @@ private:
     QBasicTimer timer;
     QOpenGLShaderProgram program;
 
+    InputHandler *input;
+
     FirstPersonCamera camera;
+
     PlaneTest *plane;
     QOpenGLTexture *texture;
 };

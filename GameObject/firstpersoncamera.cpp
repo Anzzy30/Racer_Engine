@@ -4,14 +4,15 @@
 
 FirstPersonCamera::FirstPersonCamera()
 {
+    v_mv = QVector2D(0,0);
     pitch=20;
     yaw=0;
 }
 
-void FirstPersonCamera::move(float dx, float dy, int z, int s, int q, int d, int dh)
+void FirstPersonCamera::update()
 {
-    pitch += dy * 0.3f;
-    yaw += dx * 0.3f;
+    pitch += v_mv.y() * 0.3f;
+    yaw += v_mv.x() * 0.3f;
 
     if(pitch > 89.0)
          pitch = 89.0;
@@ -30,34 +31,38 @@ void FirstPersonCamera::move(float dx, float dy, int z, int s, int q, int d, int
     right.setY(0);
     right.setZ(-cos(thetaRadian- 3.14f/2.0f));
 
-    if(z){
-
+    if(moveForward){
         position.setX(position.x() + lookAt.x() * 1.5f);
         position.setY(position.y() + lookAt.y() * 1.5f);
         position.setZ(position.z() + lookAt.z() * 1.5f);
-
     }
-    if(s){
+    if(moveBackward){
         position.setX(position.x() - lookAt.x() * 1.5f);
         position.setY(position.y() - lookAt.y() * 1.5f);
         position.setZ(position.z() - lookAt.z() * 1.5f);
 
     }
-    if(q){
+    if(moveLeft){
 
         position.setX(position.x() - right.x() * 1.5f);
-        position.setZ(position.y() - right.z() * 1.5f);
+        position.setZ(position.z() - right.z() * 1.5f);
 
     }
-    if(d){
+    if(moveRight){
 
-        position.setX(position.x() + right.x() *1.5f);
-        position.setZ(position.y() + right.z() *1.5f);
+        position.setX(position.x() + right.x() * 1.5f);
+        position.setZ(position.z() + right.z() * 1.5f);
 
     }
+    position.setY(position.y() + 0.7f*(moveUpper-moveDown));
 
-
-    position.setY(position.y() + 0.7f*dh);
+    moveForward = false;
+    moveBackward = false;
+    moveLeft = false;
+    moveRight = false;
+    moveUpper = false;
+    moveDown = false;
+    v_mv = QVector2D(0,0);
 }
 
 QMatrix4x4 FirstPersonCamera::getViewMatrix()
@@ -66,4 +71,39 @@ QMatrix4x4 FirstPersonCamera::getViewMatrix()
     viewMatrix.lookAt(QVector3D(position.x(),position.y(),position.z()),QVector3D(position.x()+lookAt.x(),position.y()+lookAt.y(),position.z()+lookAt.z()),QVector3D(0,1,0));
 
     return viewMatrix;
+}
+
+void FirstPersonCamera::setMoveLeft(bool value)
+{
+    moveLeft = value;
+}
+
+void FirstPersonCamera::setMoveRight(bool value)
+{
+    moveRight = value;
+}
+
+void FirstPersonCamera::setMoveForward(bool value)
+{
+    moveForward = value;
+}
+
+void FirstPersonCamera::setMoveBackward(bool value)
+{
+    moveBackward = value;
+}
+
+void FirstPersonCamera::setMoveUpper(bool value)
+{
+    moveUpper = value;
+}
+
+void FirstPersonCamera::setMoveDown(bool value)
+{
+    moveDown = value;
+}
+
+void FirstPersonCamera::setV_mv(const QVector2D &value)
+{
+    v_mv = value;
 }

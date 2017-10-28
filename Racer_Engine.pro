@@ -10,7 +10,9 @@ SOURCES += main.cpp \
     GameObject/camera.cpp \
     GameObject/gameobject.cpp \
     GameObject/firstpersoncamera.cpp \
-    GameObject/planetest.cpp
+    GameObject/planetest.cpp \
+    Controller/inputhandler.cpp \
+    Controller/command.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -18,7 +20,9 @@ HEADERS += \
     GameObject/camera.h \
     GameObject/gameobject.h \
     GameObject/firstpersoncamera.h \
-    GameObject/planetest.h
+    GameObject/planetest.h \
+    Controller/inputhandler.h \
+    Controller/command.h
 
 RESOURCES += \
     shaders.qrc \
