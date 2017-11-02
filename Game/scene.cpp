@@ -24,7 +24,7 @@ void Scene::initScene()
 
     plane = new PlaneTest();
 
-    for (int i=0;i<30;i++)
+    for (int i=0;i<80;i++)
     {
     meshes[i] = new MeshTest(QVector3D(((qrand()%300)/100.0f)-1.5f,((qrand()%300)/100.0f)-1.5f,0),QVector3D(-90+qrand()%10-5,0,0),QVector3D(100,100,100),&program);
     }
@@ -151,7 +151,7 @@ void Scene::update()
 
 
 
-    for (int i=0;i<30;i++)
+    for (int i=0;i<80;i++)
     {
         mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * meshes[i]->getModelMatrix();
         program.setUniformValue("mvp_matrix", mvp);
