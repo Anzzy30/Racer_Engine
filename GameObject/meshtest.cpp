@@ -22,8 +22,9 @@ MeshTest::~MeshTest()
 
 void MeshTest::draw()
 {
-
+    program->setUniformValue("scale", 20.0f);
     mesh->drawMesh(program);
+    program->setUniformValue("scale", 1.0f);
 }
 
 
