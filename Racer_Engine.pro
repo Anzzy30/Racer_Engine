@@ -12,7 +12,10 @@ SOURCES += main.cpp \
     GameObject/firstpersoncamera.cpp \
     GameObject/planetest.cpp \
     Controller/inputhandler.cpp \
-    Controller/command.cpp
+    Controller/command.cpp \
+    Game/scene.cpp \
+    Component/mesh.cpp \
+    GameObject/meshtest.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -22,11 +25,15 @@ HEADERS += \
     GameObject/firstpersoncamera.h \
     GameObject/planetest.h \
     Controller/inputhandler.h \
-    Controller/command.h
+    Controller/command.h \
+    Game/scene.h \
+    Component/mesh.h \
+    GameObject/meshtest.h
 
 RESOURCES += \
     shaders.qrc \
-    textures.qrc
+    textures.qrc \
+    models.qrc
 
 LIBS += -lopengl32
 

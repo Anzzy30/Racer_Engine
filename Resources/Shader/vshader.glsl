@@ -7,6 +7,7 @@ out vec2 v_texcoord;
 
 void main()
 {
-    gl_Position = mvp_matrix * a_position;
+    gl_Position =  mvp_matrix * a_position;
+
     v_texcoord = a_texcoord;
 }

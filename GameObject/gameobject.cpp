@@ -1,6 +1,22 @@
 #include "gameobject.h"
 
-GameObject::GameObject()
+GameObject::GameObject():
+    position(QVector3D(0,0,0)),
+    rotation(QVector3D(0,0,0)),
+    scale(QVector3D(0,0,0))
+{
+
+}
+
+GameObject::GameObject(QVector3D position, QVector3D rotation, QVector3D scale):
+    position(position),
+    rotation(rotation),
+    scale(scale)
+{
+
+}
+
+void GameObject::draw()
 {
 
 }
@@ -18,6 +34,21 @@ QVector3D GameObject::getRotation() const
 QVector3D GameObject::getScale() const
 {
     return scale;
+}
+
+QMatrix4x4 GameObject::getModelMatrix()
+{
+    model.setToIdentity();
+
+    model.scale(scale);
+
+    model.rotate(rotation.x(),1,0,0);
+    model.rotate(rotation.y(),0,1,0);
+    model.rotate(rotation.z(),0,0,1);
+
+    model.translate(position);
+
+    return model;
 }
 
 void GameObject::setPosition(const QVector3D &value)

@@ -17,11 +17,12 @@
 #include <GameObject/firstpersoncamera.h>
 #include <GameObject/planetest.h>
 #include <Controller/inputhandler.h>
+#include <Game/scene.h>
 #ifdef QT_DEBUG
     #include <Logger/logger.h>
 #endif
 
-class PlaneTest;
+class Scene;
 
 class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -47,24 +48,15 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
-    void initShaders();
-    void initBind();
-
-    /*=============================================== */
-    /*Supprimer et faire une classe material pour les textures */
-    void initTextures();
-    /*=============================================== */
 
 private:
     QBasicTimer timer;
-    QOpenGLShaderProgram program;
 
     InputHandler *input;
 
-    FirstPersonCamera camera;
-
-    PlaneTest *plane;
     QOpenGLTexture *texture;
+
+    Scene *scene;
 };
 
 #endif // MAINWIDGET_H

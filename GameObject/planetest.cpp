@@ -24,15 +24,6 @@ PlaneTest::PlaneTest() : indexBuf(QOpenGLBuffer::IndexBuffer)
     height = heightMap.height();
 
     initPlaneGeometry();
-
-    // Verbose Treshold déjà set à 3 dans le main
-
-    /*
-    #ifdef QT_DEBUG
-        Logger::SetVerbose(3);
-    #endif
-    */
-
 }
 
 PlaneTest::~PlaneTest()
@@ -110,6 +101,8 @@ void PlaneTest::drawPlane(QOpenGLShaderProgram *program)
     int size = (2*width)*(height-1) + 2*(height-2) + 1;
 
     // Draw plane geometry using indices from VBO 1
+
     glDrawElements(GL_TRIANGLE_STRIP, size, GL_UNSIGNED_INT, 0);
+
 
 }

@@ -55,7 +55,6 @@ void FirstPersonCamera::update()
 
     }
     position.setY(position.y() + 0.7f*(moveUpper-moveDown));
-
     moveForward = false;
     moveBackward = false;
     moveLeft = false;
