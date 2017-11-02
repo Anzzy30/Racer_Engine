@@ -23,7 +23,11 @@ void Scene::initScene()
 
 
     plane = new PlaneTest();
-    meshTest = new MeshTest(QVector3D(0,0,0),QVector3D(-90,0,0),QVector3D(100,100,100),&program);
+
+    for (int i=0;i<30;i++)
+    {
+    meshes[i] = new MeshTest(QVector3D(((qrand()%300)/100.0f)-1.5f,((qrand()%300)/100.0f)-1.5f,0),QVector3D(-90+qrand()%10-5,0,0),QVector3D(100,100,100),&program);
+    }
 
 }
 
@@ -144,10 +148,15 @@ void Scene::update()
     program.setUniformValue("mvp_matrix", mvp);
     program.setUniformValue("texture", 0);
     plane->drawPlane(&program);
-    mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * meshTest->getModelMatrix();
 
-    program.setUniformValue("mvp_matrix", mvp);
-    meshTest->draw();
+
+
+    for (int i=0;i<30;i++)
+    {
+        mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * meshes[i]->getModelMatrix();
+        program.setUniformValue("mvp_matrix", mvp);
+        meshes[i]->draw();
+    }
 }
 
 

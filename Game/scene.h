@@ -32,7 +32,7 @@ public:
     FirstPersonCamera *getMainCamera() const;
 
 private:
-    MeshTest *meshTest;
+    MeshTest * meshes[30];
     OpenGLWindow *openGLWindow;
 
     QOpenGLShaderProgram program;
