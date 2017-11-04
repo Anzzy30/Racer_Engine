@@ -15,11 +15,12 @@ public:
     GameObject();
     GameObject(QVector3D position, QQuaternion rotation, QVector3D scale);
     GameObject(Transform *transform);
+    virtual ~GameObject();
 
     QMatrix4x4 getModelMatrix();
 
-    virtual void draw();
 
+    virtual void update();
 
 
     template <typename T>
@@ -32,8 +33,12 @@ public:
                  }));
     }
 
+    void addComponent(Component *c);
+
 
 protected:
+
+
 
     QVector3D center;
 

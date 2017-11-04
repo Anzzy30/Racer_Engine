@@ -5,25 +5,18 @@ MeshTest::MeshTest()
 
 }
 
-MeshTest::MeshTest(QVector3D position, QQuaternion rotation, QVector3D scale, QOpenGLShaderProgram *program):
-    GameObject(position,rotation,scale),
-    program(program)
+MeshTest::MeshTest(QVector3D position, QQuaternion rotation, QVector3D scale,Mesh* mesh, QOpenGLShaderProgram *program):
+    GameObject(position,rotation,scale)
 {
-    mesh = new Mesh();
-    mesh->plyLoader(":/Resources/Models/autumntree.ply");
+    addComponent(new MeshRenderer(this,mesh,program));
     this->center = mesh->getCenter();
-    qDebug() << mesh->getMin_v();
 }
 
 MeshTest::~MeshTest()
 {
-    delete mesh;
 }
 
-void MeshTest::draw()
-{
-    mesh->drawMesh(program);
-}
+
 
 
 

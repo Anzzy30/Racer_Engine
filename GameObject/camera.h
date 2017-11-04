@@ -7,6 +7,7 @@ class Camera : public GameObject
 {
 public:
     Camera();
+    ~Camera();
 
     QVector3D getLookAt() const;
     QMatrix4x4 getProjectionMatrix() const;

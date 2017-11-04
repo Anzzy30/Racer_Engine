@@ -1,5 +1,6 @@
 #include "mesh.h"
-Mesh::Mesh() : indexBuf(QOpenGLBuffer::IndexBuffer)
+Mesh::Mesh():
+    indexBuf(QOpenGLBuffer::IndexBuffer)
 {
     initializeOpenGLFunctions();
     // Generate 2 VBOs
@@ -106,7 +107,7 @@ void Mesh::plyLoader(QString path)
     arrayBuf.allocate(&vertices[0], vertices.size() * sizeof(QVector3D));
 
     indexBuf.bind();
-    indexBuf.allocate(&indices[0], indices.size()*sizeof(GLuint));
+    indexBuf.allocate(&indices[0], indices.size() * sizeof(GLuint));
 }
 
 void Mesh::facesToTriangle(){
@@ -137,25 +138,18 @@ QVector3D Mesh::getCenter() const
     return center;
 }
 
-
-void Mesh::drawMesh(QOpenGLShaderProgram *program)
+QOpenGLBuffer Mesh::getArrayBuf() const
 {
-
-    arrayBuf.bind();
-    indexBuf.bind();
-    // Offset for position
-    quintptr offset = 0;
-
-    // Tell OpenGL programmable pipeline how to locate vertex position data
-    int vertexLocation = program->attributeLocation("a_position");
-    program->enableAttributeArray(vertexLocation);
-    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(QVector3D));
-
-    // Offset for texture coordinate
-    offset += sizeof(QVector3D);
-
-    // Draw plane geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-
+    return arrayBuf;
 }
+
+QOpenGLBuffer Mesh::getIndexBuf() const
+{
+    return indexBuf;
+}
+
+
+
+
+
+

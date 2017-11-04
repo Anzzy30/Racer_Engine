@@ -14,10 +14,11 @@ SOURCES += main.cpp \
     Controller/inputhandler.cpp \
     Controller/command.cpp \
     Game/scene.cpp \
-    Component/mesh.cpp \
+    Utils/mesh.cpp \
     GameObject/meshtest.cpp \
     Component/component.cpp \
-    Component/transform.cpp
+    Component/transform.cpp \
+    Component/meshrenderer.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -29,10 +30,11 @@ HEADERS += \
     Controller/inputhandler.h \
     Controller/command.h \
     Game/scene.h \
-    Component/mesh.h \
+    Utils/mesh.h \
     GameObject/meshtest.h \
     Component/component.h \
-    Component/transform.h
+    Component/transform.h \
+    Component/meshrenderer.h
 
 RESOURCES += \
     shaders.qrc \

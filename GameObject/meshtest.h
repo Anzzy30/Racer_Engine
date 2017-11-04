@@ -2,21 +2,14 @@
 #define MESHTEST_H
 
 #include <GameObject/gameobject.h>
-#include <Component/mesh.h>
+#include <Component/meshrenderer.h>
 
 class MeshTest : public GameObject
 {
 public:
     MeshTest();
-    MeshTest(QVector3D position, QQuaternion rotation, QVector3D scale, QOpenGLShaderProgram *program);
+    MeshTest(QVector3D position, QQuaternion rotation, QVector3D scale, Mesh *mesh, QOpenGLShaderProgram *program);
     ~MeshTest();
-    void draw();
-
-private:
-
-    Mesh *mesh;
-    QOpenGLShaderProgram *program;
-
 };
 
 #endif // MESHTEST_H

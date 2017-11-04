@@ -32,7 +32,6 @@ public:
     FirstPersonCamera *getMainCamera() const;
 
 private:
-    MeshTest * meshTest;
     OpenGLWindow *openGLWindow;
 
     QOpenGLShaderProgram program;
@@ -42,7 +41,7 @@ private:
     PlaneTest *plane;
     QOpenGLTexture * texture;
 
-
+    QVector<GameObject*> gameObjects;
 };
 
 #endif // SCENE_H

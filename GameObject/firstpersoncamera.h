@@ -9,7 +9,7 @@ class FirstPersonCamera : public Camera
 public:
     FirstPersonCamera();
     ~FirstPersonCamera();
-    void update();
+    void update() override;
     QMatrix4x4 getViewMatrix();
 
     void setMoveLeft(bool value);

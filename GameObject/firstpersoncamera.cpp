@@ -11,6 +11,11 @@ FirstPersonCamera::FirstPersonCamera():
     roll=0;
 }
 
+FirstPersonCamera::~FirstPersonCamera()
+{
+
+}
+
 
 void FirstPersonCamera::update()
 {
@@ -25,17 +30,17 @@ void FirstPersonCamera::update()
     else if(pitch < -89.0)
         pitch = -89.0;
 
-    float phiRadian = ( pitch * M_PI ) / 180;
-    float thetaRadian = ( yaw * M_PI ) / 180;
+    float phi = ( pitch * M_PI ) / 180;
+    float theta = ( yaw * M_PI ) / 180;
 
-    lookAt.setX(cos(phiRadian) * -sin(thetaRadian));
-    lookAt.setY(-sin(phiRadian));
-    lookAt.setZ(cos(phiRadian) * cos(thetaRadian));
+    lookAt.setX(cos(phi) * -sin(theta));
+    lookAt.setY(-sin(phi));
+    lookAt.setZ(cos(phi) * cos(theta));
 
     QVector3D right;
-    right.setX(sin(thetaRadian- 3.14f/2.0f));
+    right.setX(sin(theta- 3.14f/2.0f));
     right.setY(0);
-    right.setZ(-cos(thetaRadian- 3.14f/2.0f));
+    right.setZ(-cos(theta- 3.14f/2.0f));
 
     if(moveForward){
         position.setX(position.x() + lookAt.x() * 1.5f);

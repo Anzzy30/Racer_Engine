@@ -7,7 +7,6 @@
 #include <QString>
 #include <QFile>
 #include <QStringList>
-#include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 
 #include <vector>
@@ -27,21 +26,23 @@ typedef struct Face{
     std::vector<GLuint> indices;
 } Face;
 
-class Mesh : protected  QOpenGLFunctions
+class Component;
+
+class Mesh: protected  QOpenGLFunctions
 {
 public:
     Mesh();
     ~Mesh();
     void plyLoader(QString path);
 
-    void drawMesh(QOpenGLShaderProgram *program);
     void facesToTriangle();
 
     QVector3D getMin_v() const;
-
     QVector3D getMax_v() const;
-
     QVector3D getCenter() const;
+
+    QOpenGLBuffer getArrayBuf() const;
+    QOpenGLBuffer getIndexBuf() const;
 
 private:
     QVector<QVector3D> vertices;

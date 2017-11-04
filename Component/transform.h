@@ -12,11 +12,10 @@ class Transform : public Component
 {
 public:
     Transform(GameObject * gameObject);
-
     Transform(GameObject * gameObject,QVector3D position,QQuaternion rotation,QVector3D scale);
     Transform(const Transform*);
-
     ~Transform();
+
     QVector3D getPosition() const;
     QQuaternion getRotation() const;
     QVector3D getScale() const;

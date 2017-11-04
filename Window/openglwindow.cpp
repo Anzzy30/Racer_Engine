@@ -17,6 +17,7 @@ OpenGLWindow::~OpenGLWindow()
     // and the buffers.
     makeCurrent();
     delete scene;
+    delete input;
     doneCurrent();
 }
 
@@ -78,9 +79,6 @@ void OpenGLWindow::keyReleaseEvent(QKeyEvent *event)
 {
     input->keyReleaseEvent(event->key());
 }
-
-/*Init bind camera*/
-/*=============================================== */
 
 void OpenGLWindow::resizeGL(int w, int h)
 {

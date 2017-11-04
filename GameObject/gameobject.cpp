@@ -19,11 +19,25 @@ GameObject::GameObject(Transform *transform):
 
 }
 
-void GameObject::draw()
+GameObject::~GameObject()
 {
+    for(auto &c : components)
+        delete c;
 
 }
 
+
+
+void GameObject::update()
+{
+    for(auto &c : components)
+        c->update();
+}
+
+void GameObject::addComponent(Component *c)
+{
+    components.push_back(c);
+}
 
 QMatrix4x4 GameObject::getModelMatrix()
 {

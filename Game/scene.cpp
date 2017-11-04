@@ -11,8 +11,13 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
 
 Scene::~Scene()
 {
-    delete texture;
+
     delete plane;
+    for(auto &g : gameObjects)
+        delete g;
+
+    delete mainCamera;
+    delete texture;
 }
 
 void Scene::initScene()
@@ -29,8 +34,14 @@ void Scene::initScene()
     float y = 0.0f * qSin(rotationAngle / 2);
     float z = 1.0f * qSin(rotationAngle / 2);
     float w = cos(rotationAngle / 2);
-    meshTest = new MeshTest(QVector3D(0,20,0),QQuaternion(x,y,z,w),QVector3D(10,10,10),&program);
 
+    Mesh *mesh = new Mesh();
+    mesh->plyLoader(":/Resources/Models/autumntree.ply");
+    MeshTest * meshTest;
+    for(int i=0;i<250;++i){
+        meshTest = new MeshTest(QVector3D(qrand()%(140+140+1)-140,20,qrand()%(140+140+1)-140),QQuaternion(x,y,z,w),QVector3D(10,10,10),mesh,&program);
+        gameObjects.push_back(meshTest);
+    }
 }
 
 void Scene::initBind()
@@ -141,7 +152,6 @@ void Scene::update()
 {
     input->update();
     mainCamera->update();
-    qDebug()<<mainCamera->getComponent<Transform>()->getPosition();
 
     texture->bind();
     QMatrix4x4 model;
@@ -151,10 +161,12 @@ void Scene::update()
     program.setUniformValue("texture", 0);
     plane->drawPlane(&program);
 
+    for(auto &g : gameObjects){
 
-    mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * meshTest->getModelMatrix();
-    program.setUniformValue("mvp_matrix", mvp);
-    meshTest->draw();
+        mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * g->getModelMatrix();
+        program.setUniformValue("mvp_matrix", mvp);
+        g->update();
+    }
 
 }
 
