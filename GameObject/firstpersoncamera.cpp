@@ -8,19 +8,20 @@ FirstPersonCamera::FirstPersonCamera():
     v_mv = QVector2D(0,0);
     pitch=15;
     yaw=0;
+    roll=0;
 }
 
 
 void FirstPersonCamera::update()
 {
-    Transform *transform = getTransform();
+    Transform *transform = getComponent<Transform>();
     QVector3D position = transform->getPosition();
 
     pitch += v_mv.y() * 0.3f;
     yaw += v_mv.x() * 0.3f;
 
     if(pitch > 89.0)
-         pitch = 89.0;
+        pitch = 89.0;
     else if(pitch < -89.0)
         pitch = -89.0;
 
@@ -49,20 +50,17 @@ void FirstPersonCamera::update()
 
     }
     if(moveLeft){
-
         position.setX(position.x() - right.x() * 1.5f);
         position.setZ(position.z() - right.z() * 1.5f);
-
     }
     if(moveRight){
 
         position.setX(position.x() + right.x() * 1.5f);
         position.setZ(position.z() + right.z() * 1.5f);
-
     }
     position.setY(position.y() + 0.7f*(moveUpper-moveDown));
-
     transform->setPosition(position);
+    v_mv = QVector2D(0,0);
 
     moveForward = false;
     moveBackward = false;
@@ -70,12 +68,12 @@ void FirstPersonCamera::update()
     moveRight = false;
     moveUpper = false;
     moveDown = false;
-    v_mv = QVector2D(0,0);
 }
+
 
 QMatrix4x4 FirstPersonCamera::getViewMatrix()
 {
-    Transform *transform = getTransform();
+    Transform *transform = getComponent<Transform>();
     QVector3D position = transform->getPosition();
 
     viewMatrix.setToIdentity();

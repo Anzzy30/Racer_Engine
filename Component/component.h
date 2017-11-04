@@ -10,6 +10,8 @@ public:
     Component(GameObject* gameObject);
     virtual ~Component();
 
+    virtual void update() = 0;
+
 protected:
 
     GameObject* gameObject;

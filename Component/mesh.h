@@ -46,7 +46,6 @@ public:
 private:
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;
-
     QVector<GLuint> indices;
 
     QOpenGLBuffer arrayBuf;
@@ -54,7 +53,6 @@ private:
 
     QVector3D min_v;
     QVector3D max_v;
-
     QVector3D center;
 
 

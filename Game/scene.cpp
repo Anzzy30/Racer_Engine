@@ -29,7 +29,7 @@ void Scene::initScene()
     float y = 0.0f * qSin(rotationAngle / 2);
     float z = 1.0f * qSin(rotationAngle / 2);
     float w = cos(rotationAngle / 2);
-    meshTest = new MeshTest(QVector3D(10,1.8, 0),QQuaternion(x,y,z,w),QVector3D(15,15,15),&program);
+    meshTest = new MeshTest(QVector3D(0,20,0),QQuaternion(x,y,z,w),QVector3D(10,10,10),&program);
 
 }
 
@@ -141,7 +141,7 @@ void Scene::update()
 {
     input->update();
     mainCamera->update();
-    qDebug()<<mainCamera->getTransform()->getPosition();
+    qDebug()<<mainCamera->getComponent<Transform>()->getPosition();
 
     texture->bind();
     QMatrix4x4 model;

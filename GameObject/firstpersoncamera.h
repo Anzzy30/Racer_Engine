@@ -27,7 +27,10 @@ private:
     bool moveBackward = false;
     bool moveUpper = false;
     bool moveDown = false;
+
     QVector2D v_mv;
+
+
 };
 
 #endif // FIRSTPERSONCAMERA_H

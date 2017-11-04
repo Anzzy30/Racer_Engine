@@ -63,3 +63,8 @@ void Transform::setScale(const QVector3D &value)
 {
     scale = value;
 }
+
+void Transform::update()
+{
+
+}

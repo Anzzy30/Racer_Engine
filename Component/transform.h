@@ -25,6 +25,7 @@ public:
     void setRotation(const QQuaternion &value);
     void setScale(const QVector3D &value);
 
+    virtual void update();
 private:
 
     QVector3D position;

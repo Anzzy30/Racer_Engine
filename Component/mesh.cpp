@@ -56,7 +56,6 @@ void Mesh::plyLoader(QString path)
         if (line.compare( "end_header") == 0)
             break;
     }
-
     for(int i=0;i<vertexCount;++i){
         line = in.readLine();
 
@@ -71,7 +70,9 @@ void Mesh::plyLoader(QString path)
             min_v = v;
         if(i==0 || (v.x() > max_v.x() && v.y() > max_v.y() && v.z() > max_v.z() ))
             max_v = v;
-        if(fields.size() > 3){
+
+
+        if(fields.size() > 4){
             n.setX(((QString)fields.at(3)).toFloat());
             n.setY(((QString)fields.at(4)).toFloat());
             n.setZ(((QString)fields.at(5)).toFloat());
@@ -82,6 +83,7 @@ void Mesh::plyLoader(QString path)
         normals.push_back(n);
 
     }
+
     for(int i=0;i<faceCount;++i){
         line = in.readLine();
         fields = line.split(" ");

@@ -27,29 +27,18 @@ void GameObject::draw()
 
 QMatrix4x4 GameObject::getModelMatrix()
 {
-    Transform *transform = getTransform();
+    Transform *transform = this->getComponent<Transform>();
 
     model.setToIdentity();
-    model.translate(-center);
-
     model.scale(transform->getScale());
 
     model.rotate(transform->getRotation());
-
-
-    model.translate(transform->getPosition()/transform->getScale());
+    model.translate(-center);
+    model.translate(transform->getRotation().rotatedVector(transform->getPosition())/transform->getScale());
 
     return model;
 }
 
 
 
-Transform *GameObject::getTransform()
-{
-    return dynamic_cast<Transform*>(*std::find_if(components.begin(), components.end(), [&](Component * c) {
-        if(dynamic_cast<Transform*>(c))
-            return true;
-        return false;
-    }));
 
-}

@@ -16,11 +16,22 @@ public:
     GameObject(QVector3D position, QQuaternion rotation, QVector3D scale);
     GameObject(Transform *transform);
 
-    virtual void draw();
-
     QMatrix4x4 getModelMatrix();
 
-    Transform *getTransform();
+    virtual void draw();
+
+
+
+    template <typename T>
+    T * getComponent() {
+        return dynamic_cast<T*>
+                (*std::find_if(components.begin(), components.end(), [&](Component * c) {
+                     if(dynamic_cast<T*>(c))
+                     return true;
+                     return false;
+                 }));
+    }
+
 
 protected:
 
