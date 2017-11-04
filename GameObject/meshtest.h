@@ -8,7 +8,7 @@ class MeshTest : public GameObject
 {
 public:
     MeshTest();
-    MeshTest(QVector3D position, QVector3D rotation, QVector3D scale, QOpenGLShaderProgram *program);
+    MeshTest(QVector3D position, QQuaternion rotation, QVector3D scale, QOpenGLShaderProgram *program);
     ~MeshTest();
     void draw();
 
@@ -16,7 +16,6 @@ private:
 
     Mesh *mesh;
     QOpenGLShaderProgram *program;
-
 
 };
 

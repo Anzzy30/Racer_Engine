@@ -8,6 +8,7 @@ class FirstPersonCamera : public Camera
 {
 public:
     FirstPersonCamera();
+    ~FirstPersonCamera();
     void update();
     QMatrix4x4 getViewMatrix();
 
@@ -20,12 +21,12 @@ public:
     void setV_mv(const QVector2D &value);
 
 private:
-    bool moveLeft;
-    bool moveRight;
-    bool moveForward;
-    bool moveBackward;
-    bool moveUpper;
-    bool moveDown;
+    bool moveLeft = false;
+    bool moveRight = false;
+    bool moveForward = false;
+    bool moveBackward = false;
+    bool moveUpper = false;
+    bool moveDown = false;
     QVector2D v_mv;
 };
 

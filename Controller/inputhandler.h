@@ -7,10 +7,6 @@
 #include <QKeyEvent>
 
 #include "command.h"
-#ifdef QT_DEBUG
-    #include <Logger/logger.h>
-#endif
-
 
 
 class InputHandler

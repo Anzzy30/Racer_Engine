@@ -14,14 +14,13 @@
 #include <string>
 #include <fstream>
 
+#include "Component/component.h"
+
 #ifdef QT_DEBUG
     #include <Logger/logger.h>
 #endif
 
-typedef struct Vertex {
-    GLfloat x, y, z;
-    GLfloat nx, ny, nz;
-} Vertex;
+
 
 typedef struct Face{
     GLuint count;
@@ -42,6 +41,8 @@ public:
 
     QVector3D getMax_v() const;
 
+    QVector3D getCenter() const;
+
 private:
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;
@@ -53,6 +54,9 @@ private:
 
     QVector3D min_v;
     QVector3D max_v;
+
+    QVector3D center;
+
 
     std::vector<Face> faces;
 

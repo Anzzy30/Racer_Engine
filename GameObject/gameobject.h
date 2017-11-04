@@ -3,31 +3,35 @@
 
 #include <QVector3D>
 #include <QMatrix4x4>
+#include <QVector>
+
+
+#include "Component/transform.h"
+
 
 class GameObject
 {
 public:
     GameObject();
-    GameObject(QVector3D position,QVector3D rotation,QVector3D scale);
+    GameObject(QVector3D position, QQuaternion rotation, QVector3D scale);
+    GameObject(Transform *transform);
 
     virtual void draw();
 
-    QVector3D getPosition() const;
-    QVector3D getRotation() const;
-    QVector3D getScale() const;
     QMatrix4x4 getModelMatrix();
 
-    void setPosition(const QVector3D &value);
-    void setRotation(const QVector3D &value);
-    void setScale(const QVector3D &value);
+    Transform *getTransform();
 
 protected:
-    QVector3D position;
-    QVector3D rotation;
-    QVector3D scale;
+
+    QVector3D center;
 
     QMatrix4x4 model;
 
+    QVector<Component *> components;
+
+
 };
+
 
 #endif // GAMEOBJECT_H

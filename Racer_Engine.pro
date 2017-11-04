@@ -15,7 +15,9 @@ SOURCES += main.cpp \
     Controller/command.cpp \
     Game/scene.cpp \
     Component/mesh.cpp \
-    GameObject/meshtest.cpp
+    GameObject/meshtest.cpp \
+    Component/component.cpp \
+    Component/transform.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -28,7 +30,9 @@ HEADERS += \
     Controller/command.h \
     Game/scene.h \
     Component/mesh.h \
-    GameObject/meshtest.h
+    GameObject/meshtest.h \
+    Component/component.h \
+    Component/transform.h
 
 RESOURCES += \
     shaders.qrc \

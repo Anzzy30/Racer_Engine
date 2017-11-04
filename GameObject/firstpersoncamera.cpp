@@ -2,15 +2,20 @@
 
 # define M_PI 3.14159265358979323846  /* pi */
 
-FirstPersonCamera::FirstPersonCamera()
+FirstPersonCamera::FirstPersonCamera():
+    Camera()
 {
     v_mv = QVector2D(0,0);
-    pitch=20;
+    pitch=15;
     yaw=0;
 }
 
+
 void FirstPersonCamera::update()
 {
+    Transform *transform = getTransform();
+    QVector3D position = transform->getPosition();
+
     pitch += v_mv.y() * 0.3f;
     yaw += v_mv.x() * 0.3f;
 
@@ -36,6 +41,7 @@ void FirstPersonCamera::update()
         position.setY(position.y() + lookAt.y() * 1.5f);
         position.setZ(position.z() + lookAt.z() * 1.5f);
     }
+
     if(moveBackward){
         position.setX(position.x() - lookAt.x() * 1.5f);
         position.setY(position.y() - lookAt.y() * 1.5f);
@@ -55,6 +61,9 @@ void FirstPersonCamera::update()
 
     }
     position.setY(position.y() + 0.7f*(moveUpper-moveDown));
+
+    transform->setPosition(position);
+
     moveForward = false;
     moveBackward = false;
     moveLeft = false;
@@ -66,6 +75,9 @@ void FirstPersonCamera::update()
 
 QMatrix4x4 FirstPersonCamera::getViewMatrix()
 {
+    Transform *transform = getTransform();
+    QVector3D position = transform->getPosition();
+
     viewMatrix.setToIdentity();
     viewMatrix.lookAt(QVector3D(position.x(),position.y(),position.z()),QVector3D(position.x()+lookAt.x(),position.y()+lookAt.y(),position.z()+lookAt.z()),QVector3D(0,1,0));
 

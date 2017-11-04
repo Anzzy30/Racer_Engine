@@ -96,6 +96,8 @@ void Mesh::plyLoader(QString path)
 
     plyFile.close();
 
+    center = min_v+(max_v-min_v)/2;
+
     facesToTriangle();
 
     arrayBuf.bind();
@@ -103,7 +105,6 @@ void Mesh::plyLoader(QString path)
 
     indexBuf.bind();
     indexBuf.allocate(&indices[0], indices.size()*sizeof(GLuint));
-
 }
 
 void Mesh::facesToTriangle(){
@@ -128,6 +129,12 @@ QVector3D Mesh::getMax_v() const
 {
     return max_v;
 }
+
+QVector3D Mesh::getCenter() const
+{
+    return center;
+}
+
 
 void Mesh::drawMesh(QOpenGLShaderProgram *program)
 {

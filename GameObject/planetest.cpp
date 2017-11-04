@@ -2,9 +2,7 @@
 #include <QVector2D>
 #include <QVector3D>
 
-#ifdef QT_DEBUG
-    #include <Logger/logger.h>
-#endif
+
 
 struct VertexData
 {
@@ -35,10 +33,7 @@ PlaneTest::~PlaneTest()
 void PlaneTest::initPlaneGeometry()
 {
 
-    #ifdef QT_DEBUG
-        Logger::Info("Plane initialization",0);
-        Logger::Warning("Il te manquait \"PlaneTest::PlaneTest() : indexBuf(QOpenGLBuffer::IndexBuffer)\".",0);
-    #endif
+
 
     VertexData *vertices = new VertexData[width * height];
     int offset = 0;

@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>Resources/Models/springtree.ply</file>
         <file>Resources/Models/icosahedron.ply</file>
+        <file>Resources/Models/autumntree.ply</file>
 	    </qresource>
 </RCC>

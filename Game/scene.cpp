@@ -1,5 +1,5 @@
 #include "scene.h"
-
+#include <QtCore/qmath.h>
 
 Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
     openGLWindow(oglWindow),
@@ -23,11 +23,13 @@ void Scene::initScene()
 
 
     plane = new PlaneTest();
-
-    for (int i=0;i<80;i++)
-    {
-    meshes[i] = new MeshTest(QVector3D(((qrand()%300)/100.0f)-1.5f,((qrand()%300)/100.0f)-1.5f,0),QVector3D(-90+qrand()%10-5,0,0),QVector3D(100,100,100),&program);
-    }
+    //quat rotation example
+    float rotationAngle = qDegreesToRadians(90.0f);
+    float x = 0.0f * qSin(rotationAngle / 2);
+    float y = 0.0f * qSin(rotationAngle / 2);
+    float z = 1.0f * qSin(rotationAngle / 2);
+    float w = cos(rotationAngle / 2);
+    meshTest = new MeshTest(QVector3D(10,1.8, 0),QQuaternion(x,y,z,w),QVector3D(15,15,15),&program);
 
 }
 
@@ -139,7 +141,7 @@ void Scene::update()
 {
     input->update();
     mainCamera->update();
-
+    qDebug()<<mainCamera->getTransform()->getPosition();
 
     texture->bind();
     QMatrix4x4 model;
@@ -150,13 +152,10 @@ void Scene::update()
     plane->drawPlane(&program);
 
 
+    mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * meshTest->getModelMatrix();
+    program.setUniformValue("mvp_matrix", mvp);
+    meshTest->draw();
 
-    for (int i=0;i<80;i++)
-    {
-        mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * meshes[i]->getModelMatrix();
-        program.setUniformValue("mvp_matrix", mvp);
-        meshes[i]->draw();
-    }
 }
 
 
