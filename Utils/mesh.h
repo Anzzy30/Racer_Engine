@@ -14,7 +14,7 @@
 #include <fstream>
 
 #include "Component/component.h"
-
+#include "Utils/material.h"
 #ifdef QT_DEBUG
     #include <Logger/logger.h>
 #endif
@@ -26,6 +26,18 @@ typedef struct Face{
     std::vector<GLuint> indices;
 } Face;
 
+struct Vertex
+{
+    // Position Vector
+    QVector3D position;
+
+    // Normal Vector
+    QVector3D normal;
+
+    // Texture Coordinate Vector
+    //QVector2D TextureCoordinate;
+};
+
 class Component;
 
 class Mesh: protected  QOpenGLFunctions
@@ -34,6 +46,7 @@ public:
     Mesh();
     ~Mesh();
     void plyLoader(QString path);
+    void objLoader(QString path);
 
     void facesToTriangle();
 
@@ -56,9 +69,10 @@ private:
     QVector3D max_v;
     QVector3D center;
 
-
     std::vector<Face> faces;
 
+
+    Material MeshMaterial;
 };
 
 #endif // MESH_H

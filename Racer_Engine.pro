@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     GameObject/meshtest.cpp \
     Component/component.cpp \
     Component/transform.cpp \
-    Component/meshrenderer.cpp
+    Component/meshrenderer.cpp \
+    Utils/material.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -34,7 +35,8 @@ HEADERS += \
     GameObject/meshtest.h \
     Component/component.h \
     Component/transform.h \
-    Component/meshrenderer.h
+    Component/meshrenderer.h \
+    Utils/material.h
 
 RESOURCES += \
     shaders.qrc \

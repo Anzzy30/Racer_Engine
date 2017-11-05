@@ -110,11 +110,94 @@ void Mesh::plyLoader(QString path)
     indexBuf.allocate(&indices[0], indices.size() * sizeof(GLuint));
 }
 
+
+/*Triangle obj file only*/
+void Mesh::objLoader(QString path)
+{
+    Logger::Info(("objLoader()"),0);
+    QFile objFile(path);
+    if(!objFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        Logger::Warning("Unable to open obj file (objLoader)",0);
+        return;
+    }
+    QTextStream in(&objFile);
+    QString line = in.readLine();
+
+    QStringList splitLine;
+    QVector<QVector3D> tmp_normals;
+
+    QVector<Vertex> vertexArray;
+    int cpt = 0;
+    while ((line = in.readLine()) != NULL)
+    {
+        if(line.at(0) == '#')
+            continue;
+
+
+        if(line.at(0) == 'o')
+            continue;
+        splitLine = line.split(" ");
+
+        if (((QString)splitLine.at(0)).compare("v") == 0){
+            QVector3D v;
+            v.setX(((QString)splitLine.at(1)).toFloat());
+            v.setY(((QString)splitLine.at(2)).toFloat());
+            v.setZ(((QString)splitLine.at(3)).toFloat());
+            if(cpt==0 || (v.x() < min_v.x() && v.y() < min_v.y() && v.z() < min_v.z() ))
+                min_v = v;
+            if(cpt==0 || (v.x() > max_v.x() && v.y() > max_v.y() && v.z() > max_v.z() ))
+                max_v = v;
+            vertices.push_back(v);
+            cpt++;
+        }else if(((QString)splitLine.at(0)).compare("vn") == 0){
+            QVector3D n;
+            n.setX(((QString)splitLine.at(1)).toFloat());
+            n.setY(((QString)splitLine.at(2)).toFloat());
+            n.setZ(((QString)splitLine.at(3)).toFloat());
+            tmp_normals.push_back(n);
+        }else if(((QString)splitLine.at(0)).compare("f") == 0){
+            Face f;
+            f.count = 0;
+
+            for(auto const& field : splitLine){
+
+                if(field.compare("") == 0 || field.compare("f")==0){
+                    continue;
+                }
+                QStringList vertexData = field.split("//");
+                f.count++;
+
+                f.indices.push_back(((QString)vertexData.at(0)).toInt());
+
+
+
+            }
+            faces.push_back(f);
+        }
+    }
+
+    facesToTriangle();
+
+    objFile.close();
+
+    center = min_v+(max_v-min_v)/2;
+
+
+
+    arrayBuf.bind();
+    arrayBuf.allocate(&vertices[0], vertices.size() * sizeof(QVector3D));
+
+    indexBuf.bind();
+    indexBuf.allocate(&indices[0], indices.size() * sizeof(GLuint));
+
+}
+
 void Mesh::facesToTriangle(){
     for(auto const& face: faces) {
 
         if(face.count >= 3){
             for(GLuint i=1;i<face.count-1;++i){
+
                 indices.push_back(face.indices[0]);
                 indices.push_back(face.indices[i]);
                 indices.push_back(face.indices[i+1]);
@@ -147,9 +230,3 @@ QOpenGLBuffer Mesh::getIndexBuf() const
 {
     return indexBuf;
 }
-
-
-
-
-
-
