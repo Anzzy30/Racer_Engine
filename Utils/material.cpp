@@ -14,3 +14,83 @@ Material::Material(QString name, QVector3D Ka, QVector3D Kd, QVector3D Ks, float
 {
 
 }
+
+void Material::setName(const QString &value)
+{
+    name = value;
+}
+
+QString Material::getName() const
+{
+    return name;
+}
+
+QVector3D Material::getKa() const
+{
+    return Ka;
+}
+
+void Material::setKa(const QVector3D &value)
+{
+    Ka = value;
+}
+
+QVector3D Material::getKd() const
+{
+    return Kd;
+}
+
+void Material::setKd(const QVector3D &value)
+{
+    Kd = value;
+}
+
+QVector3D Material::getKs() const
+{
+    return Ks;
+}
+
+void Material::setKs(const QVector3D &value)
+{
+    Ks = value;
+}
+
+float Material::getNs() const
+{
+    return Ns;
+}
+
+void Material::setNs(float value)
+{
+    Ns = value;
+}
+
+float Material::getNi() const
+{
+    return Ni;
+}
+
+void Material::setNi(float value)
+{
+    Ni = value;
+}
+
+float Material::getD() const
+{
+    return d;
+}
+
+void Material::setD(float value)
+{
+    d = value;
+}
+
+int Material::getIllum() const
+{
+    return illum;
+}
+
+void Material::setIllum(int value)
+{
+    illum = value;
+}

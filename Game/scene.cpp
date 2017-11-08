@@ -36,8 +36,9 @@ void Scene::initScene()
     float w = cos(rotationAngle / 2);
 
     Mesh *mesh = new Mesh();
-    mesh->objLoader(":/Resources/Models/lowpolytree.obj");
+    mesh->objLoader(":/Resources/Models/cube.obj");
     MeshTest * meshTest;
+
     for(int i=0;i<250;++i){
         meshTest = new MeshTest(QVector3D(qrand()%(140+140+1)-140,20,qrand()%(140+140+1)-140),QQuaternion(),QVector3D(5,5,5),mesh,&program);
         gameObjects.push_back(meshTest);

@@ -1,9 +1,11 @@
 <RCC>
     <qresource prefix="/">
         <file>Resources/Models/springtree.ply</file>
-        <file>Resources/Models/icosahedron.ply</file>
         <file>Resources/Models/autumntree.ply</file>
         <file>Resources/Models/cube.ply</file>
         <file>Resources/Models/lowpolytree.obj</file>
-	    </qresource>
+        <file>Resources/Models/ModularMediavalHouse1Mat.obj</file>
+        <file>Resources/Models/cube.obj</file>
+        <file>Resources/Models/cube.mtl</file>
+    </qresource>
 </RCC>

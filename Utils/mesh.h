@@ -4,6 +4,7 @@
 
 #include <QOpenGLFunctions>
 #include <QVector3D>
+#include <QVector2D>
 #include <QString>
 #include <QFile>
 #include <QStringList>
@@ -24,6 +25,7 @@
 typedef struct Face{
     GLuint count;
     std::vector<GLuint> indices;
+    std::vector<GLuint> normals;
 } Face;
 
 struct Vertex
@@ -32,10 +34,10 @@ struct Vertex
     QVector3D position;
 
     // Normal Vector
-    QVector3D normal;
+   // QVector3D normal;
 
     // Texture Coordinate Vector
-    //QVector2D TextureCoordinate;
+   // QVector2D textureCoordinate;
 };
 
 class Component;
@@ -49,6 +51,8 @@ public:
     void objLoader(QString path);
 
     void facesToTriangle();
+    void computeNormalPerVertex();
+    void loadMaterial(QString path);
 
     QVector3D getMin_v() const;
     QVector3D getMax_v() const;
@@ -72,7 +76,7 @@ private:
     std::vector<Face> faces;
 
 
-    Material MeshMaterial;
+    QVector<Material> materials;
 };
 
 #endif // MESH_H
