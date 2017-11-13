@@ -1,6 +1,7 @@
 QT += core gui widgets
 CONFIG += c++11 console
 CONFIG -= app_bundle
+CONFIG += resources_big
 
 DEFINES += QT_DEPRECATED_WARNINGS
 

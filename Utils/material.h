@@ -2,14 +2,20 @@
 #define MATERIAL_H
 
 #include <QVector3D>
+#include <QOpenGLTexture>
 #include <QString>
+#include <QFile>
+#include <QStringList>
 
+#ifdef QT_DEBUG
+    #include <Logger/logger.h>
+#endif
 
 class Material
 {
 public:
     Material();
-    Material(QString name,QVector3D Ka, QVector3D Kd, QVector3D Ks, float Ns, float Ni, float d, int illum);
+    Material(QString name, QVector3D Ka, QVector3D Kd, QVector3D Ks, float Ns, float Ni, float d, int illum);
 
     QString getName() const;
 
@@ -43,6 +49,11 @@ public:
 
     void setIllum(int value);
 
+    QOpenGLTexture *getMap_Kd() const;
+
+    void setMap_Kd(QOpenGLTexture *value);
+
+    void loadMap_Kd(QString path);
 private:
 
     QString name;
@@ -53,6 +64,8 @@ private:
     float Ni;
     float d;
     int illum;
+
+    QOpenGLTexture *  map_Kd;
 };
 
 #endif // MATERIAL_H

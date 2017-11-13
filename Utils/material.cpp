@@ -94,3 +94,26 @@ void Material::setIllum(int value)
 {
     illum = value;
 }
+
+QOpenGLTexture *Material::getMap_Kd() const
+{
+    return map_Kd;
+}
+
+void Material::setMap_Kd(QOpenGLTexture *value)
+{
+    map_Kd = value;
+}
+
+void Material::loadMap_Kd(QString path)
+{
+    qDebug() <<path;
+
+    map_Kd = new QOpenGLTexture(QImage(path).mirrored());
+
+    map_Kd->setMinificationFilter(QOpenGLTexture::Nearest);
+
+    map_Kd->setMagnificationFilter(QOpenGLTexture::Linear);
+
+    map_Kd->setWrapMode(QOpenGLTexture::Repeat);
+}

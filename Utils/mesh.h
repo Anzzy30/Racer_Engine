@@ -25,6 +25,7 @@
 typedef struct Face{
     GLuint count;
     std::vector<GLuint> indices;
+    std::vector<GLuint> textures;
     std::vector<GLuint> normals;
 } Face;
 
@@ -34,10 +35,10 @@ struct Vertex
     QVector3D position;
 
     // Normal Vector
-   // QVector3D normal;
+    QVector3D normal;
 
     // Texture Coordinate Vector
-   // QVector2D textureCoordinate;
+    QVector2D textureCoordinate;
 };
 
 class Component;
@@ -50,7 +51,7 @@ public:
     void plyLoader(QString path);
     void objLoader(QString path);
 
-    void facesToTriangle();
+    void facesToTriangle(QVector<Face> &faces, bool hasTextures, bool hasNormals);
     void computeNormalPerVertex();
     void loadMaterial(QString path);
 
@@ -60,6 +61,8 @@ public:
 
     QOpenGLBuffer getArrayBuf() const;
     QOpenGLBuffer getIndexBuf() const;
+
+    QVector<Material> getMaterials() const;
 
 private:
     QVector<QVector3D> vertices;

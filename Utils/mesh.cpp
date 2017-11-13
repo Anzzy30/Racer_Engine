@@ -84,6 +84,7 @@ void Mesh::plyLoader(QString path)
         normals.push_back(n);
 
     }
+    QVector<Face> tmp_faces;
 
     for(int i=0;i<faceCount;++i){
         line = in.readLine();
@@ -94,14 +95,27 @@ void Mesh::plyLoader(QString path)
         for(GLuint j=1;j<=f.count;++j){
             f.indices.push_back(((QString)fields.at(j)).toInt());
         }
-        faces.push_back(f);
+        tmp_faces.push_back(f);
     }
 
     plyFile.close();
 
     center = min_v+(max_v-min_v)/2;
 
-    facesToTriangle();
+    facesToTriangle(tmp_faces,false,false);
+
+    for(auto const& face: faces) {
+
+        if(face.count >= 3){
+            for(GLuint i=1;i<face.count-1;++i){
+
+                indices.push_back(face.indices[0]);
+                indices.push_back(face.indices[i]);
+                indices.push_back(face.indices[i+1]);
+            }
+        }
+    }
+
 
     arrayBuf.bind();
     arrayBuf.allocate(&vertices[0], vertices.size() * sizeof(QVector3D));
@@ -124,9 +138,13 @@ void Mesh::objLoader(QString path)
     QString line = in.readLine();
 
     QStringList splitLine;
-    QVector<QVector3D> tmp_normals;
+    QVector<QVector3D> normalsPerFace;
+    QVector<QVector2D> vertexTexture;
 
     QVector<Vertex> vertexArray;
+
+    QVector<Face> tmp_faces;
+
     int cptVertex = 0;
     int cptUV = 0;
     while ((line = in.readLine()) != NULL)
@@ -151,19 +169,20 @@ void Mesh::objLoader(QString path)
             vertices.push_back(v);
             Vertex vData;
             vData.position = v;
+            vData.normal = QVector3D(0,0,0);
             vertexArray.push_back(vData);
             cptVertex++;
         }else if(((QString)splitLine.at(0)).compare("vt") == 0){
             QVector2D vt;
             vt.setX(((QString)splitLine.at(1)).toFloat());
             vt.setY(((QString)splitLine.at(2)).toFloat());
-            //vertexArray[cptUV++].textureCoordinate = vt;
+            vertexTexture.push_back(vt);
         }else if(((QString)splitLine.at(0)).compare("vn") == 0){
             QVector3D n;
             n.setX(((QString)splitLine.at(1)).toFloat());
             n.setY(((QString)splitLine.at(2)).toFloat());
             n.setZ(((QString)splitLine.at(3)).toFloat());
-            tmp_normals.push_back(n);
+            normalsPerFace.push_back(n);
         }else if(((QString)splitLine.at(0)).compare("f") == 0){
             Face f;
             f.count = 0;
@@ -177,35 +196,126 @@ void Mesh::objLoader(QString path)
                 f.count++;
 
                 f.indices.push_back(((QString)vertexData.at(0)).toUInt()-1);
+                f.textures.push_back(((QString)vertexData.at(1)).toUInt()-1);
+                f.normals.push_back(((QString)vertexData.at(2)).toUInt()-1);
+            }
+
+
+            for(GLuint i=0;i<f.count;++i){
+                qDebug() << f.indices[i] << " " << f.textures[i] << " " << f.normals[i];
+            }
+            qDebug() << "___________";
+
+
+            tmp_faces.push_back(f);
+        }
+    }
+    objFile.close();
+
+
+
+    facesToTriangle(tmp_faces,true,true);
+    /*Normal & texture per vertex*/
+
+    GLuint nbVertex = vertexArray.size();
+    for(GLuint i=0;i<nbVertex;++i){
+        int cptDuplicate = 0;
+        QVector<QVector3D> vertexNormals;
+        QVector<int> faceIndice;
+        //QVector<float> faceArea;
+        for(GLuint j=0;j<faces.size();++j){
+            for(GLuint k=0;k<faces[j].count;++k){
+
+                if(i == faces[j].indices[k]){
+                    faceIndice.push_back(j);
+                    cptDuplicate++;
+                    vertexNormals.push_back(normalsPerFace[faces[j].normals[k]]);
+                    break;
+                }
 
             }
-            faces.push_back(f);
+        }
+
+        QVector3D normal = QVector3D();
+        for(int n=0; n<vertexNormals.size();++n){
+            normal += vertexNormals[n];
+        }
+        vertexArray[i].normal = normal.normalized();
+
+        for(int t=0; t<cptDuplicate;++t){
+
+            for(GLuint k=0;k<faces[faceIndice[t]].count;++k){
+                if(i == faces[faceIndice[t]].indices[k]){
+                    if(t==0){
+                        vertexArray[i].textureCoordinate = vertexTexture[faces.at(faceIndice[t]).textures[k]];
+                    }else{
+                        Vertex vData;
+                        vData.position = vertexArray[i].position;
+                        vData.normal = vertexArray[i].normal;
+                        vData.textureCoordinate = vertexTexture[faces.at(faceIndice[t]).textures[k]];
+                        vertexArray.push_back(vData);
+                        faces.at(faceIndice[t]).indices[k] = vertexArray.size()-1;
+                    }
+                }
+            }
+
         }
     }
 
-    facesToTriangle();
 
-    objFile.close();
 
     center = min_v+(max_v-min_v)/2;
 
+    for(auto const& face: faces) {
+
+        for(GLuint i=0;i<face.count;++i){
+            indices.push_back(face.indices[i]);
+        }
+        qDebug() << face.indices[0] << " " << face.textures[0] << " " << face.normals[0];
+        qDebug() << face.indices[1] << " " << face.textures[1] << " " << face.normals[1];
+        qDebug() << face.indices[2] << " " << face.textures[2] << " " << face.normals[2];
+        qDebug() << "___________";
+    }
 
     arrayBuf.bind();
-    arrayBuf.allocate(&vertexArray[0], vertexArray.size() * sizeof(Vertex));
+    arrayBuf.allocate(&(vertexArray[0]), vertexArray.size()*sizeof(Vertex));
 
     indexBuf.bind();
     indexBuf.allocate(&indices[0], indices.size() * sizeof(GLuint));
 }
 
-void Mesh::facesToTriangle(){
+void Mesh::facesToTriangle(QVector<Face> &faces,bool hasTextures,bool hasNormals){
+
     for(auto const& face: faces) {
 
+
         if(face.count >= 3){
+            qDebug() << "------";
             for(GLuint i=1;i<face.count-1;++i){
-                indices.push_back(face.indices[0]);
-                indices.push_back(face.indices[i]);
-                indices.push_back(face.indices[i+1]);
+                Face f;
+                f.count = 3;
+                f.indices.push_back(face.indices[0]);
+                f.indices.push_back(face.indices[i]);
+                f.indices.push_back(face.indices[i+1]);
+                if(hasTextures){
+                    f.textures.push_back(face.textures[0]);
+                    f.textures.push_back(face.textures[i]);
+                    f.textures.push_back(face.textures[i+1]);
+                }
+                if(hasNormals){
+                    f.normals.push_back(face.normals[0]);
+                    f.normals.push_back(face.normals[i]);
+                    f.normals.push_back(face.normals[i+1]);
+                }
+
+                this->faces.push_back(f);
+                qDebug() << f.indices[0] << " " << f.textures[0] << " " << f.normals[0];
+                qDebug() << f.indices[1] << " " << f.textures[1] << " " << f.normals[1];
+                qDebug() << f.indices[2] << " " << f.textures[2] << " " << f.normals[2];
+
             }
+            qDebug() << "------";
+
         }
     }
 }
@@ -214,25 +324,26 @@ void Mesh::loadMaterial(QString path){
     Logger::Info(("LoadMaterial()"),0);
     QString relativePath = ":/Resources/Models/";
     relativePath +=path;
-    QFile objFile(relativePath);
-
-    if(!objFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QFile mtlFile(relativePath);
+    if(!mtlFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         Logger::Warning("Unable to open mtl file (loadMaterial)",0);
         return;
     }
-    QTextStream in(&objFile);
-    QString line = in.readLine();
+    QTextStream in(&mtlFile);
+    QString line ;
 
     QStringList splitLine;
-
     int cursor = -1;
-    while ((line = in.readLine()) != NULL)
+    while (!in.atEnd())
     {
+
+        line = in.readLine();
+        if(line.compare("") == 0)
+            continue;
         if(line.at(0) == '#')
             continue;
         splitLine = line.split(" ");
-
-        if(line.at(0) == 'newmtl'){
+        if ((((QString)splitLine.at(0)).compare("newmtl") == 0)){
             materials.push_back(Material());
             cursor++;
             materials[cursor].setName(splitLine.at(1));
@@ -259,12 +370,12 @@ void Mesh::loadMaterial(QString path){
             materials[cursor].setD(((QString)splitLine.at(1)).toFloat());
         }else if (((QString)splitLine.at(0)).compare("illum") == 0){
             materials[cursor].setD(((QString)splitLine.at(1)).toFloat());
+        }else if (((QString)splitLine.at(0)).compare("map_Kd") == 0){
+            QString relativePath = ":/Resources/Texture/";
+            relativePath += ((QString)splitLine.at(1));
+            materials[cursor].loadMap_Kd(relativePath);
         }
     }
-}
-
-void Mesh::computeNormalPerVertex()
-{
 
 }
 
@@ -291,4 +402,9 @@ QOpenGLBuffer Mesh::getArrayBuf() const
 QOpenGLBuffer Mesh::getIndexBuf() const
 {
     return indexBuf;
+}
+
+QVector<Material> Mesh::getMaterials() const
+{
+    return materials;
 }

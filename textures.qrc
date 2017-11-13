@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>Resources/Texture/heightmap-3.png</file>
+        <file>Resources/Texture/textures_4096.png</file>
+        <file>Resources/Texture/crate_1.jpg</file>
     </qresource>
 </RCC>
