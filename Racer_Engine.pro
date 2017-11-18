@@ -1,7 +1,9 @@
-QT += core gui widgets
+QT += core gui widgets 3dcore 3drender
+
 CONFIG += c++11 console
 CONFIG -= app_bundle
 CONFIG += resources_big
+
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
@@ -16,11 +18,11 @@ SOURCES += main.cpp \
     Controller/command.cpp \
     Game/scene.cpp \
     Utils/mesh.cpp \
-    GameObject/meshtest.cpp \
     Component/component.cpp \
     Component/transform.cpp \
     Component/meshrenderer.cpp \
-    Utils/material.cpp
+    Utils/material.cpp \
+    GameObject/model.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -33,11 +35,11 @@ HEADERS += \
     Controller/command.h \
     Game/scene.h \
     Utils/mesh.h \
-    GameObject/meshtest.h \
     Component/component.h \
     Component/transform.h \
     Component/meshrenderer.h \
-    Utils/material.h
+    Utils/material.h \
+    GameObject/model.h
 
 RESOURCES += \
     shaders.qrc \
@@ -45,4 +47,5 @@ RESOURCES += \
     models.qrc
 
 LIBS += -lopengl32
+
 

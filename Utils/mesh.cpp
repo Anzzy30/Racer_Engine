@@ -1,4 +1,5 @@
 #include "mesh.h"
+
 Mesh::Mesh():
     indexBuf(QOpenGLBuffer::IndexBuffer)
 {
@@ -57,6 +58,8 @@ void Mesh::plyLoader(QString path)
         if (line.compare( "end_header") == 0)
             break;
     }
+    QVector<QVector3D> vertices,normals;
+    QVector<GLuint> indices;
     for(int i=0;i<vertexCount;++i){
         line = in.readLine();
 
@@ -138,15 +141,16 @@ void Mesh::objLoader(QString path)
     QString line = in.readLine();
 
     QStringList splitLine;
+
     QVector<QVector3D> normalsPerFace;
     QVector<QVector2D> vertexTexture;
 
     QVector<Vertex> vertexArray;
 
     QVector<Face> tmp_faces;
+    QVector<GLuint> indices;
 
     int cptVertex = 0;
-    int cptUV = 0;
     while ((line = in.readLine()) != NULL)
     {
         if(line.at(0) == '#')
@@ -166,7 +170,6 @@ void Mesh::objLoader(QString path)
                 min_v = v;
             if(cptVertex==0 || (v.x() > max_v.x() && v.y() > max_v.y() && v.z() > max_v.z() ))
                 max_v = v;
-            vertices.push_back(v);
             Vertex vData;
             vData.position = v;
             vData.normal = QVector3D(0,0,0);
@@ -198,13 +201,12 @@ void Mesh::objLoader(QString path)
                 f.indices.push_back(((QString)vertexData.at(0)).toUInt()-1);
                 f.textures.push_back(((QString)vertexData.at(1)).toUInt()-1);
                 f.normals.push_back(((QString)vertexData.at(2)).toUInt()-1);
+
+                vertexArray[f.indices.at(f.count-1)].textureCoordinate = vertexTexture.at(f.textures.at(f.count-1));
+                vertexArray[f.indices.at(f.count-1)].normal = normalsPerFace.at(f.normals.at(f.count-1));
+
             }
 
-
-            for(GLuint i=0;i<f.count;++i){
-                qDebug() << f.indices[i] << " " << f.textures[i] << " " << f.normals[i];
-            }
-            qDebug() << "___________";
 
 
             tmp_faces.push_back(f);
@@ -215,11 +217,10 @@ void Mesh::objLoader(QString path)
 
 
     facesToTriangle(tmp_faces,true,true);
-    /*Normal & texture per vertex*/
+    /*Normal & texture per vertex (duplicate vertex with multiple uv*/
 
     GLuint nbVertex = vertexArray.size();
     for(GLuint i=0;i<nbVertex;++i){
-        int cptDuplicate = 0;
         QVector<QVector3D> vertexNormals;
         QVector<int> faceIndice;
         //QVector<float> faceArea;
@@ -228,7 +229,6 @@ void Mesh::objLoader(QString path)
 
                 if(i == faces[j].indices[k]){
                     faceIndice.push_back(j);
-                    cptDuplicate++;
                     vertexNormals.push_back(normalsPerFace[faces[j].normals[k]]);
                     break;
                 }
@@ -242,13 +242,13 @@ void Mesh::objLoader(QString path)
         }
         vertexArray[i].normal = normal.normalized();
 
-        for(int t=0; t<cptDuplicate;++t){
-
+        for(int t=0; t<faceIndice.size();++t){
             for(GLuint k=0;k<faces[faceIndice[t]].count;++k){
                 if(i == faces[faceIndice[t]].indices[k]){
+
                     if(t==0){
                         vertexArray[i].textureCoordinate = vertexTexture[faces.at(faceIndice[t]).textures[k]];
-                    }else{
+                    }else if(vertexArray[i].textureCoordinate != vertexTexture[faces.at(faceIndice[t]).textures[k]]){
                         Vertex vData;
                         vData.position = vertexArray[i].position;
                         vData.normal = vertexArray[i].normal;
@@ -256,6 +256,7 @@ void Mesh::objLoader(QString path)
                         vertexArray.push_back(vData);
                         faces.at(faceIndice[t]).indices[k] = vertexArray.size()-1;
                     }
+
                 }
             }
 
@@ -271,18 +272,16 @@ void Mesh::objLoader(QString path)
         for(GLuint i=0;i<face.count;++i){
             indices.push_back(face.indices[i]);
         }
-        qDebug() << face.indices[0] << " " << face.textures[0] << " " << face.normals[0];
-        qDebug() << face.indices[1] << " " << face.textures[1] << " " << face.normals[1];
-        qDebug() << face.indices[2] << " " << face.textures[2] << " " << face.normals[2];
-        qDebug() << "___________";
     }
 
+
     arrayBuf.bind();
-    arrayBuf.allocate(&(vertexArray[0]), vertexArray.size()*sizeof(Vertex));
+    arrayBuf.allocate(&vertexArray[0],vertexArray.size()*sizeof(Vertex));
 
     indexBuf.bind();
     indexBuf.allocate(&indices[0], indices.size() * sizeof(GLuint));
 }
+
 
 void Mesh::facesToTriangle(QVector<Face> &faces,bool hasTextures,bool hasNormals){
 
@@ -290,7 +289,6 @@ void Mesh::facesToTriangle(QVector<Face> &faces,bool hasTextures,bool hasNormals
 
 
         if(face.count >= 3){
-            qDebug() << "------";
             for(GLuint i=1;i<face.count-1;++i){
                 Face f;
                 f.count = 3;
@@ -309,12 +307,8 @@ void Mesh::facesToTriangle(QVector<Face> &faces,bool hasTextures,bool hasNormals
                 }
 
                 this->faces.push_back(f);
-                qDebug() << f.indices[0] << " " << f.textures[0] << " " << f.normals[0];
-                qDebug() << f.indices[1] << " " << f.textures[1] << " " << f.normals[1];
-                qDebug() << f.indices[2] << " " << f.textures[2] << " " << f.normals[2];
 
             }
-            qDebug() << "------";
 
         }
     }

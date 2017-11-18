@@ -9,6 +9,6 @@ in vec3 a_normal;
 void main()
 {
 
-        gl_FragColor = texture2D(texture, v_texcoord);
+        gl_FragColor = vec4(texture2D(texture,v_texcoord));
 }
 

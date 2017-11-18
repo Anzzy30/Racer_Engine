@@ -34,11 +34,14 @@ public:
     }
 
     void addComponent(Component *c);
+    void addChild(GameObject *child);
 
 
 protected:
 
 
+
+    GameObject * parent;
 
     QVector3D center;
 
@@ -46,6 +49,7 @@ protected:
 
     QVector<Component *> components;
 
+    QVector<GameObject *> childs;
 
 };
 

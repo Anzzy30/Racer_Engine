@@ -11,7 +11,7 @@
 #include "GameObject/planetest.h"
 #include "Controller/inputhandler.h"
 #include "Window/openglwindow.h"
-#include "GameObject/meshtest.h"
+#include "GameObject/model.h"
 class OpenGLWindow;
 
 class Scene : protected QOpenGLFunctions
@@ -42,6 +42,9 @@ private:
     QOpenGLTexture * texture;
 
     QVector<GameObject*> gameObjects;
+
+
+    MeshRenderer * meshrend;
 };
 
 #endif // SCENE_H

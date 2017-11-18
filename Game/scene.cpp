@@ -37,12 +37,14 @@ void Scene::initScene()
 
     Mesh *mesh = new Mesh();
     mesh->objLoader(":/Resources/Models/cube.obj");
-    MeshTest * meshTest;
+    Model * m1,*m2;
+    m1 = new Model(QVector3D(50,50,50),QQuaternion(),QVector3D(10,10,10),mesh,&program);
+    m2 = new Model(QVector3D(0,0,0),QQuaternion(),QVector3D(2,2,2),mesh,&program);
+    m1->addChild(m2);
+    gameObjects.push_back(m1);
+    gameObjects.push_back(m2);
 
-    for(int i=0;i<250;++i){
-        meshTest = new MeshTest(QVector3D(qrand()%(140+140+1)-140,20,qrand()%(140+140+1)-140),QQuaternion(),QVector3D(5,5,5),mesh,&program);
-        gameObjects.push_back(meshTest);
-    }
+
 }
 
 void Scene::initBind()
@@ -153,7 +155,7 @@ void Scene::update()
 {
     input->update();
     mainCamera->update();
-
+    qDebug() << mainCamera->getComponent<Transform>()->getPosition();
     texture->bind();
     QMatrix4x4 model;
     model.setToIdentity();
@@ -168,6 +170,9 @@ void Scene::update()
         program.setUniformValue("mvp_matrix", mvp);
         g->update();
     }
+
+
+
 
 }
 

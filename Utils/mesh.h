@@ -20,8 +20,6 @@
     #include <Logger/logger.h>
 #endif
 
-
-
 typedef struct Face{
     GLuint count;
     std::vector<GLuint> indices;
@@ -34,11 +32,12 @@ struct Vertex
     // Position Vector
     QVector3D position;
 
+    // Texture Coordinate Vector
+    QVector2D textureCoordinate;
+
     // Normal Vector
     QVector3D normal;
 
-    // Texture Coordinate Vector
-    QVector2D textureCoordinate;
 };
 
 class Component;
@@ -51,6 +50,7 @@ public:
     void plyLoader(QString path);
     void objLoader(QString path);
 
+
     void facesToTriangle(QVector<Face> &faces, bool hasTextures, bool hasNormals);
     void computeNormalPerVertex();
     void loadMaterial(QString path);
@@ -62,12 +62,10 @@ public:
     QOpenGLBuffer getArrayBuf() const;
     QOpenGLBuffer getIndexBuf() const;
 
+
     QVector<Material> getMaterials() const;
 
 private:
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    QVector<GLuint> indices;
 
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
