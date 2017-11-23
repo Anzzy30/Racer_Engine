@@ -169,40 +169,87 @@ void Scene::loadScene()
     }
 
     QTextStream in(&file);
-
+    Model * obj;
     while(!in.atEnd()) {
         QString line = in.readLine();
         QStringList fields = line.split(" ");
-        if (fields.size() != 11)
-        {
-        #ifdef QT_DEBUG
-            Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
-        #endif
-        }
-        else
-        {
-            QString path = fields.at(1);
-            float x = fields.at(2).toFloat();
-            float y = fields.at(3).toFloat();
-            float z = fields.at(4).toFloat();
-            float rx = fields.at(5).toFloat();
-            float ry = fields.at(6).toFloat();
-            float rz = fields.at(7).toFloat();
-            float sx = fields.at(8).toFloat();
-            float sy = fields.at(9).toFloat();
-            float sz = fields.at(10).toFloat();
+
             if (fields.at(0) == "Model")
             {
-
-                    Model * obj;
+                if (fields.size() != 11)
+                {
+                #ifdef QT_DEBUG
+                    Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
+                #endif
+                }
+                else
+                {
+                    QString path = fields.at(1);
+                    float x = fields.at(2).toFloat();
+                    float y = fields.at(3).toFloat();
+                    float z = fields.at(4).toFloat();
+                    float rx = fields.at(5).toFloat();
+                    float ry = fields.at(6).toFloat();
+                    float rz = fields.at(7).toFloat();
+                    float sx = fields.at(8).toFloat();
+                    float sy = fields.at(9).toFloat();
+                    float sz = fields.at(10).toFloat();
                     Mesh *mesh = new Mesh();
                     mesh->objLoader(path);
                     obj = new Model(QVector3D(x,y,z),QQuaternion(),QVector3D(sx,sy,sz),mesh,&program);
                     gameObjects.push_back(obj);
-
+                }
+            }
+            else if (fields.at(0) == "ChildModel")
+            {
+                if (fields.size() != 11)
+                {
+                #ifdef QT_DEBUG
+                    Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
+                #endif
+                }
+                else
+                {
+                    Model * child;
+                    QString path = fields.at(1);
+                    float x = fields.at(2).toFloat();
+                    float y = fields.at(3).toFloat();
+                    float z = fields.at(4).toFloat();
+                    float rx = fields.at(5).toFloat();
+                    float ry = fields.at(6).toFloat();
+                    float rz = fields.at(7).toFloat();
+                    float sx = fields.at(8).toFloat();
+                    float sy = fields.at(9).toFloat();
+                    float sz = fields.at(10).toFloat();
+                    Mesh *mesh = new Mesh();
+                    mesh->objLoader(path);
+                    child = new Model(QVector3D(x,y,z),QQuaternion(),QVector3D(sx,sy,sz),mesh,&program);
+                    obj->addChild(child);
+                    gameObjects.push_back(child);
+                }
+            }
+            else if (fields.at(0) == "Camera")
+            {
+                if (fields.size() != 7)
+                {
+                #ifdef QT_DEBUG
+                    Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
+                #endif
+                }
+                else
+                {
+                    float x = fields.at(1).toFloat();
+                    float y = fields.at(2).toFloat();
+                    float z = fields.at(3).toFloat();
+                    float rx = fields.at(4).toFloat();
+                    float ry = fields.at(5).toFloat();
+                    float rz = fields.at(6).toFloat();
+                    mainCamera->getComponent<Transform>()->setPosition(QVector3D(x,y,z));
+                    //t.setRotation(QVector3D(rx,ry,rz));
+                    // ^ A quaternionaliser
+                }
             }
         }
-    }
 
     file.close();
 }
