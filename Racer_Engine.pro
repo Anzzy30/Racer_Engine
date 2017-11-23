@@ -44,7 +44,8 @@ HEADERS += \
 RESOURCES += \
     shaders.qrc \
     textures.qrc \
-    models.qrc
+    models.qrc \
+    scene.qrc
 
 LIBS += -lopengl32
 
