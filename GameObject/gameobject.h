@@ -13,8 +13,8 @@ class GameObject
 {
 public:
     GameObject();
-    GameObject(QVector3D position, QQuaternion rotation, QVector3D scale);
-    GameObject(Transform *transform);
+    GameObject(QString name,QVector3D position, QQuaternion rotation, QVector3D scale);
+    GameObject(QString name,Transform *transform);
     virtual ~GameObject();
 
     QMatrix4x4 getModelMatrix();
@@ -37,9 +37,14 @@ public:
     void addChild(GameObject *child);
 
 
+    QString getName() const;
+    void setName(const QString &value);
+
+    GameObject *getParent() const;
+
 protected:
 
-
+    QString name;
 
     GameObject * parent;
 

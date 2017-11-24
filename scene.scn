@@ -1,3 +1,3 @@
-Model :/Resources/Models/cube.obj 0.05 0.05 120.7 10.5 90.5 100 10 10 8.5
-ChildModel :/Resources/Models/cube.obj 0 50 0 10.5 90.5 100 10 30 8.5
-Camera 30 30 30 10 10 10
+Model :/Resources/Models/cube.obj 0 100 0.7 0 0 125 10 30 10
+ChildModel :/Resources/Models/cube.obj 0 0 0 0 0 125 10 10 10
+Camera 100 30 30 30 0

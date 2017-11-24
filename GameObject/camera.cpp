@@ -1,7 +1,7 @@
 #include "camera.h"
 
 Camera::Camera():
-    GameObject(new Transform(this,QVector3D(30,30,30),QQuaternion(),QVector3D()))
+    GameObject("Camera",new Transform(this,QVector3D(30,30,30),QQuaternion(),QVector3D()))
 {
     lookAt = QVector3D(0,0,0);
 }

@@ -156,8 +156,10 @@ void Mesh::objLoader(QString path)
         if(line.at(0) == '#')
             continue;
 
-        if(line.at(0) == 'o')
+        if(line.at(0) == 'o'){
             continue;
+
+        }
         splitLine = line.split(" ");
         if(((QString)splitLine.at(0)).compare("mtllib") == 0){
             loadMaterial(splitLine.at(1));

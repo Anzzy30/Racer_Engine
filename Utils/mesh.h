@@ -66,7 +66,7 @@ public:
     QVector<Material> getMaterials() const;
 
 private:
-
+    QString name;
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
 
@@ -75,7 +75,6 @@ private:
     QVector3D center;
 
     std::vector<Face> faces;
-
 
     QVector<Material> materials;
 };

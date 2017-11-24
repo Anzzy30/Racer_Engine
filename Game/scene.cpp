@@ -26,32 +26,33 @@ void Scene::initScene()
     initTextures();
     initBind();
 
-    loadScene();
+    //loadScene();
 
 
-    //plane = new PlaneTest();
+    plane = new PlaneTest();
 
 
     //quat rotation example
 
-    /*
+
 
     float rotationAngle = qDegreesToRadians(90.0f);
-    float x = 0.0f * qSin(rotationAngle / 2);
+    float x = 0.5f * qSin(rotationAngle / 2);
     float y = 0.0f * qSin(rotationAngle / 2);
-    float z = 1.0f * qSin(rotationAngle / 2);
+    float z = 0.f * qSin(rotationAngle / 2);
     float w = cos(rotationAngle / 2);
 
     Mesh *mesh = new Mesh();
     mesh->objLoader(":/Resources/Models/cube.obj");
     Model * m1,*m2;
-    m1 = new Model(QVector3D(50,50,50),QQuaternion(),QVector3D(10,10,10),mesh,&program);
-    m2 = new Model(QVector3D(0,0,0),QQuaternion(),QVector3D(2,2,2),mesh,&program);
+    QQuaternion q = QQuaternion().fromEulerAngles(0,0,125);
+    m1 = new Model("Model",QVector3D(0,50,0),q,QVector3D(10,30,10),mesh,&program);
+    m2 = new Model("Model",QVector3D(0,0,0),QQuaternion(),QVector3D(2,2,2),mesh,&program);
     m1->addChild(m2);
     gameObjects.push_back(m1);
     gameObjects.push_back(m2);
 
-    */
+
 
 }
 
@@ -188,15 +189,16 @@ void Scene::loadScene()
                     float x = fields.at(2).toFloat();
                     float y = fields.at(3).toFloat();
                     float z = fields.at(4).toFloat();
-                    float rx = fields.at(5).toFloat();
-                    float ry = fields.at(6).toFloat();
-                    float rz = fields.at(7).toFloat();
+                    float rx = (fields.at(5).toFloat());
+                    float ry = (fields.at(6).toFloat());
+                    float rz = (fields.at(7).toFloat());
                     float sx = fields.at(8).toFloat();
                     float sy = fields.at(9).toFloat();
                     float sz = fields.at(10).toFloat();
                     Mesh *mesh = new Mesh();
                     mesh->objLoader(path);
-                    obj = new Model(QVector3D(x,y,z),QQuaternion(),QVector3D(sx,sy,sz),mesh,&program);
+                    QQuaternion q = QQuaternion().fromEulerAngles(rx,ry,rz);
+                    obj = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh,&program);
                     gameObjects.push_back(obj);
                 }
             }
@@ -215,22 +217,24 @@ void Scene::loadScene()
                     float x = fields.at(2).toFloat();
                     float y = fields.at(3).toFloat();
                     float z = fields.at(4).toFloat();
-                    float rx = fields.at(5).toFloat();
-                    float ry = fields.at(6).toFloat();
-                    float rz = fields.at(7).toFloat();
+                    float rx = (fields.at(5).toFloat());
+                    float ry = (fields.at(6).toFloat());
+                    float rz = (fields.at(7).toFloat());
                     float sx = fields.at(8).toFloat();
                     float sy = fields.at(9).toFloat();
                     float sz = fields.at(10).toFloat();
                     Mesh *mesh = new Mesh();
                     mesh->objLoader(path);
-                    child = new Model(QVector3D(x,y,z),QQuaternion(),QVector3D(sx,sy,sz),mesh,&program);
+                    QQuaternion q = QQuaternion().fromEulerAngles(rx,ry,rz);
+
+                    child = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh,&program);
                     obj->addChild(child);
                     gameObjects.push_back(child);
                 }
             }
             else if (fields.at(0) == "Camera")
             {
-                if (fields.size() != 7)
+                if (fields.size() != 6)
                 {
                 #ifdef QT_DEBUG
                     Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
@@ -241,12 +245,11 @@ void Scene::loadScene()
                     float x = fields.at(1).toFloat();
                     float y = fields.at(2).toFloat();
                     float z = fields.at(3).toFloat();
-                    float rx = fields.at(4).toFloat();
-                    float ry = fields.at(5).toFloat();
-                    float rz = fields.at(6).toFloat();
+                    float pitch = fields.at(4).toFloat();
+                    float yaw = fields.at(5).toFloat();
                     mainCamera->getComponent<Transform>()->setPosition(QVector3D(x,y,z));
-                    //t.setRotation(QVector3D(rx,ry,rz));
-                    // ^ A quaternionaliser
+                    mainCamera->setPitch(pitch);
+                    mainCamera->setYaw(yaw);
                 }
             }
         }
@@ -254,12 +257,12 @@ void Scene::loadScene()
     file.close();
 }
 
+
 void Scene::update()
 {
     input->update();
     mainCamera->update();
-    /*
-    qDebug() << mainCamera->getComponent<Transform>()->getPosition();
+
     texture->bind();
     QMatrix4x4 model;
     model.setToIdentity();
@@ -267,7 +270,7 @@ void Scene::update()
     program.setUniformValue("mvp_matrix", mvp);
     program.setUniformValue("texture", 0);
     plane->drawPlane(&program);
-    */
+
 
     for(auto &g : gameObjects){
 
@@ -275,8 +278,6 @@ void Scene::update()
         program.setUniformValue("mvp_matrix", mvp);
         g->update();
     }
-
-
 
 
 }
