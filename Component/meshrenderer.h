@@ -3,6 +3,8 @@
 
 #include <QOpenGLShaderProgram>
 
+#include "Component/programshader.h"
+#include "GameObject/gameobject.h"
 
 #include "Component/component.h"
 #include "Utils/mesh.h"
@@ -11,7 +13,7 @@ class Component;
 class MeshRenderer :public Component
 {
 public:
-    MeshRenderer(GameObject * gameObject,Mesh *mesh,QOpenGLShaderProgram *program);
+    MeshRenderer(GameObject * gameObject, Mesh *mesh);
 
     ~MeshRenderer();
     virtual void update();
@@ -21,7 +23,6 @@ public:
 private:
 
     Mesh *mesh;
-    QOpenGLShaderProgram *program;
 
 
 };

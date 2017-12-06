@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     Component/transform.cpp \
     Component/meshrenderer.cpp \
     Utils/material.cpp \
-    GameObject/model.cpp
+    GameObject/model.cpp \
+    Component/programshader.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     Component/transform.h \
     Component/meshrenderer.h \
     Utils/material.h \
-    GameObject/model.h
+    GameObject/model.h \
+    Component/programshader.h
 
 RESOURCES += \
     shaders.qrc \
