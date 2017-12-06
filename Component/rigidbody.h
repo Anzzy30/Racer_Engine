@@ -17,7 +17,6 @@ public:
     void applyForce(QVector3D force, QVector3D point);
 
     void deleteThisPLZ();
-    void deleteThisPLZV2();
 
     virtual void update();
 private:
