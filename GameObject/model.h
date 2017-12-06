@@ -8,7 +8,7 @@ class Model : public GameObject
 {
 public:
     Model();
-    Model(QString name,QVector3D position, QQuaternion rotation, QVector3D scale, Mesh *mesh, QOpenGLShaderProgram *program);
+    Model(QString name,QVector3D position, QQuaternion rotation, QVector3D scale, Mesh *mesh);
     ~Model();
 };
 

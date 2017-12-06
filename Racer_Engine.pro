@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     Component/meshrenderer.cpp \
     Utils/material.cpp \
     GameObject/model.cpp \
-    Component/rigidbody.cpp
+    Component/rigidbody.cpp \
+    Component/programshader.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -41,8 +42,8 @@ HEADERS += \
     Component/meshrenderer.h \
     Utils/material.h \
     GameObject/model.h \
-    Component/rigidbody.h
-
+    Component/rigidbody.h \
+    Component/programshader.h
 RESOURCES += \
     shaders.qrc \
     textures.qrc \

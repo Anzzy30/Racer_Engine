@@ -25,12 +25,19 @@ public:
 
     template <typename T>
     T * getComponent() {
-        return dynamic_cast<T*>
-                (*std::find_if(components.begin(), components.end(), [&](Component * c) {
-                     if(dynamic_cast<T*>(c))
-                     return true;
-                     return false;
-                 }));
+        QVector<Component*>::iterator iterator(std::find_if(components.begin(), components.end(), [&](Component * c) {
+                                     if(dynamic_cast<T*>(c))
+                                     {
+                                         return true;
+                                     }
+                                     return false;
+                                 }));
+        if(iterator != components.end()){
+            return dynamic_cast<T*>(*iterator);
+
+        }
+        else return NULL;
+
     }
 
     void addComponent(Component *c);

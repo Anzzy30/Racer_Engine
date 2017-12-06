@@ -46,11 +46,14 @@ void Scene::initScene()
     mesh->objLoader(":/Resources/Models/cube.obj");
     Model * m1,*m2;
     QQuaternion q = QQuaternion().fromEulerAngles(0,0,125);
-    m1 = new Model("Model",QVector3D(0,50,0),q,QVector3D(10,30,10),mesh,&program);
-    m2 = new Model("Model",QVector3D(0,0,0),QQuaternion(),QVector3D(2,2,2),mesh,&program);
+    m1 = new Model("Model",QVector3D(0,50,0),q,QVector3D(10,30,10),mesh);
+    m1->addComponent(new ProgramShader(m1));
+    m2 = new Model("Model",QVector3D(0,0,0),QQuaternion(),QVector3D(2,2,2),mesh);
+    m2->addComponent(new ProgramShader(m2));
     m1->addChild(m2);
     gameObjects.push_back(m1);
     gameObjects.push_back(m2);
+
 
 
 
@@ -198,7 +201,7 @@ void Scene::loadScene()
                     Mesh *mesh = new Mesh();
                     mesh->objLoader(path);
                     QQuaternion q = QQuaternion().fromEulerAngles(rx,ry,rz);
-                    obj = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh,&program);
+                    obj = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh);
                     gameObjects.push_back(obj);
                 }
             }
@@ -227,7 +230,7 @@ void Scene::loadScene()
                     mesh->objLoader(path);
                     QQuaternion q = QQuaternion().fromEulerAngles(rx,ry,rz);
 
-                    child = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh,&program);
+                    child = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh);
                     obj->addChild(child);
                     gameObjects.push_back(child);
                 }
@@ -273,10 +276,14 @@ void Scene::update()
 
 
     for(auto &g : gameObjects){
-
-        QMatrix4x4 mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * g->getModelMatrix();
+        ProgramShader *p = g->getComponent<ProgramShader>();
+        if(!p)
+            continue;
+        p->setProgram(&program);
+        mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * g->getModelMatrix();
         program.setUniformValue("mvp_matrix", mvp);
         g->update();
+
     }
 
 

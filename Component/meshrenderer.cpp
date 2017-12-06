@@ -1,9 +1,8 @@
 #include "meshrenderer.h"
 
-MeshRenderer::MeshRenderer(GameObject * gameObject,Mesh *mesh , QOpenGLShaderProgram *program):
+MeshRenderer::MeshRenderer(GameObject * gameObject,Mesh *mesh):
     Component(gameObject),
-    mesh(mesh),
-    program(program)
+    mesh(mesh)
 
 {
 
@@ -25,7 +24,12 @@ void MeshRenderer::update()
 
 void MeshRenderer::renderMesh()
 {
-    mesh->getMaterials().at(0).getMap_Kd()->bind();
+    ProgramShader *p = gameObject->getComponent<ProgramShader>();
+    if(!p)
+        return;
+    QOpenGLShaderProgram * program = p->getProgram();
+
+    mesh->getMaterials().at(0).getMap_Kd()->bind(0);
     mesh->getArrayBuf().bind();
     mesh->getIndexBuf().bind();
     quintptr offset = 0;
@@ -48,4 +52,5 @@ void MeshRenderer::renderMesh()
 
 
     glDrawElements(GL_TRIANGLES, mesh->getIndexBuf().size()/sizeof(GLuint), GL_UNSIGNED_INT, 0);
+
 }
