@@ -49,6 +49,8 @@ public:
 
     GameObject *getParent() const;
 
+    QVector3D getCenter() const;
+
 protected:
 
     QString name;

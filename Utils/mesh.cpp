@@ -150,7 +150,6 @@ void Mesh::objLoader(QString path)
     QVector<Face> tmp_faces;
     QVector<GLuint> indices;
 
-    int cptVertex = 0;
     while ((line = in.readLine()) != NULL)
     {
         if(line.at(0) == '#')
@@ -168,15 +167,27 @@ void Mesh::objLoader(QString path)
             v.setX(((QString)splitLine.at(1)).toFloat());
             v.setY(((QString)splitLine.at(2)).toFloat());
             v.setZ(((QString)splitLine.at(3)).toFloat());
-            if(cptVertex==0 || (v.x() < min_v.x() && v.y() < min_v.y() && v.z() < min_v.z() ))
+            if(vertexArray.size() == 0 ){
                 min_v = v;
-            if(cptVertex==0 || (v.x() > max_v.x() && v.y() > max_v.y() && v.z() > max_v.z() ))
                 max_v = v;
+            }
+            if(v.x() < min_v.x())
+                min_v.setX(v.x());
+            if(v.y() < min_v.y())
+                min_v.setY(v.y());
+            if( v.z() < min_v.z())
+                min_v.setZ(v.z());
+
+            if(v.x() > max_v.x() )
+                max_v.setX(v.x());
+            if(v.y() > max_v.y())
+                max_v.setY(v.y());
+            if(v.z() > max_v.z())
+                max_v.setZ(v.z());
             Vertex vData;
             vData.position = v;
             vData.normal = QVector3D(0,0,0);
             vertexArray.push_back(vData);
-            cptVertex++;
         }else if(((QString)splitLine.at(0)).compare("vt") == 0){
             QVector2D vt;
             vt.setX(((QString)splitLine.at(1)).toFloat());
@@ -267,7 +278,7 @@ void Mesh::objLoader(QString path)
 
 
 
-    center = min_v+(max_v-min_v)/2;
+    center = min_v + (max_v-min_v)/2;
 
     for(auto const& face: faces) {
 

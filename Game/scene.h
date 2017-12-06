@@ -14,6 +14,7 @@
 #include "Controller/inputhandler.h"
 #include "Window/openglwindow.h"
 #include "GameObject/model.h"
+#include "Component/rigidbody.h"
 
 #ifdef QT_DEBUG
     #include <Logger/logger.h>

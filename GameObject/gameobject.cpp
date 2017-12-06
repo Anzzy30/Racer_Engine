@@ -60,6 +60,11 @@ GameObject *GameObject::getParent() const
     return parent;
 }
 
+QVector3D GameObject::getCenter() const
+{
+    return center;
+}
+
 
 QMatrix4x4 GameObject::getModelMatrix()
 {

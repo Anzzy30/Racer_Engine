@@ -45,14 +45,15 @@ void Scene::initScene()
     Mesh *mesh = new Mesh();
     mesh->objLoader(":/Resources/Models/cube.obj");
     Model * m1,*m2;
-    QQuaternion q = QQuaternion().fromEulerAngles(0,0,125);
-    m1 = new Model("Model",QVector3D(0,50,0),q,QVector3D(10,30,10),mesh);
+    QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
+    m1 = new Model("Model",QVector3D(0,50,0),q,QVector3D(10,10,10),mesh);
     m1->addComponent(new ProgramShader(m1));
+    m1->addComponent(new Rigidbody(m1));
     m2 = new Model("Model",QVector3D(0,0,0),QQuaternion(),QVector3D(2,2,2),mesh);
     m2->addComponent(new ProgramShader(m2));
     m1->addChild(m2);
     gameObjects.push_back(m1);
-    gameObjects.push_back(m2);
+    //gameObjects.push_back(m2);
 
 
 
@@ -277,6 +278,10 @@ void Scene::update()
 
     for(auto &g : gameObjects){
         ProgramShader *p = g->getComponent<ProgramShader>();
+
+
+
+
         if(!p)
             continue;
         p->setProgram(&program);

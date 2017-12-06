@@ -6,7 +6,7 @@ FirstPersonCamera::FirstPersonCamera():
     Camera()
 {
     v_mv = QVector2D(0,0);
-    pitch=15;
+    pitch=0;
     yaw=0;
     roll=0;
 }
