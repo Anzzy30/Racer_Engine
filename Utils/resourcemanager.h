@@ -4,7 +4,7 @@
 #include<vector>
 #include<QString>
 #include<map>
-#include "external\bullet3-2.87\src\BulletCollision\btCollisionShape.h"
+#include "external\bullet3-2.87\src\BulletCollision\CollisionShapes\btCollisionShape.h"
 
 class ResourceManager
 {

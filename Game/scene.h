@@ -15,6 +15,7 @@
 #include "Window/openglwindow.h"
 #include "GameObject/model.h"
 #include "Component/rigidbody.h"
+#include "Utils/resourcemanager.h"
 
 #ifdef QT_DEBUG
     #include <Logger/logger.h>

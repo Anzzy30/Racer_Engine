@@ -4,6 +4,10 @@ ResourceManager::ResourceManager()
 {
 
 }
+ResourceManager::~ResourceManager()
+{
+
+}
 
 int ResourceManager::storeMesh(QString name, Mesh *meshPointer)
 {

@@ -3,6 +3,7 @@
 
 
 
+
 Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
     openGLWindow(oglWindow),
     input(input)
@@ -86,6 +87,9 @@ void Scene::initScene()
     initShaders();
     initTextures();
     initBind();
+
+    ResourceManager RM;
+    RM.retrieveMesh("LA FONSDALLE SA MERE");
 
     //loadScene();
 
