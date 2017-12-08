@@ -229,7 +229,8 @@ SOURCES += main.cpp \
     external/bullet3-2.87/src/LinearMath/btSerializer64.cpp \
     external/bullet3-2.87/src/LinearMath/btThreads.cpp \
     external/bullet3-2.87/src/LinearMath/btVector3.cpp \
-    external/bullet3-2.87/src/clew/clew.c
+    external/bullet3-2.87/src/clew/clew.c \
+    Utils/resourcemanager.cpp
 
 HEADERS += \
     Window/openglwindow.h \
@@ -651,7 +652,8 @@ HEADERS += \
     external/bullet3-2.87/src/LinearMath/btTransformUtil.h \
     external/bullet3-2.87/src/LinearMath/btVector3.h \
     external/bullet3-2.87/src/btBulletCollisionCommon.h \
-    external/bullet3-2.87/src/btBulletDynamicsCommon.h
+    external/bullet3-2.87/src/btBulletDynamicsCommon.h \
+    Utils/resourcemanager.h
 RESOURCES += \
     shaders.qrc \
     textures.qrc \
