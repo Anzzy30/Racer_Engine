@@ -20,6 +20,7 @@
     #include <Logger/logger.h>
 #endif
 
+#include "external\bullet3-2.87\src\btBulletDynamicsCommon.h"
 
 class OpenGLWindow;
 
@@ -52,6 +53,14 @@ private:
     QOpenGLTexture * texture;
 
     QVector<GameObject*> gameObjects;
+
+    btDefaultCollisionConfiguration* collisionConfiguration;
+    btCollisionDispatcher* dispatcher;
+    btBroadphaseInterface* overlappingPairCache;
+    btSequentialImpulseConstraintSolver* solver;
+    btDiscreteDynamicsWorld* dynamicsWorld;
+    btAlignedObjectArray<btCollisionShape*> collisionShapes;
+
 
 
     MeshRenderer * meshrend;
