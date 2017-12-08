@@ -15,7 +15,7 @@ subject to the following restrictions:
 
 #ifndef B3_OPENCL_INCLUDE_H
 #define B3_OPENCL_INCLUDE_H
-
+#define B3_USE_CLEW
 #ifdef B3_USE_CLEW
 	#include "clew/clew.h"
 #else
