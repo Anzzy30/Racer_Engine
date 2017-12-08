@@ -45,7 +45,7 @@ void Scene::initScene()
     Mesh *mesh = new Mesh();
     mesh->objLoader(":/Resources/Models/cube.obj");
     Model * m1,*m2;
-    QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
+    QQuaternion q = QQuaternion().fromEulerAngles(65,0,0);
     m1 = new Model("Model",QVector3D(0,50,0),q,QVector3D(10,10,10),mesh);
     m1->addComponent(new ProgramShader(m1));
     m1->addComponent(new Rigidbody(m1));

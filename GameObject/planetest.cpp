@@ -44,6 +44,7 @@ void PlaneTest::initPlaneGeometry()
             QRgb rgb = heightMap.pixel(i,j);
             rgb = qGray(rgb);
             float z = 35.0 * ((float)rgb/255);
+            z=0;
                 vertices[offset++] = {
                 QVector3D(0.5*(i-width/2),z,0.5*(j-height/2)),
                 QVector2D( i/(float)(width-1),(height-1) - j/(float)(height-1))

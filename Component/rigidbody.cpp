@@ -8,8 +8,27 @@ Rigidbody::Rigidbody(GameObject *gameObject):
     velocity = QVector3D(0,0,0);
     angularVelocity = QVector3D(0,0,0);
     elapsedTimer.start();
-    applyForce(QVector3D(55,100,150),gameObject->getModelMatrix()*gameObject->getCenter() + QVector3D(1,0,1));
+    QVector3D v1 = QVector3D(1.000000, -1.000000, -1.000000);
+    QVector3D v2 = QVector3D(1.000000, -1.000000, 1.000000);
+    QVector3D v3 = QVector3D(-1.000000, -1.000000, 1.000000);
+    QVector3D v4 = QVector3D(-1.000000, -1.000000, -1.000000);
+    QVector3D v5 = QVector3D(1.000000, 1.000000, -1.000000);
+    QVector3D v6 = QVector3D(1.000000, 1.000000, 1.000000);
+    QVector3D v7 = QVector3D(-1.000000, 1.000000, 1.000000);
+    QVector3D v8 = QVector3D(-1.000000, 1.000000, -1.000000);
 
+    QVector<QVector3D> vertices;
+    QMatrix4x4 model = gameObject->getModelMatrix();
+    vertices.push_back(model*v1);
+    vertices.push_back(model*v2);
+    vertices.push_back(model*v3);
+    vertices.push_back(model*v4);
+    vertices.push_back(model*v5);
+    vertices.push_back(model*v6);
+    vertices.push_back(model*v7);
+    vertices.push_back(model*v8);
+    initInertia(vertices);
+    //applyForce(QVector3D(50,0,50),gameObject->getModelMatrix()*gameObject->getCenter() + QVector3D(-1,-1,-1)*gameObject->getModelMatrix());
 }
 
 Rigidbody::~Rigidbody()
@@ -19,23 +38,38 @@ Rigidbody::~Rigidbody()
 void Rigidbody::applyForce(QVector3D force,QVector3D point)
 {
 
-    //QVector3D acceleration = force / mass;
-
     QVector3D momentum = force  * delta_time ;
-    QVector3D torque = QVector3D::crossProduct(gameObject->getModelMatrix()*gameObject->getCenter()-point,force);
-    torque.normalize();
+    QVector3D torque = QVector3D::crossProduct((point-gameObject->getModelMatrix()*gameObject->getCenter())  ,force);
 
-    float inertia = 1.0f/6.0f * mass;
+    QVector3D angularMomentum = (torque)*delta_time;
 
-    QVector3D angularMomentum = torque*delta_time;
-
-    angularVelocity += angularMomentum / inertia;
-
+    angularVelocity += inertiaTensor.inverted()*angularMomentum;
     velocity += momentum / mass;
+
+}
+
+void Rigidbody::initInertia(QVector<QVector3D> vertices){
+    inertiaTensor.setToIdentity();
+
+    for(QVector3D v: vertices){
+        inertiaTensor(0,0) += (v.y() * v.y() + v.z()*v.z()) ;
+        inertiaTensor(1,1) += (v.x() * v.x  () + v.z()*v.z())  ;
+        inertiaTensor(2,2) += (v.y() * v.y() + v.x()*v.x())  ;
+        inertiaTensor(1,0) = inertiaTensor(0,1) += -v.x() * v.y() ;//0
+        inertiaTensor(2,0) = inertiaTensor(0,2) += -v.z() * v.y() ;//0
+        inertiaTensor(2,1) = inertiaTensor(1,2) += -v.x() * v.z() ;//0
+    }
+    float density = mass / pow(20,3);
+    inertiaTensor *= density;
+
+    inertiaTensor(3,3) = 1;//0
+
 }
 
 void Rigidbody::deleteThisPLZ()
 {
+    QMatrix4x4 model = gameObject->getModelMatrix();
+
     QVector3D v1 = QVector3D(1.000000, -1.000000, -1.000000);
     QVector3D v2 = QVector3D(1.000000, -1.000000, 1.000000);
     QVector3D v3 = QVector3D(-1.000000, -1.000000, 1.000000);
@@ -45,109 +79,69 @@ void Rigidbody::deleteThisPLZ()
     QVector3D v7 = QVector3D(-1.000000, 1.000000, 1.000000);
     QVector3D v8 = QVector3D(-1.000000, 1.000000, -1.000000);
     QVector3D vx = gameObject->getCenter();
+    QVector<QVector3D> vertices;
+    vertices.push_back(model*v1);
+    vertices.push_back(model*v2);
+    vertices.push_back(model*v3);
+    vertices.push_back(model*v4);
+    vertices.push_back(model*v5);
+    vertices.push_back(model*v6);
+    vertices.push_back(model*v7);
+    vertices.push_back(model*v8);
 
-    QMatrix4x4 model = gameObject->getModelMatrix();
+    QVector3D lowerVertex = QVector3D(0,0,0);
+    QVector3D averagePos = QVector3D();
+    int cpt =0;
 
-
-
-    v1 = model*v1;
-    v2 = model*v2;
-    v3 = model*v3;
-    v4 = model*v4;
-    v5 = model*v5;
-    v6 = model*v6;
-    v7 = model*v7;
-    v8 = model*v8;
-    vx = model*vx;
-
-    QVector3D v11 = v1;
-    QVector3D v22 = v2;
-    QVector3D v33 = v3;
-    QVector3D v44 = v4;
-    QVector3D v55 = v5;
-    QVector3D v66 = v6;
-    QVector3D v77 = v7;
-    QVector3D v88 = v8;
-
-
-    QVector3D v_force = QVector3D(0,0,0);
-    if(v1.y() < 0 || v2.y() < 0 || v3.y() < 0|| v4.y() < 0 || v5.y() < 0 || v6.y() < 0 || v7.y() < 0 || v8.y() < 0)
-    {
-        angularVelocity *= 0;
-        velocity *= 0;
+    for(auto v:vertices){
+        if(v.y() < 0){
+            if(lowerVertex.y() > v.y())
+                lowerVertex.setY(v.y());
+            averagePos+=v;
+            cpt++;
+        }
     }
-    if(v1.y() < 0){
-        QVector3D force =( vx-v11).normalized();
-        force*=-v1.y();
-        if(v_force.y() > v1.y())
-            v_force.setY(v1.y());
-        applyForce(force,v11);
+    if(cpt >0)
+        averagePos = averagePos/cpt;
+    Transform *transform = gameObject->getComponent<Transform>();
+    model = gameObject->getModelMatrix();
 
+    model.setToIdentity();
+    model.translate(gameObject->getCenter());
+
+
+    model.translate((transform->getPosition()-velocity));
+
+    model.rotate(transform->getRotation()-spin);
+
+    model.scale(transform->getScale());
+
+    if(lowerVertex.y() < 0){
+        //angularVelocity *= 0;
+
+
+        QVector3D force =  gameObject->getModelMatrix()*gameObject->getCenter() - model*gameObject->getCenter()  ;
+        float d = QVector3D::dotProduct(velocity,QVector3D(0,1,0));
+        float j = std::max( - ( 1 + 0.5 ) * d, 0. );
+        velocity += j * QVector3D(0,1,0);
+
+        QVector3D contactPoint =  gameObject->getModelMatrix()*gameObject->getCenter() - averagePos;
+        j = - ( 1 + 0.1 ) * QVector3D::dotProduct(velocity,QVector3D(0,1,0)) /
+                (pow(mass,-1) + QVector3D::dotProduct(inertiaTensor*QVector3D::crossProduct(QVector3D::crossProduct(contactPoint,
+                                                                                                                    QVector3D(0,1,0)),
+                                                                                            contactPoint),
+                                                      QVector3D(0,1,0) ));
+        QVector3D t =  velocity - (QVector3D::dotProduct(velocity,QVector3D(0,1,0))*QVector3D(0,1,0))/(velocity - (QVector3D::dotProduct(velocity,QVector3D(0,1,0)))*QVector3D(0,1,0)).length();
+        float jt = -QVector3D::dotProduct(velocity,t) / (pow(mass,-1) + QVector3D::dotProduct(inertiaTensor*QVector3D::crossProduct(QVector3D::crossProduct(contactPoint,
+                                                                                                                                                             t),
+                                                                                                                                     contactPoint),
+                                                                                               t ));
+        QVector3D jr = j *QVector3D(1,1,1);
+        angularVelocity += jr*inertiaTensor.inverted()*(QVector3D::crossProduct(contactPoint,QVector3D(0,1,0)));
+        qDebug() << (velocity - (QVector3D::dotProduct(velocity,QVector3D(0,1,0)))*QVector3D(0,1,0));
     }
-
-    if(v2.y() < 0){
-        QVector3D force =( vx-v22).normalized();
-        force*=-v2.y();
-        if(v_force.y() > v2.y())
-            v_force.setY(v2.y());
-        applyForce(force,v22);
-    }
-    if(v3.y() < 0){
-        QVector3D force =(vx-v33).normalized();
-        force*=-v3.y();
-        if(v_force.y() > v3.y())
-            v_force.setY(v3.y());
-        applyForce(force,v33);
-    }
-    if(v4.y() < 0){
-        QVector3D force =(vx-v44).normalized();
-        force*=-v4.y();
-        if(v_force.y() > v4.y())
-            v_force.setY(v4.y());
-        applyForce(force,v44);
-    }
-    if(v5.y() < 0){
-        QVector3D force =(vx-v55).normalized();
-        force*=-v5.y();
-        if(v_force.y() > v5.y())
-            v_force.setY(v5.y());
-        applyForce(force,v55);
-    }
-    if(v6.y() < 0){
-        QVector3D force =(vx-v66).normalized();
-        force*=-v6.y();
-        if(v_force.y() > v6.y())
-            v_force.setY(v6.y());
-        applyForce(force,v66);
-    }
-    if(v7.y() < 0){
-        QVector3D force =(vx-v77).normalized();
-        force*=-v7.y();
-        if(v_force.y() > v7.y())
-            v_force.setY(v7.y());
-        applyForce(force,v77);
-    }
-
-    if(v8.y() < 0){
-        QVector3D force =(vx-v88).normalized();
-        force*=-v8.y();
-        if(v_force.y() > v8.y())
-            v_force.setY(v8.y());
-        applyForce(force,v88);
-    }
-
-    if(v_force.y() < 0){
-        Transform *transform = gameObject->getComponent<Transform>();
-
-
-        //qDebug() << v_force;
-        //qDebug() << transform->getPosition();
-
-        transform->setPosition(transform->getPosition()-v_force);
-        //qDebug() << transform->getPosition();
-
-        //qDebug() << "__________________";
-
+    if(lowerVertex.y() < 0){
+        transform->setPosition(transform->getPosition()-lowerVertex);
     }
 }
 
@@ -155,17 +149,16 @@ void Rigidbody::deleteThisPLZ()
 void Rigidbody::update()
 {
     delta_time = elapsedTimer.elapsed()/1000.0f;
-    deleteThisPLZ();
-    applyForce(QVector3D(0,-5,0),gameObject->getModelMatrix()*gameObject->getCenter());
+    applyForce(QVector3D(0,-1,0),gameObject->getModelMatrix()*gameObject->getCenter());
 
-    QQuaternion q = QQuaternion( 0,
-                                 angularVelocity.x(),
-                                 angularVelocity.y(),
-                                 angularVelocity.z());
+
+    QQuaternion q = QQuaternion( 0, angularVelocity);
     spin = 0.5f * q * transform->getRotation().normalized();
 
     transform->setPosition(transform->getPosition()+velocity);
     transform->setRotation((transform->getRotation().normalized()+spin).normalized());
+
+    deleteThisPLZ();
 
     elapsedTimer.restart();
 }

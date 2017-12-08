@@ -53,3 +53,25 @@ RESOURCES += \
 LIBS += -lopengl32
 
 
+
+
+INCLUDEPATH += $$PWD/external/bullet3-2.87/src
+DEPENDPATH += $$PWD/external/bullet3-2.87/bin
+
+
+unix|win32: LIBS += -L$$PWD/external/bullet3-2.87/bin/ -lBullet3Dynamics_vs2010
+
+
+unix|win32: LIBS += -L$$PWD/external/bullet3-2.87/bin/ -lBullet3Geometry_vs2010
+
+
+
+unix|win32: LIBS += -L$$PWD/external/bullet3-2.87/bin/ -lBullet3Collision_vs2010
+
+
+unix|win32: LIBS += -L$$PWD/external/bullet3-2.87/bin/ -lBullet3Common_vs2010
+
+unix|win32: LIBS += -L$$PWD/external/bullet3-2.87/bin/ -lBullet3OpenCL_clew_vs2010
+
+
+unix|win32: LIBS += -L$$PWD/external/bullet3-2.87/bin/ -lLinearMath_vs2010

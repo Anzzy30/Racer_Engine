@@ -4,7 +4,7 @@
 #include "Component/component.h"
 #include "Component/transform.h"
 #include "GameObject/gameobject.h"
-#include <QVector3D>
+#include <QMatrix>
 #include <cmath>
 #include <QElapsedTimer>
 
@@ -15,6 +15,7 @@ public:
     Rigidbody(GameObject * gameObject);
     ~Rigidbody();
     void applyForce(QVector3D force, QVector3D point);
+    void initInertia(QVector<QVector3D> vertices);
 
     void deleteThisPLZ();
 
@@ -22,7 +23,7 @@ public:
 private:
     Transform* transform;
     QVector3D velocity;
-
+    QMatrix4x4 inertiaTensor;
 
     QVector3D angularVelocity;
     QQuaternion spin;
@@ -31,6 +32,7 @@ private:
 
     float mass = 1;
     float delta_time = 0.015;
+
 };
 
 #endif // RIGIDBODY_H
