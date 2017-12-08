@@ -13,10 +13,11 @@
 
 class Material
 {
+
 public:
     Material();
-    ~Material();
     Material(QString name, QVector3D Ka, QVector3D Kd, QVector3D Ks, float Ns, float Ni, float d, int illum);
+    ~Material();
 
     QString getName() const;
 

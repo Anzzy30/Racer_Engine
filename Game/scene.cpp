@@ -89,11 +89,29 @@ void Scene::initScene()
 
     //loadScene();
 
-
     plane = new PlaneTest();
     QQuaternion q = QQuaternion().fromEulerAngles(30,0,0);
 
     //quat rotation example
+    float rotationAngle = qDegreesToRadians(90.0f);
+    float x = 0.5f * qSin(rotationAngle / 2);
+    float y = 0.0f * qSin(rotationAngle / 2);
+    float z = 0.f * qSin(rotationAngle / 2);
+    float w = cos(rotationAngle / 2);
+
+    mesh = new Mesh();
+    mesh->objLoader(":/Resources/Models/cube.obj");
+
+    Model * m1,*m2;
+    m1 = new Model("Model",QVector3D(0,-56,0),q,QVector3D(50,50,50),mesh);
+    m1->addComponent(new ProgramShader(m1));
+
+    m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
+    m2->addComponent(new ProgramShader(m2));
+
+
+    gameObjects.push_back(m1);
+    gameObjects.push_back(m2);
 
     {
         btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
@@ -122,8 +140,7 @@ void Scene::initScene()
         //using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
         btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
-        btRigidBody* body = new btRigidBody(rbInfo);
-
+        btRigidBody* body = new Rigidbody(m1,rbInfo);
         //add the body to the dynamics world
         dynamicsWorld->addRigidBody(body);
     }
@@ -131,8 +148,7 @@ void Scene::initScene()
     {
         //create a dynamic rigidbody
 
-        //btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
-        btCollisionShape* colShape = new btSphereShape(btScalar(2.));
+        btCollisionShape* colShape = new btBoxShape(btVector3(2,2,2));
         collisionShapes.push_back(colShape);
 
         /// Create Dynamic Objects
@@ -156,26 +172,12 @@ void Scene::initScene()
         btRigidBody* body = new btRigidBody(rbInfo);
 
         dynamicsWorld->addRigidBody(body);
+
     }
 
 
 
-    float rotationAngle = qDegreesToRadians(90.0f);
-    float x = 0.5f * qSin(rotationAngle / 2);
-    float y = 0.0f * qSin(rotationAngle / 2);
-    float z = 0.f * qSin(rotationAngle / 2);
-    float w = cos(rotationAngle / 2);
 
-    mesh = new Mesh();
-    mesh->objLoader(":/Resources/Models/cube.obj");
-    Model * m1,*m2;
-    m1 = new Model("Model",QVector3D(0,-56,0),q,QVector3D(50,50,50),mesh);
-    m1->addComponent(new ProgramShader(m1));
-    //m1->addComponent(new Rigidbody(m1));
-    m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
-    m2->addComponent(new ProgramShader(m2));
-    gameObjects.push_back(m1);
-    gameObjects.push_back(m2);
 
 
 
@@ -291,9 +293,9 @@ void Scene::loadScene()
 {
     QFile file(":/scene.scn");
     if(!file.open(QIODevice::ReadOnly| QIODevice::Text)) {
-        #ifdef QT_DEBUG
-            Logger::Warning(file.errorString()+ ": Can't load scene.scn",0);
-        #endif
+#ifdef QT_DEBUG
+        Logger::Warning(file.errorString()+ ": Can't load scene.scn",0);
+#endif
     }
 
     QTextStream in(&file);
@@ -302,84 +304,84 @@ void Scene::loadScene()
         QString line = in.readLine();
         QStringList fields = line.split(" ");
 
-            if (fields.at(0) == "Model")
+        if (fields.at(0) == "Model")
+        {
+            if (fields.size() != 11)
             {
-                if (fields.size() != 11)
-                {
-                #ifdef QT_DEBUG
-                    Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
-                #endif
-                }
-                else
-                {
-                    QString path = fields.at(1);
-                    float x = fields.at(2).toFloat();
-                    float y = fields.at(3).toFloat();
-                    float z = fields.at(4).toFloat();
-                    float rx = (fields.at(5).toFloat());
-                    float ry = (fields.at(6).toFloat());
-                    float rz = (fields.at(7).toFloat());
-                    float sx = fields.at(8).toFloat();
-                    float sy = fields.at(9).toFloat();
-                    float sz = fields.at(10).toFloat();
-                    Mesh *mesh = new Mesh();
-                    mesh->objLoader(path);
-                    QQuaternion q = QQuaternion().fromEulerAngles(rx,ry,rz);
-                    obj = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh);
-                    gameObjects.push_back(obj);
-                }
+#ifdef QT_DEBUG
+                Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
+#endif
             }
-            else if (fields.at(0) == "ChildModel")
+            else
             {
-                if (fields.size() != 11)
-                {
-                #ifdef QT_DEBUG
-                    Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
-                #endif
-                }
-                else
-                {
-                    Model * child;
-                    QString path = fields.at(1);
-                    float x = fields.at(2).toFloat();
-                    float y = fields.at(3).toFloat();
-                    float z = fields.at(4).toFloat();
-                    float rx = (fields.at(5).toFloat());
-                    float ry = (fields.at(6).toFloat());
-                    float rz = (fields.at(7).toFloat());
-                    float sx = fields.at(8).toFloat();
-                    float sy = fields.at(9).toFloat();
-                    float sz = fields.at(10).toFloat();
-                    Mesh *mesh = new Mesh();
-                    mesh->objLoader(path);
-                    QQuaternion q = QQuaternion().fromEulerAngles(rx,ry,rz);
-
-                    child = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh);
-                    obj->addChild(child);
-                    gameObjects.push_back(child);
-                }
-            }
-            else if (fields.at(0) == "Camera")
-            {
-                if (fields.size() != 6)
-                {
-                #ifdef QT_DEBUG
-                    Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
-                #endif
-                }
-                else
-                {
-                    float x = fields.at(1).toFloat();
-                    float y = fields.at(2).toFloat();
-                    float z = fields.at(3).toFloat();
-                    float pitch = fields.at(4).toFloat();
-                    float yaw = fields.at(5).toFloat();
-                    mainCamera->getComponent<Transform>()->setPosition(QVector3D(x,y,z));
-                    mainCamera->setPitch(pitch);
-                    mainCamera->setYaw(yaw);
-                }
+                QString path = fields.at(1);
+                float x = fields.at(2).toFloat();
+                float y = fields.at(3).toFloat();
+                float z = fields.at(4).toFloat();
+                float rx = (fields.at(5).toFloat());
+                float ry = (fields.at(6).toFloat());
+                float rz = (fields.at(7).toFloat());
+                float sx = fields.at(8).toFloat();
+                float sy = fields.at(9).toFloat();
+                float sz = fields.at(10).toFloat();
+                Mesh *mesh = new Mesh();
+                mesh->objLoader(path);
+                QQuaternion q = QQuaternion().fromEulerAngles(rx,ry,rz);
+                obj = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh);
+                gameObjects.push_back(obj);
             }
         }
+        else if (fields.at(0) == "ChildModel")
+        {
+            if (fields.size() != 11)
+            {
+#ifdef QT_DEBUG
+                Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
+#endif
+            }
+            else
+            {
+                Model * child;
+                QString path = fields.at(1);
+                float x = fields.at(2).toFloat();
+                float y = fields.at(3).toFloat();
+                float z = fields.at(4).toFloat();
+                float rx = (fields.at(5).toFloat());
+                float ry = (fields.at(6).toFloat());
+                float rz = (fields.at(7).toFloat());
+                float sx = fields.at(8).toFloat();
+                float sy = fields.at(9).toFloat();
+                float sz = fields.at(10).toFloat();
+                Mesh *mesh = new Mesh();
+                mesh->objLoader(path);
+                QQuaternion q = QQuaternion().fromEulerAngles(rx,ry,rz);
+
+                child = new Model(QString("Model"),QVector3D(x,y,z),q,QVector3D(sx,sy,sz),mesh);
+                obj->addChild(child);
+                gameObjects.push_back(child);
+            }
+        }
+        else if (fields.at(0) == "Camera")
+        {
+            if (fields.size() != 6)
+            {
+#ifdef QT_DEBUG
+                Logger::Warning(" Malformed statment in scene.scn: " + QString::number(fields.size()),0);
+#endif
+            }
+            else
+            {
+                float x = fields.at(1).toFloat();
+                float y = fields.at(2).toFloat();
+                float z = fields.at(3).toFloat();
+                float pitch = fields.at(4).toFloat();
+                float yaw = fields.at(5).toFloat();
+                mainCamera->getComponent<Transform>()->setPosition(QVector3D(x,y,z));
+                mainCamera->setPitch(pitch);
+                mainCamera->setYaw(yaw);
+            }
+        }
+    }
 
     file.close();
 }
@@ -407,7 +409,6 @@ void Scene::update()
         }
         if (j==1)
         {
-            printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
             GameObject* m = gameObjects.at(1);
             m->getComponent<Transform>()->setPosition(QVector3D(trans.getOrigin().getX(),trans.getOrigin().getY(),trans.getOrigin().getZ()));
             m->getComponent<Transform>()->setRotation(QQuaternion(trans.getRotation().getW(),QVector3D(trans.getRotation().getX(),trans.getRotation().getY(),trans.getRotation().getZ())));
