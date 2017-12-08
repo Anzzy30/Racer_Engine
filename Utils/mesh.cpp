@@ -328,6 +328,7 @@ void Mesh::facesToTriangle(QVector<Face> &faces,bool hasTextures,bool hasNormals
 }
 
 void Mesh::loadMaterial(QString path){
+
     Logger::Info(("LoadMaterial()"),0);
     QString relativePath = ":/Resources/Models/";
     relativePath +=path;
@@ -378,6 +379,7 @@ void Mesh::loadMaterial(QString path){
         }else if (((QString)splitLine.at(0)).compare("illum") == 0){
             materials[cursor].setD(((QString)splitLine.at(1)).toFloat());
         }else if (((QString)splitLine.at(0)).compare("map_Kd") == 0){
+
             QString relativePath = ":/Resources/Texture/";
             relativePath += ((QString)splitLine.at(1));
             materials[cursor].loadMap_Kd(relativePath);
