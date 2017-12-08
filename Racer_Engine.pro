@@ -25,6 +25,7 @@ SOURCES += main.cpp \
     GameObject/model.cpp \
     Component/rigidbody.cpp \
     Component/programshader.cpp \
+    Utils/resourcemanager.cpp \
     external/bullet3-2.87/src/Bullet3Collision/BroadPhaseCollision/b3DynamicBvh.cpp \
     external/bullet3-2.87/src/Bullet3Collision/BroadPhaseCollision/b3DynamicBvhBroadphase.cpp \
     external/bullet3-2.87/src/Bullet3Collision/BroadPhaseCollision/b3OverlappingPairCache.cpp \
@@ -229,8 +230,8 @@ SOURCES += main.cpp \
     external/bullet3-2.87/src/LinearMath/btSerializer64.cpp \
     external/bullet3-2.87/src/LinearMath/btThreads.cpp \
     external/bullet3-2.87/src/LinearMath/btVector3.cpp \
-    external/bullet3-2.87/src/clew/clew.c \
-    Utils/resourcemanager.cpp
+    external/bullet3-2.87/src/clew/clew.c
+
 
 HEADERS += \
     Window/openglwindow.h \
@@ -250,6 +251,7 @@ HEADERS += \
     GameObject/model.h \
     Component/rigidbody.h \
     Component/programshader.h \
+    Utils/resourcemanager.h \
     external/bullet3-2.87/src/Bullet3Collision/BroadPhaseCollision/shared/b3Aabb.h \
     external/bullet3-2.87/src/Bullet3Collision/BroadPhaseCollision/b3BroadphaseCallback.h \
     external/bullet3-2.87/src/Bullet3Collision/BroadPhaseCollision/b3DynamicBvh.h \
@@ -652,8 +654,8 @@ HEADERS += \
     external/bullet3-2.87/src/LinearMath/btTransformUtil.h \
     external/bullet3-2.87/src/LinearMath/btVector3.h \
     external/bullet3-2.87/src/btBulletCollisionCommon.h \
-    external/bullet3-2.87/src/btBulletDynamicsCommon.h \
-    Utils/resourcemanager.h
+    external/bullet3-2.87/src/btBulletDynamicsCommon.h
+
 RESOURCES += \
     shaders.qrc \
     textures.qrc \

@@ -1,4 +1,4 @@
-#include "Utils/resourcemanager.h"
+#include "Utils\resourcemanager.h"
 
 ResourceManager::ResourceManager()
 {
@@ -11,27 +11,27 @@ ResourceManager::~ResourceManager()
 
 int ResourceManager::storeMesh(QString name, Mesh *meshPointer)
 {
-meshBatch.push_back(meshPointer);
-meshMap[meshBatch.size()] = name;
-return meshBatch.size();
+    meshBatch.push_back(meshPointer);
+    //meshMap[meshBatch.size()] = name;
+    return meshBatch.size();
 }
 
 int ResourceManager::storeShape(QString name, btCollisionShape *shapePointer)
 {
     shapeBatch.push_back(shapePointer);
-    shapeMap[shapeBatch.size()] = name;
+    //shapeMap[shapeBatch.size()] = name;
     return shapeBatch.size();
 }
 
 Mesh *ResourceManager::retrieveMesh(int i)
 {
-    if (i>=meshBatch.size()) return nullptr;
+    if (i>=meshBatch.size()) return 0;
     return meshBatch.at(i);
 }
 
 btCollisionShape *ResourceManager::retrieveShape(int i)
 {
-    if (i>=shapeBatch.size()) return nullptr;
+    if (i>=shapeBatch.size()) return 0;
     return shapeBatch.at(i);
 }
 
@@ -45,9 +45,9 @@ Mesh *ResourceManager::retrieveMesh(QString name)
     }
     catch (std::exception e)
     {
-        qDebug() << "WTF: " << e;
+        qDebug() << "WTF: " ;//<< e;
     }
-    if (i==-1) return nullptr;
+    if (i==-1) return 0;
     return meshBatch.at(i);
 }
 
@@ -60,8 +60,9 @@ btCollisionShape *ResourceManager::retrieveShape(QString name)
     }
     catch (std::exception e)
     {
-        qDebug() << "WTF: " << e;
+        qDebug() << "WTF: ";// << e;
     }
-    if (i==-1) return nullptr;
+    if (i==-1) return 0;
     return shapeBatch.at(i);
 }
+

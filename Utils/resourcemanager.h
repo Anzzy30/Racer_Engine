@@ -3,8 +3,12 @@
 
 #include<vector>
 #include<QString>
+#include "Utils\mesh.h"
 #include<map>
 #include "external\bullet3-2.87\src\BulletCollision\CollisionShapes\btCollisionShape.h"
+class Mesh;
+class btCollisionShape;
+
 
 class ResourceManager
 {
