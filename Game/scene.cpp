@@ -90,6 +90,7 @@ void Scene::initScene()
 
 
     plane = new PlaneTest();
+    QQuaternion q = QQuaternion().fromEulerAngles(30,0,0);
 
     //quat rotation example
 
@@ -101,6 +102,12 @@ void Scene::initScene()
         btTransform groundTransform;
         groundTransform.setIdentity();
         groundTransform.setOrigin(btVector3(0, -56, 0));
+        btQuaternion qq;
+        qq.setW(btScalar(q.scalar()));
+        qq.setX(btScalar(q.x()));
+        qq.setY(btScalar(q.y()));
+        qq.setZ(btScalar(q.z()));
+        groundTransform.setRotation(qq);
 
         btScalar mass(0.);
 
@@ -161,7 +168,6 @@ void Scene::initScene()
     Mesh *mesh = new Mesh();
     mesh->objLoader(":/Resources/Models/cube.obj");
     Model * m1,*m2;
-    QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
     m1 = new Model("Model",QVector3D(0,-56,0),q,QVector3D(50,50,50),mesh);
     m1->addComponent(new ProgramShader(m1));
     //m1->addComponent(new Rigidbody(m1));
