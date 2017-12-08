@@ -15,7 +15,7 @@ GameObject::GameObject(QString name, QVector3D position, QQuaternion rotation, Q
 GameObject::GameObject(QString name,Transform *transform):
     center(QVector3D(0,0,0)),parent(this),name(name)
 {
-    components.push_back( new Transform(transform));
+    components.push_back( transform);//new Transform(transform));
 
 }
 

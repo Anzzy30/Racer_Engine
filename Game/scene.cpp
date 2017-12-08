@@ -78,6 +78,7 @@ Scene::~Scene()
 
     delete mainCamera;
     delete texture;
+    delete mesh;
 }
 
 void Scene::initScene()
@@ -165,7 +166,7 @@ void Scene::initScene()
     float z = 0.f * qSin(rotationAngle / 2);
     float w = cos(rotationAngle / 2);
 
-    Mesh *mesh = new Mesh();
+    mesh = new Mesh();
     mesh->objLoader(":/Resources/Models/cube.obj");
     Model * m1,*m2;
     m1 = new Model("Model",QVector3D(0,-56,0),q,QVector3D(50,50,50),mesh);
@@ -175,6 +176,7 @@ void Scene::initScene()
     m2->addComponent(new ProgramShader(m2));
     gameObjects.push_back(m1);
     gameObjects.push_back(m2);
+
 
 
 

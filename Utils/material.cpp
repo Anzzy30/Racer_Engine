@@ -15,6 +15,11 @@ Material::Material(QString name, QVector3D Ka, QVector3D Kd, QVector3D Ks, float
 
 }
 
+Material::~Material()
+{
+    if(map_Kd) delete map_Kd;
+}
+
 void Material::setName(const QString &value)
 {
     name = value;

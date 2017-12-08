@@ -60,6 +60,7 @@ private:
     btSequentialImpulseConstraintSolver* solver;
     btDiscreteDynamicsWorld* dynamicsWorld;
     btAlignedObjectArray<btCollisionShape*> collisionShapes;
+    Mesh *mesh;
 
 
 
