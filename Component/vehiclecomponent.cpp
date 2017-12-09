@@ -14,6 +14,7 @@ VehicleComponent::~VehicleComponent()
 void VehicleComponent::accelerate()
 {
     qDebug() << "accelerate" ;
+    gameObject->getComponent<Rigidbody>()->activate(true);
     QVector3D forwardVector = QVector3D(0,0,1);
     Transform *transform = gameObject->getComponent<Transform>();
     QVector3D forwardDirection= transform->getRotation()*forwardVector;
@@ -25,24 +26,27 @@ void VehicleComponent::accelerate()
 void VehicleComponent::decelerate()
 {
     qDebug() << "decelerate" ;
+    gameObject->getComponent<Rigidbody>()->activate(true);
     QVector3D forwardVector = QVector3D(0,0,-1);
     Transform *transform = gameObject->getComponent<Transform>();
     QVector3D forwardDirection= transform->getRotation()*forwardVector;
     forwardDirection.normalize();
     btVector3 force = btVector3(btScalar(forwardDirection.x()*100),btScalar(forwardDirection.y()*100),btScalar(forwardDirection.z()*100));
     gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
+
 }
 
 void VehicleComponent::turnLeft()
 {
     qDebug() << "turnLeft" ;
-
+    gameObject->getComponent<Rigidbody>()->activate(true);
     gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(0,20,0));
 }
 
 void VehicleComponent::turnRight()
 {
     qDebug() << "turnRight" ;
+    gameObject->getComponent<Rigidbody>()->activate(true);
     gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(0,-20,0));
 }
 
