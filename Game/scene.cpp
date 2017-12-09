@@ -9,6 +9,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
     input(input)
 {
     mainCamera = new FirstPersonCamera();
+    IG = true;
 
     /// INITIALISATION PHYSIQUE
 
@@ -34,7 +35,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
 
 Scene::~Scene()
 {
-    IG = true;
+
     /// CLEANUP PHYSIQUE
     for (int i = dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
     {
