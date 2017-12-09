@@ -95,7 +95,7 @@ void Scene::initScene()
         QQuaternion q = QQuaternion().fromEulerAngles(0,250,0);
         mCar = new Model("Car",QVector3D(0,0,10),QQuaternion(),QVector3D(3,3,3),mesh);
         mCar->addComponent(new ProgramShader(mCar));
-        mCar->addComponent(new VehicleComponent(mCar));
+        mCar->addComponent(new VehicleComponent(mCar,this));
         mainCamera = new ThirdPersonCamera(mCar);
 
         {

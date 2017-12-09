@@ -40,6 +40,7 @@ public:
     void initShaders();
     void initTextures();
     void loadScene();
+    btDiscreteDynamicsWorld * getWorld() {return dynamicsWorld;}
 
     void update();
 

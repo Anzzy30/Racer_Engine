@@ -6,14 +6,16 @@
 
 #include "external\bullet3-2.87\src\btBulletDynamicsCommon.h"
 #include "Component/rigidbody.h"
+#include "Game/scene.h"
 
 class Component;
+class Scene;
 
 class VehicleComponent : public Component
 {
 
 public:
-    VehicleComponent(GameObject *gameObject);
+    VehicleComponent(GameObject *gameObject, Scene * _scene);
     ~VehicleComponent();
     void accelerate();
     void decelerate();
@@ -23,6 +25,8 @@ public:
     void boostKey();
 
     virtual void update();
+private:
+    Scene * scene;
 };
 
 #endif // VEHICLECOMPONENT_H
