@@ -93,7 +93,7 @@ void Scene::initScene()
         mesh->objLoader(":/Resources/Models/cube.obj");
         RM.storeMesh("CarMesh", mesh);
         QQuaternion q = QQuaternion().fromEulerAngles(0,250,0);
-        mCar = new Model("Car",QVector3D(0,-100,10),QQuaternion(),QVector3D(3,3,3),mesh);
+        mCar = new Model("Car",QVector3D(0,0,10),QQuaternion(),QVector3D(3,3,3),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar));
         mainCamera = new ThirdPersonCamera(mCar);
@@ -144,7 +144,7 @@ void Scene::initScene()
     //loadScene();
 
     plane = new PlaneTest();
-    QQuaternion q = QQuaternion().fromEulerAngles(30,0,0);
+    QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
 
     //quat rotation example
     float rotationAngle = qDegreesToRadians(90.0f);
@@ -163,20 +163,20 @@ void Scene::initScene()
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
     sampleMesh->objLoader(":/Resources/Models/SampleObject.obj");
-    m1 = new Model("Model",QVector3D(0,-56,0),q,QVector3D(50,50,50),mesh);
+    m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(50,50,50),mesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
     m2->addComponent(new ProgramShader(m2));
 
-    q = QQuaternion().fromEulerAngles(0,0,45);
-    m3 = new Model("Model",QVector3D(0,0,0),q,QVector3D(100,100,100),sampleMesh);
-    m3->addComponent(new ProgramShader(m3));
+    q = QQuaternion().fromEulerAngles(0,0,0);
+    //m3 = new Model("Model",QVector3D(0,0,0),q,QVector3D(100,100,100),sampleMesh);
+    //m3->addComponent(new ProgramShader(m3));
 
-    //gameObjects.push_back(m1);
+    gameObjects.push_back(m1);
     gameObjects.push_back(m2);
-    gameObjects.push_back(m3);
-    /*
+    //gameObjects.push_back(m3);
+
 
     {
         btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
@@ -185,7 +185,7 @@ void Scene::initScene()
 
         btTransform groundTransform;
         groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(0, -56, 0));
+        groundTransform.setOrigin(btVector3(0, -86, 0));
         btQuaternion qq;
         qq.setW(btScalar(q.scalar()));
         qq.setX(btScalar(q.x()));
@@ -193,7 +193,7 @@ void Scene::initScene()
         qq.setZ(btScalar(q.z()));
         groundTransform.setRotation(qq);
 
-        btScalar mass(10.0f);
+        btScalar mass(0.0f);
 
         //rigidbody is dynamic if and only if mass is non zero, otherwise static
         bool isDynamic = (mass != 0.f);
@@ -209,7 +209,7 @@ void Scene::initScene()
         //add the body to the dynamics world
         m1->addComponent(body);
         dynamicsWorld->addRigidBody(body);
-    }*/
+    }
 
     {
         //create a dynamic rigidbody
@@ -241,7 +241,7 @@ void Scene::initScene()
 
     }
 
-
+    /*
 
     {
         //create a dynamic rigidbody
@@ -281,7 +281,7 @@ void Scene::initScene()
         dynamicsWorld->addRigidBody(body);
 
     }
-
+    */
 
 
 
