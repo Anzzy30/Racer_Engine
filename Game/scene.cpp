@@ -115,7 +115,7 @@ void Scene::initScene()
             /// Create Dynamic Objects
             btTransform startTransform;
             startTransform.setIdentity();
-            btScalar mass(5.f);
+            btScalar mass(30.f);
 
             //rigidbody is dynamic if and only if mass is non zero, otherwise static
             bool isDynamic = (mass != 0.f);
