@@ -49,7 +49,7 @@ void OpenGLWindow::initializeGL()
     scene->getMainCamera()->update();
 
     qreal aspect = qreal(this->size().width()) / qreal(this->size().height());
-    const qreal zNear = 0.1, zFar = 1000.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 32000.0, fov = 45.0;
     QMatrix4x4 projection;
     projection.perspective(fov, aspect, zNear, zFar);
 
@@ -83,7 +83,7 @@ void OpenGLWindow::keyReleaseEvent(QKeyEvent *event)
 void OpenGLWindow::resizeGL(int w, int h)
 {
     qreal aspect = qreal(w) / qreal(h ? h : 1);
-    const qreal zNear = 0.1, zFar = 1000.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 32000.0, fov = 45.0;
 
     QMatrix4x4 projection;
     projection.perspective(fov, aspect, zNear, zFar);
