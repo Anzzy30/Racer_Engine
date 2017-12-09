@@ -103,22 +103,26 @@ void Scene::initScene()
     mesh = new Mesh();
     mesh->objLoader(":/Resources/Models/cube.obj");
     Model * m1,*m2,*m3;
+
     QString meshName = "SampleObject";
     RM.storeMesh(meshName,new Mesh());
-    Mesh * sampleMesh = RM.retrieveMesh(meshName);
-    sampleMesh->objLoader(":/Resources/Models/SampleObject.obj");
 
+    Mesh * sampleMesh = RM.retrieveMesh(meshName);
+
+    sampleMesh->objLoader(":/Resources/Models/SampleObject.obj");
     m1 = new Model("Model",QVector3D(0,-56,0),q,QVector3D(50,50,50),mesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
     m2->addComponent(new ProgramShader(m2));
 
-    m3 = new Model("Model",QVector3D(0,0,0),QQuaternion(),QVector3D(10,10,10),sampleMesh);
+    q = QQuaternion().fromEulerAngles(0,0,45);
+    m3 = new Model("Model",QVector3D(0,0,0),q,QVector3D(100,100,100),sampleMesh);
     m3->addComponent(new ProgramShader(m3));
 
     gameObjects.push_back(m1);
     gameObjects.push_back(m2);
+    gameObjects.push_back(m3);
 
     {
         btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
