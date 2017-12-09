@@ -1,20 +1,23 @@
 #include "gameobject.h"
 
 GameObject::GameObject():
-    center(QVector3D(0,0,0)),parent(this)
+    center(QVector3D(0,0,0))
 {
+    parent = NULL;
     components.push_back( new Transform(this));
 }
 
 GameObject::GameObject(QString name, QVector3D position, QQuaternion rotation, QVector3D scale):
     center(QVector3D(0,0,0)),parent(this),name(name)
 {
+    parent = NULL;
     components.push_back( new Transform(this,position,rotation,scale));
 }
 
 GameObject::GameObject(QString name,Transform *transform):
-    center(QVector3D(0,0,0)),parent(this),name(name)
+    center(QVector3D(0,0,0)),name(name)
 {
+    parent = NULL;
     components.push_back( transform);//new Transform(transform));
 
 }
@@ -73,14 +76,14 @@ QMatrix4x4 GameObject::getModelMatrix()
     model.setToIdentity();
     model.translate(-center);
 
-    if(parent != this){
+    if(parent != NULL){
         Transform *parentTransform = parent->getComponent<Transform>();
 
         model.translate((parentTransform->getPosition()));
     }
     model.translate((transform->getPosition()));
 
-    if(parent != this){
+    if(parent != NULL){
         Transform *parentTransform = parent->getComponent<Transform>();
 
         model.rotate((parentTransform->getRotation()));
