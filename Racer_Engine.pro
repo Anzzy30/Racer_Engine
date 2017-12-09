@@ -232,7 +232,8 @@ SOURCES += main.cpp \
     external/bullet3-2.87/src/LinearMath/btVector3.cpp \
     external/bullet3-2.87/src/clew/clew.c \
     GameObject/thirdpersoncamera.cpp \
-    Component/vehiclecomponent.cpp
+    Component/vehiclecomponent.cpp \
+    Utils/utils.cpp
 
 
 
@@ -659,7 +660,8 @@ HEADERS += \
     external/bullet3-2.87/src/btBulletCollisionCommon.h \
     external/bullet3-2.87/src/btBulletDynamicsCommon.h \
     GameObject/thirdpersoncamera.h \
-    Component/vehiclecomponent.h
+    Component/vehiclecomponent.h \
+    Utils/utils.h
 
 RESOURCES += \
     shaders.qrc \
