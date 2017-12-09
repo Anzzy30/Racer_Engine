@@ -40,7 +40,6 @@ protected:
     QVector3D lookAt;
     QMatrix4x4 projectionMatrix;
     QMatrix4x4 viewMatrix;
-    QQuaternion cameraQuaternion;
 
 
     float pitch;
