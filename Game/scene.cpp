@@ -170,12 +170,12 @@ void Scene::initScene()
     m2->addComponent(new ProgramShader(m2));
 
     q = QQuaternion().fromEulerAngles(0,0,0);
-    //m3 = new Model("Model",QVector3D(0,0,0),q,QVector3D(100,100,100),sampleMesh);
-    //m3->addComponent(new ProgramShader(m3));
+    m3 = new Model("Model",QVector3D(0,0,0),q,QVector3D(100,100,100),sampleMesh);
+    m3->addComponent(new ProgramShader(m3));
 
     gameObjects.push_back(m1);
     gameObjects.push_back(m2);
-    //gameObjects.push_back(m3);
+    gameObjects.push_back(m3);
 
 
     {
@@ -241,7 +241,7 @@ void Scene::initScene()
 
     }
 
-    /*
+
 
     {
         //create a dynamic rigidbody
@@ -281,7 +281,7 @@ void Scene::initScene()
         dynamicsWorld->addRigidBody(body);
 
     }
-    */
+
 
 
 
