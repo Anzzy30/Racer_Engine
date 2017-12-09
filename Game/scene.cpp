@@ -34,6 +34,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
 
 Scene::~Scene()
 {
+    IG = true;
     /// CLEANUP PHYSIQUE
     for (int i = dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
     {
@@ -85,7 +86,56 @@ void Scene::initScene()
 {
     initShaders();
     initTextures();
-    initBind();
+    if (!IG)initBind();
+    else
+    {
+        mesh = new Mesh();
+        mesh->objLoader(":/Resources/Models/cube.obj");
+        RM.storeMesh("CarMesh", mesh);
+        mCar = new Model("Car",QVector3D(0,-56,0),QQuaternion(),QVector3D(3,3,3),mesh);
+        mCar->addComponent(new ProgramShader(mCar));
+        mCar->addComponent(new VehicleComponent(mCar));
+
+        {
+            //create a dynamic rigidbody
+            btTriangleMesh *btMesh = new btTriangleMesh();
+            QVector3D scale = mCar->getComponent<Transform>()->getScale();
+            QVector3D position = mCar->getComponent<Transform>()->getPosition();
+            QQuaternion q = mCar->getComponent<Transform>()->getRotation();
+
+            mesh->meshToCollisionShape(btMesh);
+            btMesh->setScaling(btVector3(scale.x(),
+                                         scale.y(),
+                                         scale.z()));
+
+            btBvhTriangleMeshShape* colShape = new btBvhTriangleMeshShape(btMesh,true);
+            collisionShapes.push_back(colShape);
+
+            /// Create Dynamic Objects
+            btTransform startTransform;
+            startTransform.setIdentity();
+
+            btScalar mass(0.f);
+
+            //rigidbody is dynamic if and only if mass is non zero, otherwise static
+            bool isDynamic = (mass != 0.f);
+
+            btVector3 localInertia(0, 0, 0);
+            if (isDynamic)
+                colShape->calculateLocalInertia(mass, localInertia);
+
+            startTransform.setOrigin(btVector3(position.x(), position.y(), position.z()));
+            startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
+            //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+            btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+            btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+            Rigidbody* body = new Rigidbody(mCar,rbInfo);
+            mCar->addComponent(body);
+            dynamicsWorld->addRigidBody(body);
+
+        }
+        initIGBind();
+    }
 
 
     //loadScene();
@@ -301,6 +351,42 @@ void Scene::initBind()
                         break;
                         default:
                         break;
+                    }
+                }));
+
+
+}
+
+void Scene::initIGBind()
+{
+    input->bind(Qt::Key_Z,new Command([&](State state){
+                    if(state == PRESSED || state == DOWN){
+                        mCar->getComponent<VehicleComponent>()->accelerate();
+                    }
+                }));
+    input->bind(Qt::Key_S,new Command([&](State state){
+                    if(state == PRESSED || state == DOWN){
+                        mCar->getComponent<VehicleComponent>()->decelerate();
+                    }
+                }));
+    input->bind(Qt::Key_Q,new Command([&](State state){
+                    if(state == PRESSED || state == DOWN){
+                        mCar->getComponent<VehicleComponent>()->turnLeft();
+                    }
+                }));
+    input->bind(Qt::Key_D,new Command([&](State state){
+                    if(state == PRESSED || state == DOWN){
+                        mCar->getComponent<VehicleComponent>()->turnRight();
+                    }
+                }));
+    input->bind(Qt::Key_Shift,new Command([&](State state){
+                    if(state == PRESSED || state == DOWN){
+                        mCar->getComponent<VehicleComponent>()->boostKey();
+                    }
+                }));
+    input->bind(Qt::Key_Space,new Command([&](State state){
+                    if(state == PRESSED || state == DOWN){
+                        mCar->getComponent<VehicleComponent>()->actionKey();
                     }
                 }));
 
