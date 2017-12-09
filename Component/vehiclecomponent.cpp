@@ -89,98 +89,33 @@ void VehicleComponent::update()
 {
     gameObject->getComponent<Rigidbody>()->activate(true);
     // Vecteurs de rays
-    QVector3D QBegin1(-1.f,-0.5f,1.f);
-    QVector3D QBegin2(1.f,-0.5f,1.f);
-    QVector3D QBegin3(-1.f,-0.5f,-1.f);
-    QVector3D QBegin4(1.f,-0.5f,-1.f);
+    QVector3D QBegin[4];
+    QBegin[0] = QVector3D(-1.f,-0.5f,1.f);
+    QBegin[1] = QVector3D(1.f,-0.5f,1.f);
+    QBegin[2] = QVector3D(-1.f,-0.5f,-1.f);
+    QBegin[3] = QVector3D(1.f,-0.5f,-1.f);
     float dist = 0;
 
     btVector3 Begin;
     btVector3 End;
     QMatrix4x4 model = gameObject->getModelMatrix();
 
-    /// PREMIER VECTEUR
+    for (int i=0;i<4;i++)
+    {
+        QVector3D QBeginD = model*QBegin[i];
+        Begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
+        End = btVector3(QBeginD.x(),QBeginD.y()-60.f,QBeginD.z());
 
-    QVector3D QBeginD = model*QBegin1;
-    Begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
-    End = btVector3(QBeginD.x(),QBeginD.y()-60.f,QBeginD.z());
+        btDynamicsWorld::ClosestRayResultCallback RayCallback(Begin, End);
+        btDynamicsWorld * world = scene->getWorld();
 
-
-    btDynamicsWorld::ClosestRayResultCallback RayCallback(Begin, End);
-    btDynamicsWorld * world = scene->getWorld();
-
-
-    world->rayTest(Begin, End, RayCallback);
-    if(RayCallback.hasHit()) {
-        btVector3 End2 = RayCallback.m_hitPointWorld;
-        dist = End2.distance(Begin);
-        dist = 1-(dist / End.distance(Begin));
-        gameObject->getComponent<Rigidbody>()->applyForce(btVector3(0,120*dist,0),btVector3(QBegin1.x(),QBegin1.y(),QBegin1.z()));
-
-        btVector3 Normal = RayCallback.m_hitNormalWorld;
-        qDebug() << "Ray 1 salut"<<QBeginD<< dist;
-
-        // Do some clever stuff here
-    }
-
-    /// SECOND VECTEUR
-
-    QBeginD = model*QBegin2;
-    Begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
-    End = btVector3(QBeginD.x(),QBeginD.y()-60.f,QBeginD.z());
-    RayCallback = btDynamicsWorld::ClosestRayResultCallback(Begin, End);
-
-
-    world->rayTest(Begin, End, RayCallback);
-    if(RayCallback.hasHit()) {
-        btVector3 End2 = RayCallback.m_hitPointWorld;
-        dist = End2.distance(Begin);
-        dist = 1-(dist / End.distance(Begin));
-        gameObject->getComponent<Rigidbody>()->applyForce(btVector3(0,120*dist,0),btVector3(QBegin2.x(),QBegin2.y(),QBegin2.z()));
-
-        btVector3 Normal = RayCallback.m_hitNormalWorld;
-        qDebug() << "Ray 2 salut"<<QBeginD<< dist;
-        // Do some clever stuff here
-    }
-
-    /// TROISIEME VECTEUR
-    QBeginD = model*QBegin3;
-    Begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
-    End = btVector3(QBeginD.x(),QBeginD.y()-60.f,QBeginD.z());
-    RayCallback = btDynamicsWorld::ClosestRayResultCallback(Begin, End);
-
-
-    world->rayTest(Begin, End, RayCallback);
-    if(RayCallback.hasHit()) {
-        btVector3 End2 = RayCallback.m_hitPointWorld;
-        dist = End2.distance(Begin);
-        dist = 1-(dist / End.distance(Begin));
-        gameObject->getComponent<Rigidbody>()->applyForce(btVector3(0,120*dist,0),btVector3(QBegin3.x(),QBegin3.y(),QBegin3.z()));
-
-        btVector3 Normal = RayCallback.m_hitNormalWorld;
-        qDebug() << "Ray 3 salut"<<QBeginD<< dist;
-
-        // Do some clever stuff here
-    }
-
-    /// QUATRIEME VECTEUR
-    QBeginD = model*QBegin4;
-    Begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
-    End = btVector3(QBeginD.x(),QBeginD.y()-60.f,QBeginD.z());
-    RayCallback = btDynamicsWorld::ClosestRayResultCallback(Begin, End);
-
-
-    world->rayTest(Begin, End, RayCallback);
-    if(RayCallback.hasHit()) {
-        btVector3 End2 = RayCallback.m_hitPointWorld;
-        dist = End2.distance(Begin);
-        dist = 1-(dist / End.distance(Begin));
-        gameObject->getComponent<Rigidbody>()->applyForce(btVector3(0,120*dist,0),btVector3(QBegin4.x(),QBegin4.y(),QBegin4.z()));
-
-        btVector3 Normal = RayCallback.m_hitNormalWorld;
-        qDebug() << "Ray 4 salut"<<QBeginD<< dist;
-
-        // Do some clever stuff here
+        world->rayTest(Begin, End, RayCallback);
+        if(RayCallback.hasHit()) {
+            btVector3 End2 = RayCallback.m_hitPointWorld;
+            dist = 1-(End2.distance(Begin) / End.distance(Begin));
+            gameObject->getComponent<Rigidbody>()->applyForce(btVector3(0,120*dist,0),btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
+            qDebug() << "Ray "<<i<<" Hit: " << QBeginD << dist;
+        }
     }
 
 }
