@@ -12,14 +12,14 @@ ResourceManager::~ResourceManager()
 int ResourceManager::storeMesh(QString name, Mesh *meshPointer)
 {
     meshBatch.push_back(meshPointer);
-    //meshMap[meshBatch.size()] = name;
+    meshMap[name] = meshBatch.size();
     return meshBatch.size();
 }
 
 int ResourceManager::storeShape(QString name, btCollisionShape *shapePointer)
 {
     shapeBatch.push_back(shapePointer);
-    //shapeMap[shapeBatch.size()] = name;
+    shapeMap[name] = shapeBatch.size();
     return shapeBatch.size();
 }
 
@@ -45,7 +45,7 @@ Mesh *ResourceManager::retrieveMesh(QString name)
     }
     catch (std::exception e)
     {
-        qDebug() << "WTF: " ;//<< e;
+        qDebug() << "Unable to retrieve mesh ("<<name<<"): " << e.what();
     }
     if (i==-1) return 0;
     return meshBatch.at(i);
@@ -60,7 +60,7 @@ btCollisionShape *ResourceManager::retrieveShape(QString name)
     }
     catch (std::exception e)
     {
-        qDebug() << "WTF: ";// << e;
+        qDebug() << "Unable to retrieve shape ("<<name<<"): " << e.what();
     }
     if (i==-1) return 0;
     return shapeBatch.at(i);
