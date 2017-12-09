@@ -231,8 +231,9 @@ SOURCES += main.cpp \
     external/bullet3-2.87/src/LinearMath/btThreads.cpp \
     external/bullet3-2.87/src/LinearMath/btVector3.cpp \
     external/bullet3-2.87/src/clew/clew.c \
-    GameObject/thirdpersoncamera.cpp
+    GameObject/thirdpersoncamera.cpp \
     Component/vehiclecomponent.cpp
+
 
 
 HEADERS += \
@@ -657,7 +658,7 @@ HEADERS += \
     external/bullet3-2.87/src/LinearMath/btVector3.h \
     external/bullet3-2.87/src/btBulletCollisionCommon.h \
     external/bullet3-2.87/src/btBulletDynamicsCommon.h \
-    GameObject/thirdpersoncamera.h
+    GameObject/thirdpersoncamera.h \
     Component/vehiclecomponent.h
 
 RESOURCES += \

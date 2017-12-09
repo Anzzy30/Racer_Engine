@@ -3,6 +3,9 @@
 
 #include "Component/component.h"
 #include "GameObject/gameobject.h"
+
+class Component;
+
 class VehicleComponent : public Component
 {
 
