@@ -15,6 +15,7 @@
 #include "Window/openglwindow.h"
 #include "GameObject/model.h"
 #include "Component/rigidbody.h"
+#include "Component/vehiclecomponent.h"
 #include "Utils/resourcemanager.h"
 
 #ifdef QT_DEBUG
@@ -34,6 +35,7 @@ public:
     void initScene();
 
     void initBind();
+    void initIGBind();
     void initShaders();
     void initTextures();
     void loadScene();
@@ -54,6 +56,7 @@ private:
     QOpenGLTexture * texture;
 
     QVector<GameObject*> gameObjects;
+    GameObject * mCar;
 
     btDefaultCollisionConfiguration* collisionConfiguration;
     btCollisionDispatcher* dispatcher;
@@ -65,6 +68,7 @@ private:
 
     ResourceManager RM;
 
+    bool IG = false;
 
     MeshRenderer * meshrend;
 };
