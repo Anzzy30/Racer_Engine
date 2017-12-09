@@ -63,6 +63,7 @@ private:
     btAlignedObjectArray<btCollisionShape*> collisionShapes;
     Mesh *mesh;
 
+    ResourceManager RM;
 
 
     MeshRenderer * meshrend;

@@ -3,5 +3,6 @@
         <file>Resources/Texture/heightmap-3.png</file>
         <file>Resources/Texture/textures_4096.png</file>
         <file>Resources/Texture/crate_1.jpg</file>
+        <file>Resources/Texture/Cube1_auv.png</file>
     </qresource>
 </RCC>

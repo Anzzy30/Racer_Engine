@@ -8,5 +8,7 @@
         <file>Resources/Models/ModularMediavalHouse1Mat.mtl</file>
         <file>Resources/Models/cube.obj</file>
         <file>Resources/Models/cube.mtl</file>
+        <file>Resources/Models/SampleObject.obj</file>
+        <file>Resources/Models/SampleObject.mtl</file>
     </qresource>
 </RCC>
