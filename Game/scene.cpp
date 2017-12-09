@@ -44,7 +44,6 @@ Scene::~Scene()
             delete body->getMotionState();
         }
         dynamicsWorld->removeCollisionObject(obj);
-        delete obj;
     }
 
     //delete collision shapes
@@ -144,8 +143,9 @@ void Scene::initScene()
         //using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
         btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
-        btRigidBody* body = new Rigidbody(m1,rbInfo);
+        Rigidbody* body = new Rigidbody(m1,rbInfo);
         //add the body to the dynamics world
+        m1->addComponent(body);
         dynamicsWorld->addRigidBody(body);
     }
 
@@ -173,8 +173,8 @@ void Scene::initScene()
         //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
         btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
-        btRigidBody* body = new btRigidBody(rbInfo);
-
+        Rigidbody* body = new Rigidbody(m2,rbInfo);
+        m2->addComponent(body);
         dynamicsWorld->addRigidBody(body);
 
     }
@@ -393,33 +393,9 @@ void Scene::loadScene()
 
 void Scene::update()
 {
-    /// TEST PHYSIQUE
 
     dynamicsWorld->stepSimulation(1.f / 30.f, 10);
 
-    //print positions of all objects
-    for (int j = dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
-    {
-        btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
-        btRigidBody* body = btRigidBody::upcast(obj);
-        btTransform trans;
-        if (body && body->getMotionState())
-        {
-            body->getMotionState()->getWorldTransform(trans);
-        }
-        else
-        {
-            trans = obj->getWorldTransform();
-        }
-        if (j==1)
-        {
-            GameObject* m = gameObjects.at(1);
-            m->getComponent<Transform>()->setPosition(QVector3D(trans.getOrigin().getX(),trans.getOrigin().getY(),trans.getOrigin().getZ()));
-            m->getComponent<Transform>()->setRotation(QQuaternion(trans.getRotation().getW(),QVector3D(trans.getRotation().getX(),trans.getRotation().getY(),trans.getRotation().getZ())));
-        }
-    }
-
-    /// FIN TEST PHYSIQUE
 
     input->update();
     mainCamera->update();
