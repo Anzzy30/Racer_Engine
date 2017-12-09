@@ -26,7 +26,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
 
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-    dynamicsWorld->setGravity(btVector3(0, -30, 0));
+    dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
     /// FIN INITIALISATION PHYSIQUE
 
