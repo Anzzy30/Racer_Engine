@@ -92,8 +92,8 @@ void Scene::initScene()
         mesh = new Mesh();
         mesh->objLoader(":/Resources/Models/cube.obj");
         RM.storeMesh("CarMesh", mesh);
-        QQuaternion q = QQuaternion().fromEulerAngles(0,250,0);
-        mCar = new Model("Car",QVector3D(0,0,10),QQuaternion(),QVector3D(14,3,14),mesh);
+        QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
+        mCar = new Model("Car",QVector3D(0,0,10),q,QVector3D(7,3,14),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar,this));
         mainCamera = new ThirdPersonCamera(mCar);

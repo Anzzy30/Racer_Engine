@@ -3,7 +3,10 @@
 VehicleComponent::VehicleComponent(GameObject * gameObject,Scene * _scene):
     Component(gameObject)
 {
-scene = _scene;
+    scene = _scene;
+    turnFactor = 45;
+    accelerateFactor = 100;
+    decelerateFactor = 70;
 }
 
 VehicleComponent::~VehicleComponent()
@@ -14,25 +17,45 @@ VehicleComponent::~VehicleComponent()
 void VehicleComponent::accelerate()
 {
     qDebug() << "accelerate" ;
+
+
     gameObject->getComponent<Rigidbody>()->activate(true);
-    QVector3D forwardVector = QVector3D(0,0,1);
     Transform *transform = gameObject->getComponent<Transform>();
+<<<<<<< HEAD
     QVector3D forwardDirection= transform->getRotation()*forwardVector;
     forwardDirection.normalize();
     btVector3 force = btVector3(btScalar(forwardDirection.x()*400),btScalar(forwardDirection.y()*400),btScalar(forwardDirection.z()*400));
     gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
+=======
+
+    QQuaternion q = transform->getRotation();
+    QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
+    forwardDirection *= accelerateFactor;
+    btVector3 force = btVector3(btScalar(forwardDirection.x()),btScalar(forwardDirection.y()),btScalar(forwardDirection.z()));
+    gameObject->getComponent<Rigidbody>()->applyCentralImpulse(force);
+>>>>>>> d3290940084878898fd9db9eb4ea73c5e0568677
 }
 
 void VehicleComponent::decelerate()
 {
     qDebug() << "decelerate" ;
     gameObject->getComponent<Rigidbody>()->activate(true);
-    QVector3D forwardVector = QVector3D(0,0,-1);
     Transform *transform = gameObject->getComponent<Transform>();
+<<<<<<< HEAD
     QVector3D forwardDirection= transform->getRotation()*forwardVector;
     forwardDirection.normalize();
     btVector3 force = btVector3(btScalar(forwardDirection.x()*400),btScalar(forwardDirection.y()*400),btScalar(forwardDirection.z()*400));
     gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
+=======
+
+    QQuaternion q = transform->getRotation();
+    QVector3D backwardDirection = -Utils::getForwardVectorFromQuat(q);
+
+    backwardDirection *= decelerateFactor;
+
+    btVector3 force = btVector3(btScalar(backwardDirection.x()),btScalar(backwardDirection.y()),btScalar(backwardDirection.z()));
+    gameObject->getComponent<Rigidbody>()->applyCentralImpulse(force);
+>>>>>>> d3290940084878898fd9db9eb4ea73c5e0568677
 
 }
 
@@ -40,14 +63,38 @@ void VehicleComponent::turnLeft()
 {
     qDebug() << "turnLeft" ;
     gameObject->getComponent<Rigidbody>()->activate(true);
+<<<<<<< HEAD
     gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(0,100,0));
+=======
+    Transform *transform = gameObject->getComponent<Transform>();
+
+    QQuaternion q = transform->getRotation();
+    QVector3D upVector = Utils::getUpVectorFromQuat(q);
+
+    upVector*=turnFactor;
+
+    gameObject->getComponent<Rigidbody>()->applyTorqueImpulse(btVector3(upVector.x(),upVector.y(),upVector.z()));
+>>>>>>> d3290940084878898fd9db9eb4ea73c5e0568677
 }
 
 void VehicleComponent::turnRight()
 {
     qDebug() << "turnRight" ;
     gameObject->getComponent<Rigidbody>()->activate(true);
+<<<<<<< HEAD
     gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(0,-100,0));
+=======
+    Transform *transform = gameObject->getComponent<Transform>();
+
+    QQuaternion q = transform->getRotation();
+    QVector3D upVector = Utils::getUpVectorFromQuat(q);
+
+    upVector*=-turnFactor;
+
+
+   // gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
+    gameObject->getComponent<Rigidbody>()->applyTorqueImpulse(btVector3(upVector.x(),upVector.y(),upVector.z()));
+>>>>>>> d3290940084878898fd9db9eb4ea73c5e0568677
 }
 
 void VehicleComponent::actionKey()

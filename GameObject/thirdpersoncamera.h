@@ -1,7 +1,7 @@
 #ifndef THIRDPERSONCAMERA_H
 #define THIRDPERSONCAMERA_H
 #include <GameObject/camera.h>
-
+#include <Utils/utils.h>
 class ThirdPersonCamera : public Camera
 {
 public:
