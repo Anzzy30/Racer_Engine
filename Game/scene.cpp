@@ -163,7 +163,7 @@ void Scene::initScene()
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
     sampleMesh->objLoader(":/Resources/Models/SampleObject.obj");
-    m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(50,50,50),mesh);
+    m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(500,50,500),mesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
@@ -179,7 +179,7 @@ void Scene::initScene()
 
 
     {
-        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(500.), btScalar(50.), btScalar(500.)));
 
         collisionShapes.push_back(groundShape);
 
