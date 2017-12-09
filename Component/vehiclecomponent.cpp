@@ -14,6 +14,7 @@ VehicleComponent::~VehicleComponent()
 void VehicleComponent::accelerate()
 {
 qDebug() << "accelerate" ;
+gameObject->getComponent<Rigidbody>()->applyCentralForce((btVector3(btScalar(100.),btScalar(-100.),btScalar(0.))));
 }
 
 void VehicleComponent::decelerate()

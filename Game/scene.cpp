@@ -173,9 +173,10 @@ void Scene::initScene()
     m3 = new Model("Model",QVector3D(0,0,0),q,QVector3D(100,100,100),sampleMesh);
     m3->addComponent(new ProgramShader(m3));
 
-    gameObjects.push_back(m1);
+    //gameObjects.push_back(m1);
     gameObjects.push_back(m2);
     gameObjects.push_back(m3);
+    /*
 
     {
         btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
@@ -208,7 +209,7 @@ void Scene::initScene()
         //add the body to the dynamics world
         m1->addComponent(body);
         dynamicsWorld->addRigidBody(body);
-    }
+    }*/
 
     {
         //create a dynamic rigidbody

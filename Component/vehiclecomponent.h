@@ -4,6 +4,9 @@
 #include "Component/component.h"
 #include "GameObject/gameobject.h"
 
+#include "external\bullet3-2.87\src\btBulletDynamicsCommon.h"
+#include "Component/rigidbody.h"
+
 class Component;
 
 class VehicleComponent : public Component
