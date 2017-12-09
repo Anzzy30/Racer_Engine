@@ -12,13 +12,6 @@ ThirdPersonCamera::ThirdPersonCamera(GameObject *target):
 
 void ThirdPersonCamera::update()
 {
-
-}
-
-
-
-QMatrix4x4 ThirdPersonCamera::getViewMatrix()
-{
     Transform *transformTarget = target->getComponent<Transform>();
     Transform *transform = getComponent<Transform>();
     QQuaternion q = transformTarget->getRotation();
@@ -36,6 +29,13 @@ QMatrix4x4 ThirdPersonCamera::getViewMatrix()
 
     viewMatrix.setToIdentity();
     viewMatrix.lookAt(position,(transformTarget->getPosition()),upQ);
+
+}
+
+
+
+QMatrix4x4 ThirdPersonCamera::getViewMatrix()
+{
 
     return viewMatrix;
 }

@@ -27,6 +27,11 @@ public:
     virtual void update();
 private:
     Scene * scene;
+
+    float turnFactor;
+    float accelerateFactor;
+    float decelerateFactor;
+
 };
 
 #endif // VEHICLECOMPONENT_H
