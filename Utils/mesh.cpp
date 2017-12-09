@@ -385,7 +385,6 @@ void Mesh::loadMaterial(QString path){
             materials[cursor].loadMap_Kd(relativePath);
         }
     }
-
 }
 
 QVector3D Mesh::getMin_v() const
@@ -411,6 +410,36 @@ QOpenGLBuffer Mesh::getArrayBuf() const
 QOpenGLBuffer Mesh::getIndexBuf() const
 {
     return indexBuf;
+}
+
+void Mesh::meshToCollisionShape(btTriangleMesh *btMesh)
+
+{
+   // GLuint * i1 = new GLuint(),*i2= new GLuint(),*i3= new GLuint();
+    GLuint  i1,i2,i3;
+    Vertex v1,v2,v3;
+    size_t offset = 0;
+    indexBuf.bind();
+    arrayBuf.bind();
+    for(int i=0;i<faces.size();++i){
+
+        indexBuf.read(offset,&i1,sizeof(GLuint));
+        qDebug() <<"test";
+        offset += sizeof(GLuint);
+        indexBuf.read(offset,&i2,sizeof(GLuint));
+        offset += sizeof(GLuint);
+        indexBuf.read(offset,&i3,sizeof(GLuint));
+        offset += sizeof(GLuint);
+
+        arrayBuf.read(sizeof(Vertex)*(i1),&v1,sizeof(Vertex));
+        arrayBuf.read(sizeof(Vertex)*(i2),&v2,sizeof(Vertex));
+        arrayBuf.read(sizeof(Vertex)*(i3),&v3,sizeof(Vertex));
+        btMesh->addTriangle(btVector3(v1.position.x(),v1.position.y(),v1.position.z()),
+                            btVector3(v2.position.x(),v2.position.y(),v2.position.z()),
+                            btVector3(v3.position.x(),v3.position.y(),v3.position.z()),
+                            true);
+    }
+
 }
 
 QVector<Material> Mesh::getMaterials() const

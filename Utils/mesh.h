@@ -19,6 +19,10 @@
 #ifdef QT_DEBUG
     #include <Logger/logger.h>
 #endif
+#include "external\bullet3-2.87\src\BulletCollision\CollisionShapes\btBvhTriangleMeshShape.h"
+#include "external\bullet3-2.87\src\BulletCollision\CollisionShapes\btTriangleMesh.h"
+
+
 
 typedef struct Face{
     GLuint count;
@@ -62,7 +66,7 @@ public:
     QOpenGLBuffer getArrayBuf() const;
     QOpenGLBuffer getIndexBuf() const;
 
-
+    void meshToCollisionShape(btTriangleMesh * btMesh);
     QVector<Material> getMaterials() const;
 
 private:

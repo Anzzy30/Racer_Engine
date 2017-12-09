@@ -139,7 +139,7 @@ void Scene::initScene()
         qq.setZ(btScalar(q.z()));
         groundTransform.setRotation(qq);
 
-        btScalar mass(0.);
+        btScalar mass(10.0f);
 
         //rigidbody is dynamic if and only if mass is non zero, otherwise static
         bool isDynamic = (mass != 0.f);
@@ -189,7 +189,44 @@ void Scene::initScene()
 
 
 
+    {
+        //create a dynamic rigidbody
+        btTriangleMesh *btMesh = new btTriangleMesh();
+        QVector3D scale = m3->getComponent<Transform>()->getScale();
+        QVector3D position = m3->getComponent<Transform>()->getPosition();
+        QQuaternion q = m3->getComponent<Transform>()->getRotation();
 
+        sampleMesh->meshToCollisionShape(btMesh);
+        btMesh->setScaling(btVector3(scale.x(),
+                                     scale.y(),
+                                     scale.z()));
+
+        btBvhTriangleMeshShape* colShape = new btBvhTriangleMeshShape(btMesh,true);
+        collisionShapes.push_back(colShape);
+
+        /// Create Dynamic Objects
+        btTransform startTransform;
+        startTransform.setIdentity();
+
+        btScalar mass(0.f);
+
+        //rigidbody is dynamic if and only if mass is non zero, otherwise static
+        bool isDynamic = (mass != 0.f);
+
+        btVector3 localInertia(0, 0, 0);
+        if (isDynamic)
+            colShape->calculateLocalInertia(mass, localInertia);
+
+        startTransform.setOrigin(btVector3(0, 0, 0));
+        startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
+        //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+        btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+        Rigidbody* body = new Rigidbody(m3,rbInfo);
+        m3->addComponent(body);
+        dynamicsWorld->addRigidBody(body);
+
+    }
 
 
 
