@@ -8,7 +8,6 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
     openGLWindow(oglWindow),
     input(input)
 {
-    mainCamera = new FirstPersonCamera();
     IG = true;
 
     /// INITIALISATION PHYSIQUE
@@ -93,9 +92,11 @@ void Scene::initScene()
         mesh = new Mesh();
         mesh->objLoader(":/Resources/Models/cube.obj");
         RM.storeMesh("CarMesh", mesh);
-        mCar = new Model("Car",QVector3D(0,-56,0),QQuaternion(),QVector3D(3,3,3),mesh);
+        QQuaternion q = QQuaternion().fromEulerAngles(0,250,0);
+        mCar = new Model("Car",QVector3D(0,-100,10),QQuaternion(),QVector3D(3,3,3),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar));
+        mainCamera = new ThirdPersonCamera(mCar);
 
         {
             //create a dynamic rigidbody
@@ -108,15 +109,13 @@ void Scene::initScene()
             btMesh->setScaling(btVector3(scale.x(),
                                          scale.y(),
                                          scale.z()));
-
-            btBvhTriangleMeshShape* colShape = new btBvhTriangleMeshShape(btMesh,true);
+            btConvexTriangleMeshShape* colShape = new btConvexTriangleMeshShape(btMesh,true);
             collisionShapes.push_back(colShape);
 
             /// Create Dynamic Objects
             btTransform startTransform;
             startTransform.setIdentity();
-
-            btScalar mass(0.f);
+            btScalar mass(5.f);
 
             //rigidbody is dynamic if and only if mass is non zero, otherwise static
             bool isDynamic = (mass != 0.f);
@@ -124,6 +123,7 @@ void Scene::initScene()
             btVector3 localInertia(0, 0, 0);
             if (isDynamic)
                 colShape->calculateLocalInertia(mass, localInertia);
+
 
             startTransform.setOrigin(btVector3(position.x(), position.y(), position.z()));
             startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
@@ -133,6 +133,8 @@ void Scene::initScene()
             Rigidbody* body = new Rigidbody(mCar,rbInfo);
             mCar->addComponent(body);
             dynamicsWorld->addRigidBody(body);
+            gameObjects.push_back(mCar);
+
 
         }
         initIGBind();
@@ -287,7 +289,7 @@ void Scene::initScene()
 
 void Scene::initBind()
 {
-    input->bind(Qt::Key_Z,new Command([&](State state){
+    /*input->bind(Qt::Key_Z,new Command([&](State state){
                     if(state == PRESSED || state == DOWN){
                         mainCamera->setMoveForward(true);
                     }
@@ -355,7 +357,7 @@ void Scene::initBind()
                     }
                 }));
 
-
+*/
 }
 
 void Scene::initIGBind()
@@ -543,10 +545,6 @@ void Scene::update()
 
     for(auto &g : gameObjects){
         ProgramShader *p = g->getComponent<ProgramShader>();
-
-
-
-
         if(!p)
             continue;
         p->setProgram(&program);
@@ -562,7 +560,7 @@ void Scene::update()
 
 
 
-FirstPersonCamera *Scene::getMainCamera() const
+Camera *Scene::getMainCamera() const
 {
     return mainCamera;
 }

@@ -27,5 +27,4 @@ void Rigidbody::update()
     Transform *transform = gameObject->getComponent<Transform>();
     transform->setPosition(QVector3D(trans.getOrigin().getX(),trans.getOrigin().getY(),trans.getOrigin().getZ()));
     transform->setRotation(QQuaternion(trans.getRotation().getW(),QVector3D(trans.getRotation().getX(),trans.getRotation().getY(),trans.getRotation().getZ())));
-    qDebug() << trans.getOrigin().getX() << " " << trans.getOrigin().getY() << " " << trans.getOrigin().getZ();
 }

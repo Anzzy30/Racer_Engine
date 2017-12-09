@@ -424,7 +424,6 @@ void Mesh::meshToCollisionShape(btTriangleMesh *btMesh)
     for(int i=0;i<faces.size();++i){
 
         indexBuf.read(offset,&i1,sizeof(GLuint));
-        qDebug() <<"test";
         offset += sizeof(GLuint);
         indexBuf.read(offset,&i2,sizeof(GLuint));
         offset += sizeof(GLuint);

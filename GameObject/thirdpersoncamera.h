@@ -12,7 +12,17 @@ public:
     void update();
 private:
     GameObject* target;
+
     float offset;
+
 };
 
 #endif // THIRDPERSONCAMERA_H
+
+
+
+
+
+
+
+

@@ -10,6 +10,7 @@
 #include <QFile>
 
 #include "GameObject/firstpersoncamera.h"
+#include "GameObject/thirdpersoncamera.h"
 #include "GameObject/planetest.h"
 #include "Controller/inputhandler.h"
 #include "Window/openglwindow.h"
@@ -43,14 +44,14 @@ public:
     void update();
 
 
-    FirstPersonCamera *getMainCamera() const;
+    Camera *getMainCamera() const;
 
 private:
     OpenGLWindow *openGLWindow;
 
     QOpenGLShaderProgram program;
 
-    FirstPersonCamera *mainCamera;
+    ThirdPersonCamera *mainCamera;
     InputHandler *input;
     PlaneTest *plane;
     QOpenGLTexture * texture;
