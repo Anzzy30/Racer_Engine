@@ -112,9 +112,9 @@ void Scene::initScene()
             QQuaternion q = mCar->getComponent<Transform>()->getRotation();
 
             mesh->meshToCollisionShape(btMesh);
-            btMesh->setScaling(btVector3(scale.x()+1,
-                                         scale.y()+1,
-                                         scale.z()+1));
+            btMesh->setScaling(btVector3(scale.x(),
+                                         scale.y(),
+                                         scale.z()));
             btConvexTriangleMeshShape* colShape = new btConvexTriangleMeshShape(btMesh,true);
             collisionShapes.push_back(colShape);
 
