@@ -301,7 +301,7 @@ void Scene::initBind()
 {
 
 
-    input->bind(Qt::Key_C,new Command([&](State state){
+    input->bind(Qt::Key_X,new Command([&](State state){
                     if(state == PRESSED){
                         qDebug() << "IG Camera";
                         mainCamera = followCamera;
