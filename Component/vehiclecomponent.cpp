@@ -89,6 +89,8 @@ void VehicleComponent::update()
 {
 
     Rigidbody *body = gameObject->getComponent<Rigidbody>();
+    body->setDamping(0.1,0.4);
+    body->applyDamping(0.02);
     body->activate(true);
     // Vecteurs de rays
     QVector3D QBegin[4];
@@ -99,7 +101,7 @@ void VehicleComponent::update()
 
 
     float dist = 0;
-    float maxDist = 8;
+    float maxDist = 4;
     btVector3 begin;
     btVector3 End;
     QMatrix4x4 model = gameObject->getModelMatrix();
@@ -125,8 +127,7 @@ void VehicleComponent::update()
             btVector3 hitPoint = RayCallback.m_hitPointWorld;
             dist = hitPoint.distance(begin)/maxDist;
             force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist);
-            body->applyDamping(0.5);
-            body->applyForce(force,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
+            body->applyForce(force*28,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
 
             qDebug() << "Ray "<<i<<" Hit: " << force.x() << force.y() << force.z() << 1-dist;
 
