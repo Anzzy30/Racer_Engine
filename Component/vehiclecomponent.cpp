@@ -72,7 +72,7 @@ void VehicleComponent::turnRight()
     upVector*=-turnFactor;
 
 
-   // gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
+    // gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
     gameObject->getComponent<Rigidbody>()->applyTorqueImpulse(btVector3(upVector.x(),upVector.y(),upVector.z()));
 }
 
@@ -87,35 +87,52 @@ void VehicleComponent::boostKey()
 }
 void VehicleComponent::update()
 {
-    gameObject->getComponent<Rigidbody>()->activate(true);
+
+    Rigidbody *body = gameObject->getComponent<Rigidbody>();
+    body->activate(true);
     // Vecteurs de rays
     QVector3D QBegin[4];
-    QBegin[0] = QVector3D(-1.f,-0.8f,1.f);
-    QBegin[1] = QVector3D(1.f,-0.8f,1.f);
-    QBegin[2] = QVector3D(-1.f,-0.8f,-1.f);
-    QBegin[3] = QVector3D(1.f,-0.8f,-1.f);
-    float dist = 0;
+    QBegin[0] = QVector3D(-1.f,-1.0f,1.f);
+    QBegin[1] = QVector3D(1.f,-1.0f,1.f);
+    QBegin[2] = QVector3D(-1.f,-1.0f,-1.f);
+    QBegin[3] = QVector3D(1.f,-1.0f,-1.f);
 
-    btVector3 Begin;
+
+    float dist = 0;
+    float maxDist = 8;
+    btVector3 begin;
     btVector3 End;
     QMatrix4x4 model = gameObject->getModelMatrix();
+    Transform * trans = gameObject->getComponent<Transform>();
+    QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
+    btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
+    btVector3 force;
 
     for (int i=0;i<4;i++)
     {
         QVector3D QBeginD = model*QBegin[i];
-        Begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
-        End = btVector3(QBeginD.x(),QBeginD.y()-10.f,QBeginD.z());
 
-        btDynamicsWorld::ClosestRayResultCallback RayCallback(Begin, End);
+        QVector3D QEnd = QBeginD-upVector*maxDist;
+        begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
+        End = btVector3(QEnd.x(),QEnd.y(),QEnd.z());
+
+        btVector3 vel= body->getVelocityInLocalPoint(begin);
+
+        btDynamicsWorld::ClosestRayResultCallback RayCallback(begin, End);
         btDynamicsWorld * world = scene->getWorld();
-
-        world->rayTest(Begin, End, RayCallback);
+        world->rayTest(begin, End, RayCallback);
         if(RayCallback.hasHit()) {
-            btVector3 End2 = RayCallback.m_hitPointWorld;
-            dist = 1.1-(End2.distance(Begin) / End.distance(Begin));
-            gameObject->getComponent<Rigidbody>()->applyImpulse(btVector3(0,30*dist,0),btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
-            qDebug() << "Ray "<<i<<" Hit: " << QBeginD << dist;
+            btVector3 hitPoint = RayCallback.m_hitPointWorld;
+            dist = hitPoint.distance(begin)/maxDist;
+            force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist);
+            body->applyDamping(0.5);
+            body->applyForce(force,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
+
+            qDebug() << "Ray "<<i<<" Hit: " << force.x() << force.y() << force.z() << 1-dist;
+
         }
+
+
     }
 
 }

@@ -10,5 +10,7 @@
         <file>Resources/Models/cube.mtl</file>
         <file>Resources/Models/SampleObject.obj</file>
         <file>Resources/Models/SampleObject.mtl</file>
+        <file>Resources/Models/car.obj</file>
+        <file>Resources/Models/car.mtl</file>
     </qresource>
 </RCC>

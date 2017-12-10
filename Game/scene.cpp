@@ -13,6 +13,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
     /// INITIALISATION PHYSIQUE
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
+
     collisionConfiguration = new btDefaultCollisionConfiguration();
 
     ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
@@ -93,7 +94,7 @@ void Scene::initScene()
         mesh->objLoader(":/Resources/Models/cube.obj");
         RM.storeMesh("CarMesh", mesh);
         QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
-        mCar = new Model("Car",QVector3D(0,0,10),q,QVector3D(7,3,14),mesh);
+        mCar = new Model("Car",QVector3D(0,100,0),q,QVector3D(7,3,14),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar,this));
         mainCamera = new ThirdPersonCamera(mCar);
@@ -106,16 +107,16 @@ void Scene::initScene()
             QQuaternion q = mCar->getComponent<Transform>()->getRotation();
 
             mesh->meshToCollisionShape(btMesh);
-            btMesh->setScaling(btVector3(scale.x(),
-                                         scale.y(),
-                                         scale.z()));
+            btMesh->setScaling(btVector3(scale.x()+1,
+                                         scale.y()+1,
+                                         scale.z()+1));
             btConvexTriangleMeshShape* colShape = new btConvexTriangleMeshShape(btMesh,true);
             collisionShapes.push_back(colShape);
 
             /// Create Dynamic Objects
             btTransform startTransform;
             startTransform.setIdentity();
-            btScalar mass(30.f);
+            btScalar mass(30.0f);
 
             //rigidbody is dynamic if and only if mass is non zero, otherwise static
             bool isDynamic = (mass != 0.f);
@@ -163,7 +164,7 @@ void Scene::initScene()
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
     sampleMesh->objLoader(":/Resources/Models/SampleObject.obj");
-    m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(5000,50,5000),mesh);
+    m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(500,50,500),mesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
@@ -179,7 +180,7 @@ void Scene::initScene()
 
 
     {
-        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(5000.), btScalar(50.), btScalar(5000.)));
+        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(501.), btScalar(51.), btScalar(501)));
 
         collisionShapes.push_back(groundShape);
 
