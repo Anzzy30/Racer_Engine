@@ -47,12 +47,20 @@ public:
 
     Camera *getMainCamera() const;
 
+    FirstPersonCamera *getDebugCamera() const;
+
+    ThirdPersonCamera *getFollowCamera() const;
+
 private:
     OpenGLWindow *openGLWindow;
 
     QOpenGLShaderProgram program;
 
-    ThirdPersonCamera *mainCamera;
+    Camera *mainCamera;
+    ThirdPersonCamera *followCamera;
+    FirstPersonCamera *debugCamera;
+
+
     InputHandler *input;
     PlaneTest *plane;
     QOpenGLTexture * texture;

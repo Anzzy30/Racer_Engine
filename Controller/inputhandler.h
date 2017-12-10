@@ -13,6 +13,7 @@ class InputHandler
 {
 public:
     InputHandler();
+    ~InputHandler();
     void bind(int key, Command *command);
 
     void update();

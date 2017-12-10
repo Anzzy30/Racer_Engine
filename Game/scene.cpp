@@ -78,7 +78,8 @@ Scene::~Scene()
     for(auto &g : gameObjects)
         delete g;
 
-    delete mainCamera;
+    delete debugCamera;
+    if(followCamera != NULL) delete followCamera;
     delete texture;
     delete mesh;
 }
@@ -87,8 +88,12 @@ void Scene::initScene()
 {
     initShaders();
     initTextures();
-    if (!IG)initBind();
-    else
+    initBind();
+    debugCamera = new FirstPersonCamera();
+    mainCamera = debugCamera;
+
+
+    if(IG)
     {
         mesh = new Mesh();
         mesh->objLoader(":/Resources/Models/cube.obj");
@@ -97,8 +102,8 @@ void Scene::initScene()
         mCar = new Model("Car",QVector3D(0,-40,0),q,QVector3D(7,3,14),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar,this));
-        mainCamera = new ThirdPersonCamera(mCar);
-
+        followCamera = new ThirdPersonCamera(mCar);
+        mainCamera =followCamera;
         {
             //create a dynamic rigidbody
             btTriangleMesh *btMesh = new btTriangleMesh();
@@ -294,107 +299,150 @@ void Scene::initScene()
 
 void Scene::initBind()
 {
-    /*input->bind(Qt::Key_Z,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mainCamera->setMoveForward(true);
+
+
+    input->bind(Qt::Key_C,new Command([&](State state){
+                    if(state == PRESSED){
+                        qDebug() << "IG Camera";
+                        mainCamera = followCamera;
+                        initIGBind();
+                    }
+                }));
+    input->bind(Qt::Key_Z,new Command([&](State state){
+                    if(mainCamera == debugCamera){
+                        if(state == PRESSED || state == DOWN){
+                            qDebug() << "move forward";
+                            ((FirstPersonCamera*)mainCamera)->setMoveForward(true);
+                        }
                     }
                 }));
     input->bind(Qt::Key_S,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mainCamera->setMoveBackward(true);
+                    if(mainCamera == debugCamera){
+                        if(state == PRESSED || state == DOWN){
+                            ((FirstPersonCamera*)mainCamera)->setMoveBackward(true);
+                        }
                     }
                 }));
     input->bind(Qt::Key_Q,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mainCamera->setMoveLeft(true);
+                    if(mainCamera == debugCamera){
+
+                        if(state == PRESSED || state == DOWN){
+                            ((FirstPersonCamera*)mainCamera)->setMoveLeft(true);
+                        }
                     }
                 }));
     input->bind(Qt::Key_D,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mainCamera->setMoveRight(true);
+                    if(mainCamera == debugCamera){
+                        if(state == PRESSED || state == DOWN){
+                            ((FirstPersonCamera*)mainCamera)->setMoveRight(true);
+                        }
                     }
                 }));
     input->bind(Qt::Key_Shift,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mainCamera->setMoveDown(true);
+                    if(mainCamera == debugCamera){
+                        if(state == PRESSED || state == DOWN){
+                            ((FirstPersonCamera*)mainCamera)->setMoveDown(true);
+                        }
                     }
                 }));
     input->bind(Qt::Key_Space,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mainCamera->setMoveUpper(true);
+                    if(mainCamera == debugCamera){
+                        if(state == PRESSED || state == DOWN){
+                            ((FirstPersonCamera*)mainCamera)->setMoveUpper(true);
+                        }
                     }
                 }));
     input->bind(Qt::LeftButton,new Command([&](State state){
-                    switch(state){
-                        case State::PRESSED:
-                        {
-                            QCursor cursor;
-                            cursor.setShape(Qt::BlankCursor);
-                            cursor.setPos(openGLWindow->mapToGlobal(QPoint(openGLWindow->width() / 2, openGLWindow->height() / 2)));
-                            openGLWindow->setCursor(cursor);
-                        }
-                        break;
-                        case State::DOWN:
-                        {
-                            QPoint pos = openGLWindow->mapFromGlobal(QCursor::pos());
-                            float dx = pos.x()-openGLWindow->width()/2;
-                            float dy = pos.y()-openGLWindow->height()/2;
-                            mainCamera->setV_mv(QVector2D(dx,dy));
-                            QCursor cursor;
-                            cursor.setShape(Qt::BlankCursor);
-                            cursor.setPos(openGLWindow->mapToGlobal(QPoint(openGLWindow->width() / 2, openGLWindow->height() / 2)));
+                    if(mainCamera == debugCamera){
+                        switch(state){
+                            case State::PRESSED:
+                            {
+                                QCursor cursor;
+                                cursor.setShape(Qt::BlankCursor);
+                                cursor.setPos(openGLWindow->mapToGlobal(QPoint(openGLWindow->width() / 2, openGLWindow->height() / 2)));
+                                openGLWindow->setCursor(cursor);
+                            }
+                            break;
+                            case State::DOWN:
+                            {
+                                QPoint pos = openGLWindow->mapFromGlobal(QCursor::pos());
+                                float dx = pos.x()-openGLWindow->width()/2;
+                                float dy = pos.y()-openGLWindow->height()/2;
+                                ((FirstPersonCamera*)mainCamera)->setV_mv(QVector2D(dx,dy));
+                                QCursor cursor;
+                                cursor.setShape(Qt::BlankCursor);
+                                cursor.setPos(openGLWindow->mapToGlobal(QPoint(openGLWindow->width() / 2, openGLWindow->height() / 2)));
 
-                            openGLWindow->setCursor(cursor);
-                        }
-                        break;
-                        case State::RELEASED:
-                        {
-                            QCursor cursor;
-                            cursor.setShape(Qt::ArrowCursor);
-                            openGLWindow->setCursor(cursor);
-                        }
-                        break;
-                        case State::UP:
+                                openGLWindow->setCursor(cursor);
+                            }
+                            break;
+                            case State::RELEASED:
+                            {
+                                QCursor cursor;
+                                cursor.setShape(Qt::ArrowCursor);
+                                openGLWindow->setCursor(cursor);
+                            }
+                            break;
+                            case State::UP:
 
-                        break;
-                        default:
-                        break;
+                            break;
+                            default:
+                            break;
+                        }
                     }
                 }));
 
-*/
 }
 
 void Scene::initIGBind()
 {
+    input->bind(Qt::Key_X,new Command([&](State state){
+                    if(state == PRESSED){
+                        qDebug() << "Debug Camera";
+                        mainCamera = debugCamera;
+                        initBind();
+                    }
+                }));
     input->bind(Qt::Key_Z,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mCar->getComponent<VehicleComponent>()->accelerate();
+                    if(mainCamera == followCamera){
+                        if(state == PRESSED || state == DOWN){
+                            mCar->getComponent<VehicleComponent>()->accelerate();
+                        }
                     }
                 }));
     input->bind(Qt::Key_S,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mCar->getComponent<VehicleComponent>()->decelerate();
+                    if(mainCamera == followCamera){
+                        if(state == PRESSED || state == DOWN){
+                            mCar->getComponent<VehicleComponent>()->decelerate();
+                        }
                     }
                 }));
     input->bind(Qt::Key_Q,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mCar->getComponent<VehicleComponent>()->turnLeft();
+                    if(mainCamera == followCamera){
+                        if(state == PRESSED || state == DOWN){
+                            mCar->getComponent<VehicleComponent>()->turnLeft();
+                        }
                     }
                 }));
     input->bind(Qt::Key_D,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mCar->getComponent<VehicleComponent>()->turnRight();
+                    if(mainCamera == followCamera){
+                        if(state == PRESSED || state == DOWN){
+                            mCar->getComponent<VehicleComponent>()->turnRight();
+                        }
                     }
                 }));
     input->bind(Qt::Key_Shift,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mCar->getComponent<VehicleComponent>()->boostKey();
+                    if(mainCamera == followCamera){
+                        if(state == PRESSED || state == DOWN){
+                            mCar->getComponent<VehicleComponent>()->boostKey();
+                        }
                     }
                 }));
     input->bind(Qt::Key_Space,new Command([&](State state){
-                    if(state == PRESSED || state == DOWN){
-                        mCar->getComponent<VehicleComponent>()->actionKey();
+                    if(mainCamera == followCamera){
+                        if(state == PRESSED || state == DOWN){
+                            mCar->getComponent<VehicleComponent>()->actionKey();
+                        }
                     }
                 }));
 
@@ -568,6 +616,16 @@ void Scene::update()
 Camera *Scene::getMainCamera() const
 {
     return mainCamera;
+}
+
+FirstPersonCamera *Scene::getDebugCamera() const
+{
+    return debugCamera;
+}
+
+ThirdPersonCamera *Scene::getFollowCamera() const
+{
+    return followCamera;
 }
 
 

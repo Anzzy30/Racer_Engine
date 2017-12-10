@@ -5,8 +5,19 @@ InputHandler::InputHandler()
 
 }
 
+InputHandler::~InputHandler()
+{
+    for (auto& command : this->commands) {
+        delete command.second;
+    }
+}
+
 void InputHandler::bind(int key, Command *command)
 {
+    if(commands.find(key) != commands.end()){
+        delete commands.at(key);
+        commands.erase(key);
+    }
     commands.insert(std::pair<int,Command*>(key,command));
 }
 

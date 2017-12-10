@@ -87,7 +87,8 @@ void OpenGLWindow::resizeGL(int w, int h)
 
     QMatrix4x4 projection;
     projection.perspective(fov, aspect, zNear, zFar);
-    scene->getMainCamera()->setProjectionMatrix(projection);
+    scene->getFollowCamera()->setProjectionMatrix(projection);
+    scene->getDebugCamera()->setProjectionMatrix(projection);
 
 }
 

@@ -150,7 +150,6 @@ void VehicleComponent::update()
             dist = hitPoint.distance(begin)/maxDist;
             force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist)/body->getInvMass();
             body->applyForce(force,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
-
             qDebug() << "Ray "<<i<<" Hit: " <<1-dist;
 
         }
