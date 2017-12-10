@@ -28,19 +28,15 @@ void VehicleComponent::accelerate()
     btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
     QVector3D center = model*gameObject->getCenter();
     btVector3 btCenter = btVector3(center.x(),center.y(),center.z());
-    btVector3 begin = btCenter + btUpVector*3;
+    btVector3 begin = btCenter - btUpVector*3;
 
-    btVector3 end = begin-btUpVector*8;
+    btVector3 end = begin-btUpVector*4;
 
 
     btDynamicsWorld::ClosestRayResultCallback RayCallback(begin, end);
     btDynamicsWorld * world = scene->getWorld();
     world->rayTest(begin, end, RayCallback);
     if(RayCallback.hasHit()) {
-        btVector3 hitPoint = RayCallback.m_hitPointWorld;
-
-        qDebug() << "Ground hit" << hitPoint.x() << " " << hitPoint.y() << " " << hitPoint.z();
-
 
 
         gameObject->getComponent<Rigidbody>()->activate(true);
@@ -155,7 +151,7 @@ void VehicleComponent::update()
             dist = hitPoint.distance(begin)/maxDist;
             force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist)/body->getInvMass();
             body->applyForce(force,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
-            qDebug() << "Ray "<<i<<" Hit: " <<1-dist;
+            qDebug() << "Ray "<<i<<" Hit: " << hitPoint.x() << " " << hitPoint.y() << " " << hitPoint.z() <<1-dist;
 
         }
 
