@@ -7,6 +7,9 @@ VehicleComponent::VehicleComponent(GameObject * gameObject,Scene * _scene):
     turnFactor = 45;
     accelerateFactor = 100;
     decelerateFactor = 70;
+
+    elapsedTimer.start();
+
 }
 
 VehicleComponent::~VehicleComponent()
@@ -109,10 +112,9 @@ void VehicleComponent::boostKey()
 }
 void VehicleComponent::update()
 {
-
+    float delta_time = elapsedTimer.elapsed()/1000.0f;
+    qDebug() << delta_time;
     Rigidbody *body = gameObject->getComponent<Rigidbody>();
-    body->setDamping(0.1,0.4);
-    body->applyDamping(0.02);
     body->activate(true);
     // Vecteurs de rays
     QVector3D QBegin[4];
@@ -146,6 +148,9 @@ void VehicleComponent::update()
         btDynamicsWorld * world = scene->getWorld();
         world->rayTest(begin, End, RayCallback);
         if(RayCallback.hasHit()) {
+            body->setDamping(0.3,0.3);
+            body->applyDamping(0.1);
+
             btVector3 hitPoint = RayCallback.m_hitPointWorld;
             dist = hitPoint.distance(begin)/maxDist;
             force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist)/body->getInvMass();
@@ -157,4 +162,6 @@ void VehicleComponent::update()
 
     }
 
+
+    elapsedTimer.restart();
 }

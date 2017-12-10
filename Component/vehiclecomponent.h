@@ -7,6 +7,7 @@
 #include "external\bullet3-2.87\src\btBulletDynamicsCommon.h"
 #include "Component/rigidbody.h"
 #include "Game/scene.h"
+#include "QElapsedTimer"
 
 class Component;
 class Scene;
@@ -31,6 +32,7 @@ public:
     virtual void update();
 private:
     Scene * scene;
+    QElapsedTimer elapsedTimer;
 
     float turnFactor;
     float accelerateFactor;
