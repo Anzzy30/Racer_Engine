@@ -94,7 +94,7 @@ void Scene::initScene()
         mesh->objLoader(":/Resources/Models/cube.obj");
         RM.storeMesh("CarMesh", mesh);
         QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
-        mCar = new Model("Car",QVector3D(0,100,0),q,QVector3D(7,3,14),mesh);
+        mCar = new Model("Car",QVector3D(0,-40,0),q,QVector3D(7,3,14),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar,this));
         mainCamera = new ThirdPersonCamera(mCar);
@@ -163,7 +163,7 @@ void Scene::initScene()
 
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
-    sampleMesh->objLoader(":/Resources/Models/circuit.obj");
+    sampleMesh->objLoader(":/Resources/Models/cube.obj");
     m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(500,500,500),sampleMesh);
     m1->addComponent(new ProgramShader(m1));
 
@@ -213,7 +213,6 @@ void Scene::initScene()
         Rigidbody* body = new Rigidbody(m1,rbInfo);
         m1->addComponent(body);
         dynamicsWorld->addRigidBody(body);
-        gameObjects.push_back(m1);
     }
 
     {
