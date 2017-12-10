@@ -5,5 +5,6 @@
         <file>Resources/Texture/crate_1.jpg</file>
         <file>Resources/Texture/Cube1_auv.png</file>
         <file>Resources/Texture/car.png</file>
+        <file>Resources/Texture/TextureCircuit.png</file>
     </qresource>
 </RCC>

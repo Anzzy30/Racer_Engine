@@ -129,7 +129,7 @@ void VehicleComponent::update()
             force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist);
             body->applyForce(force*28,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
 
-            qDebug() << "Ray "<<i<<" Hit: " << force.x() << force.y() << force.z() << 1-dist;
+            qDebug() << "Ray "<<i<<" Hit: " <<1-dist;
 
         }
 

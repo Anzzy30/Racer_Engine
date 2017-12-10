@@ -227,10 +227,12 @@ void Mesh::objLoader(QString path)
     }
     objFile.close();
 
-
+    qDebug() << "objFil closed";
 
     facesToTriangle(tmp_faces,true,true);
     /*Normal & texture per vertex (duplicate vertex with multiple uv*/
+
+    qDebug() << "faceToTriangleDone";
 
     GLuint nbVertex = vertexArray.size();
     for(GLuint i=0;i<nbVertex;++i){
@@ -276,6 +278,7 @@ void Mesh::objLoader(QString path)
         }
     }
 
+    qDebug() << "duplication vertex done";
 
 
     center = min_v + (max_v-min_v)/2;

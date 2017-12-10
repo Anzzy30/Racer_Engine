@@ -163,8 +163,8 @@ void Scene::initScene()
 
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
-    sampleMesh->objLoader(":/Resources/Models/SampleObject.obj");
-    m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(5000,50,5000),mesh);
+    sampleMesh->objLoader(":/Resources/Models/circuit.obj");
+    m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(500,500,500),sampleMesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
@@ -180,20 +180,21 @@ void Scene::initScene()
 
 
     {
-        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(5001.), btScalar(51.), btScalar(5001)));
+        btTriangleMesh *btMesh = new btTriangleMesh();
+        QVector3D scale = m1->getComponent<Transform>()->getScale();
+        QVector3D position = m1->getComponent<Transform>()->getPosition();
+        QQuaternion q = m1->getComponent<Transform>()->getRotation();
 
-        collisionShapes.push_back(groundShape);
+        sampleMesh->meshToCollisionShape(btMesh);
+        btMesh->setScaling(btVector3(scale.x()+1,
+                                     scale.y()+1,
+                                     scale.z()+1));
+        btConvexTriangleMeshShape* colShape = new btConvexTriangleMeshShape(btMesh,true);
+        collisionShapes.push_back(colShape);
 
-        btTransform groundTransform;
-        groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(0, -86, 0));
-        btQuaternion qq;
-        qq.setW(btScalar(q.scalar()));
-        qq.setX(btScalar(q.x()));
-        qq.setY(btScalar(q.y()));
-        qq.setZ(btScalar(q.z()));
-        groundTransform.setRotation(qq);
-
+        /// Create Dynamic Objects
+        btTransform startTransform;
+        startTransform.setIdentity();
         btScalar mass(0.0f);
 
         //rigidbody is dynamic if and only if mass is non zero, otherwise static
@@ -201,15 +202,18 @@ void Scene::initScene()
 
         btVector3 localInertia(0, 0, 0);
         if (isDynamic)
-            groundShape->calculateLocalInertia(mass, localInertia);
+            colShape->calculateLocalInertia(mass, localInertia);
 
-        //using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
-        btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
+
+        startTransform.setOrigin(btVector3(position.x(), position.y(), position.z()));
+        startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
+        //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+        btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
         Rigidbody* body = new Rigidbody(m1,rbInfo);
-        //add the body to the dynamics world
         m1->addComponent(body);
         dynamicsWorld->addRigidBody(body);
+        gameObjects.push_back(m1);
     }
 
     {
