@@ -234,7 +234,8 @@ SOURCES += main.cpp \
     GameObject/thirdpersoncamera.cpp \
     Component/vehiclecomponent.cpp \
     Utils/utils.cpp \
-    GameObject/circuit.cpp
+    GameObject/circuit.cpp \
+    Component/shipcomponent.cpp
 
 
 
@@ -663,7 +664,8 @@ HEADERS += \
     GameObject/thirdpersoncamera.h \
     Component/vehiclecomponent.h \
     Utils/utils.h \
-    GameObject/circuit.h
+    GameObject/circuit.h \
+    Component/shipcomponent.h
 
 RESOURCES += \
     shaders.qrc \
