@@ -18,16 +18,38 @@ void VehicleComponent::accelerate()
 {
     qDebug() << "accelerate" ;
 
+    Rigidbody *body = gameObject->getComponent<Rigidbody>();
+    QMatrix4x4 model = gameObject->getModelMatrix();
+    Transform * trans = gameObject->getComponent<Transform>();
+    QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
+    btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
+    QVector3D center = model*gameObject->getCenter();
+    btVector3 btCenter = btVector3(center.x(),center.y(),center.z());
+    btVector3 begin = btCenter + btUpVector*3;
 
-    gameObject->getComponent<Rigidbody>()->activate(true);
-    Transform *transform = gameObject->getComponent<Transform>();
+    btVector3 end = begin-btUpVector*8;
 
-    QQuaternion q = transform->getRotation();
-    QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
-    forwardDirection *= accelerateFactor;
-    btVector3 force = btVector3(btScalar(forwardDirection.x()),btScalar(forwardDirection.y()),btScalar(forwardDirection.z()));
-    gameObject->getComponent<Rigidbody>()->applyCentralImpulse(force);
 
+    btDynamicsWorld::ClosestRayResultCallback RayCallback(begin, end);
+    btDynamicsWorld * world = scene->getWorld();
+    world->rayTest(begin, end, RayCallback);
+    if(RayCallback.hasHit()) {
+        btVector3 hitPoint = RayCallback.m_hitPointWorld;
+
+        qDebug() << "Ground hit" << hitPoint.x() << " " << hitPoint.y() << " " << hitPoint.z();
+
+
+
+        gameObject->getComponent<Rigidbody>()->activate(true);
+        Transform *transform = gameObject->getComponent<Transform>();
+
+        QQuaternion q = transform->getRotation();
+        QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
+        forwardDirection *= accelerateFactor * 30;
+
+        btVector3 force = btVector3(btScalar(forwardDirection.x()),btScalar(forwardDirection.y()),btScalar(forwardDirection.z()));
+        gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
+    }
 }
 
 void VehicleComponent::decelerate()
@@ -126,8 +148,8 @@ void VehicleComponent::update()
         if(RayCallback.hasHit()) {
             btVector3 hitPoint = RayCallback.m_hitPointWorld;
             dist = hitPoint.distance(begin)/maxDist;
-            force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist);
-            body->applyForce(force*28,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
+            force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist)/body->getInvMass();
+            body->applyForce(force,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
 
             qDebug() << "Ray "<<i<<" Hit: " <<1-dist;
 

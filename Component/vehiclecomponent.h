@@ -11,6 +11,8 @@
 class Component;
 class Scene;
 
+
+
 class VehicleComponent : public Component
 {
 
@@ -24,6 +26,8 @@ public:
     void actionKey();
     void boostKey();
 
+    void updateSuspensionForce();
+
     virtual void update();
 private:
     Scene * scene;
@@ -32,6 +36,11 @@ private:
     float accelerateFactor;
     float decelerateFactor;
 
+    float suspensionLenght;
+    btDynamicsWorld::ClosestRayResultCallback *frontLeft;
+    btDynamicsWorld::ClosestRayResultCallback *frontRight;
+    btDynamicsWorld::ClosestRayResultCallback *backLeft;
+    btDynamicsWorld::ClosestRayResultCallback *backRight;
 };
 
 #endif // VEHICLECOMPONENT_H
