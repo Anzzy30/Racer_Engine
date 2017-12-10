@@ -32,6 +32,10 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
 
     /// FIN INITIALISATION PHYSIQUE
 
+
+
+    elapsedTimer.start();
+
 }
 
 Scene::~Scene()
@@ -117,12 +121,30 @@ void Scene::initScene()
                                          scale.y(),
                                          scale.z()));
             btConvexTriangleMeshShape* colShape = new btConvexTriangleMeshShape(btMesh,true);
-            collisionShapes.push_back(colShape);
-
             /// Create Dynamic Objects
             btTransform startTransform;
             startTransform.setIdentity();
             btScalar mass(30.0f);
+            btCompoundShape* compound = new btCompoundShape();
+            btTransform localTrans;
+            localTrans.setIdentity();
+
+            QMatrix4x4 model = mCar->getModelMatrix();
+            Transform * trans = mCar->getComponent<Transform>();
+            QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
+            btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
+            QVector3D center(model*mCar->getCenter());
+            btVector3 btCenter(center.x(),center.y(),center.z());
+            btTransform transformCenter;
+            transformCenter.setIdentity();
+            transformCenter.setOrigin(btCenter - btUpVector*6);
+
+            localTrans.setOrigin(btCenter);
+            compound->addChildShape(transformCenter,colShape);
+
+            collisionShapes.push_back(colShape);
+            collisionShapes.push_back(compound);
+
 
             //rigidbody is dynamic if and only if mass is non zero, otherwise static
             bool isDynamic = (mass != 0.f);
@@ -132,11 +154,12 @@ void Scene::initScene()
                 colShape->calculateLocalInertia(mass, localInertia);
 
 
-            startTransform.setOrigin(btVector3(position.x(), position.y(), position.z()));
+            //startTransform.setOrigin(btVector3(position.x(), position.y(), position.z()));
+            startTransform.setOrigin(btCenter);
             startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
-            //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+
             btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-            btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+            btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, compound, localInertia);
             Rigidbody* body = new Rigidbody(mCar,rbInfo);
             mCar->addComponent(body);
             dynamicsWorld->addRigidBody(body);
@@ -293,9 +316,6 @@ void Scene::initScene()
     }*/
 
 
-
-
-    elapsedTimer.start();
 
 }
 
@@ -581,9 +601,12 @@ void Scene::loadScene()
 
 void Scene::update()
 {
-    float time_step = elapsedTimer.elapsed();
-    qDebug() << time_step;
-    dynamicsWorld->stepSimulation(time_step/1000.0f, 10);
+
+
+
+    float time_step = 1/(elapsedTimer.elapsed()/1000.0f);
+    //qDebug() << 1/time_step;
+    dynamicsWorld->stepSimulation(0.05, 60);
     elapsedTimer.restart();
 
     input->update();

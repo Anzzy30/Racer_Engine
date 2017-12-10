@@ -10,6 +10,7 @@ VehicleComponent::VehicleComponent(GameObject * gameObject,Scene * _scene):
 
     elapsedTimer.start();
 
+
 }
 
 VehicleComponent::~VehicleComponent()
@@ -106,8 +107,13 @@ void VehicleComponent::boostKey()
 {
     qDebug() << "boostKey" ;
 }
+
 void VehicleComponent::update()
 {
+
+
+
+
     float delta_time = elapsedTimer.elapsed()/1000.0f;
     qDebug() << delta_time;
     Rigidbody *body = gameObject->getComponent<Rigidbody>();
@@ -132,6 +138,9 @@ void VehicleComponent::update()
     btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
     btVector3 force;
     onGround = false;
+    qDebug() <<"Center "<< model*gameObject->getCenter();
+    qDebug() <<"mass center "<< body->getCenterOfMassPosition().x() << " " << body->getCenterOfMassPosition().y() << " " << body->getCenterOfMassPosition().z();
+
     for (int i=0;i<4;i++)
     {
         QVector3D QBeginD = model*QBegin[i];
@@ -148,16 +157,16 @@ void VehicleComponent::update()
 
             btVector3 hitPoint = RayCallback.m_hitPointWorld;
 
-            btVector3 vel= body->getVelocityInLocalPoint(begin);
+            btVector3 vel= body->getVelocityInLocalPoint(btVector3(QBegin[i].x()*7,QBegin[i].y()*3,QBegin[i].z()*14));;
             btVector3 currentForce = btUpVector*btUpVector.dot(vel) ;
 
 
             dist = ((hitPoint.distance(begin)/(maxDist)));
             force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist)/body->getInvMass(); // compression force
-            //force = btUpVector * (1-dist) * 50; // compression force
-            force -= currentForce;
+            //force = btUpVector * (1-dist) * 100; // compression force
+            //force -= currentForce;
 
-            body->applyForce(force,begin);
+            body->applyForce(force,btVector3(QBegin[i].x()*trans->getScale().x(),QBegin[i].y()*trans->getScale().y(),QBegin[i].z()*trans->getScale().z()));
             qDebug() << "Ray "<<i<<" Hit: " << currentForce.x()<< " " << currentForce.y() << " "  << currentForce.z() << " "<< dist ;
         }
 
