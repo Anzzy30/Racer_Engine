@@ -43,6 +43,7 @@ private:
     btDynamicsWorld::ClosestRayResultCallback *frontRight;
     btDynamicsWorld::ClosestRayResultCallback *backLeft;
     btDynamicsWorld::ClosestRayResultCallback *backRight;
+    bool onGround;
 };
 
 #endif // VEHICLECOMPONENT_H

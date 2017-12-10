@@ -36,7 +36,7 @@ void VehicleComponent::accelerate()
     btDynamicsWorld::ClosestRayResultCallback RayCallback(begin, end);
     btDynamicsWorld * world = scene->getWorld();
     world->rayTest(begin, end, RayCallback);
-    if(RayCallback.hasHit()) {
+    if(onGround) {
 
 
         gameObject->getComponent<Rigidbody>()->activate(true);
@@ -112,6 +112,8 @@ void VehicleComponent::update()
     qDebug() << delta_time;
     Rigidbody *body = gameObject->getComponent<Rigidbody>();
     body->activate(true);
+
+
     // Vecteurs de rays
     QVector3D QBegin[4];
     QBegin[0] = QVector3D(-1.f,-1.0f,1.f);
@@ -129,7 +131,7 @@ void VehicleComponent::update()
     QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
     btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
     btVector3 force;
-
+    onGround = false;
     for (int i=0;i<4;i++)
     {
         QVector3D QBeginD = model*QBegin[i];
@@ -144,18 +146,23 @@ void VehicleComponent::update()
         btDynamicsWorld * world = scene->getWorld();
         world->rayTest(begin, End, RayCallback);
         if(RayCallback.hasHit()) {
-            body->setDamping(0.3,0.3);
-            body->applyDamping(0.1);
+            onGround = true;
 
             btVector3 hitPoint = RayCallback.m_hitPointWorld;
-            dist = hitPoint.distance(begin)/maxDist;
-            force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist)/body->getInvMass();
+            dist = 1-((hitPoint.distance(begin)/(maxDist)));
+            force = btUpVector * (-body->getGravity()/4/0.75)*(dist)/body->getInvMass();
             body->applyForce(force,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
-            qDebug() << "Ray "<<i<<" Hit: " << hitPoint.x() << " " << hitPoint.y() << " " << hitPoint.z() <<1-dist;
+            qDebug() << "Ray "<<i<<" Hit: " << hitPoint.x() << " " << hitPoint.y() << " " << hitPoint.z() <<dist;
 
         }
 
 
+    }
+
+    if (onGround)
+    {
+        body->setDamping(0.2,0.1);
+        body->applyDamping(delta_time);
     }
 
 
