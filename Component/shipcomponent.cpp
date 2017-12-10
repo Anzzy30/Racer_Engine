@@ -16,6 +16,7 @@ void ShipComponent::update()
     /// Check for circuit height changes, change ship accordingly
 
     // Calculate new position on fragment
+    float oldProgressionOnFragment = ProgressionOnFragment; // Used for the circuit functions
     ProgressionOnFragment += FragmentSize/currentAcceleration;
 
     if (ProgressionOnFragment >= 1)
@@ -42,7 +43,7 @@ void ShipComponent::update()
 
     // Calculate height delta
 
-    float HeightDelta = 0.1; // Given by the circuite object, ranging from -1 to 1;
+    float HeightDelta = 0.1; // Given by the circuit object, ranging from -1 to 1;
 
     HorizontalDistance += HeightDelta;
 
