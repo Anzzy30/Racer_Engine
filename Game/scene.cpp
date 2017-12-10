@@ -163,8 +163,8 @@ void Scene::initScene()
 
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
-    sampleMesh->objLoader(":/Resources/Models/cube.obj");
-    m1 = new Model("Model",QVector3D(0,-86,0),q,QVector3D(500,500,500),sampleMesh);
+    sampleMesh->objLoader(":/Resources/Models/circuit.obj");
+    m1 = new Model("Model",QVector3D(0,-100,0),q,QVector3D(500,500,500),sampleMesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
@@ -189,7 +189,7 @@ void Scene::initScene()
         btMesh->setScaling(btVector3(scale.x()+1,
                                      scale.y()+1,
                                      scale.z()+1));
-        btConvexTriangleMeshShape* colShape = new btConvexTriangleMeshShape(btMesh,true);
+        btBvhTriangleMeshShape* colShape = new btBvhTriangleMeshShape(btMesh,true);
         collisionShapes.push_back(colShape);
 
         /// Create Dynamic Objects

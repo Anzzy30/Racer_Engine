@@ -695,6 +695,8 @@ unix|win32: LIBS += -L$$PWD/external/bullet3-2.87/bin/ -lBullet3OpenCL_clew_vs20
 
 unix|win32: LIBS += -L$$PWD/external/bullet3-2.87/bin/ -lLinearMath_vs2010
 
+
+
 DISTFILES += \
     external/bullet3-2.87/bin/App_BulletExampleBrowser_vs2010.exp \
     external/bullet3-2.87/bin/App_PhysicsServer_SharedMemory_GUI_vs2010.exp \

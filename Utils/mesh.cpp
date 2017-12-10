@@ -1,11 +1,5 @@
 #include "mesh.h"
 
-#include <assimp/mesh.h>
-#include <assimp/vector3.h>
-#include <assimp/cimport.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/Importer.hpp>
 
 Mesh::Mesh():
     indexBuf(QOpenGLBuffer::IndexBuffer)
@@ -14,13 +8,6 @@ Mesh::Mesh():
     // Generate 2 VBOs
     arrayBuf.create();
     indexBuf.create();
-    std::string sFilePath = "test";
-    const aiScene* scene = aiImportFile(sFilePath.c_str(),aiProcessPreset_TargetRealtime_MaxQuality);
-
-    if(!scene)
-    {
-       std::cerr << "Couldn't load model Error Importing Asset :" << sFilePath <<  std::endl;;
-    }
 
 
 }
