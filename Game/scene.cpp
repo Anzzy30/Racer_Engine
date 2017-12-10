@@ -8,6 +8,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
     openGLWindow(oglWindow),
     input(input)
 {
+
     IG = true;
 
     /// INITIALISATION PHYSIQUE
@@ -294,6 +295,7 @@ void Scene::initScene()
 
 
 
+    elapsedTimer.start();
 
 }
 
@@ -311,7 +313,6 @@ void Scene::initBind()
     input->bind(Qt::Key_Z,new Command([&](State state){
                     if(mainCamera == debugCamera){
                         if(state == PRESSED || state == DOWN){
-                            qDebug() << "move forward";
                             ((FirstPersonCamera*)mainCamera)->setMoveForward(true);
                         }
                     }
@@ -580,9 +581,10 @@ void Scene::loadScene()
 
 void Scene::update()
 {
-
-    dynamicsWorld->stepSimulation(1.f / 30.f, 10);
-
+    float time_step = elapsedTimer.elapsed();
+    qDebug() << time_step;
+    dynamicsWorld->stepSimulation(time_step/1000.0f, 10);
+    elapsedTimer.restart();
 
     input->update();
     mainCamera->update();

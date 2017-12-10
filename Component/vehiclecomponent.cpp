@@ -125,7 +125,7 @@ void VehicleComponent::update()
     float dist = 0;
     float maxDist = 4;
     btVector3 begin;
-    btVector3 End;
+    btVector3 end;
     QMatrix4x4 model = gameObject->getModelMatrix();
     Transform * trans = gameObject->getComponent<Transform>();
     QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
@@ -138,32 +138,32 @@ void VehicleComponent::update()
 
         QVector3D QEnd = QBeginD-upVector*maxDist;
         begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
-        End = btVector3(QEnd.x(),QEnd.y(),QEnd.z());
+        end = btVector3(QEnd.x(),QEnd.y(),QEnd.z());
 
-        btVector3 vel= body->getVelocityInLocalPoint(begin);
-
-        btDynamicsWorld::ClosestRayResultCallback RayCallback(begin, End);
+        btDynamicsWorld::ClosestRayResultCallback RayCallback(begin, end);
         btDynamicsWorld * world = scene->getWorld();
-        world->rayTest(begin, End, RayCallback);
+        world->rayTest(begin, end, RayCallback);
         if(RayCallback.hasHit()) {
             onGround = true;
 
             btVector3 hitPoint = RayCallback.m_hitPointWorld;
-            dist = 1-((hitPoint.distance(begin)/(maxDist)));
-            force = btUpVector * (-body->getGravity()/4/0.75)*(dist)/body->getInvMass();
-            body->applyForce(force,btVector3(QBegin[i].x(),QBegin[i].y(),QBegin[i].z()));
-            qDebug() << "Ray "<<i<<" Hit: " << hitPoint.x() << " " << hitPoint.y() << " " << hitPoint.z() <<dist;
 
+            btVector3 vel= body->getVelocityInLocalPoint(begin);
+            btVector3 currentForce = btUpVector*btUpVector.dot(vel) ;
+
+
+            dist = ((hitPoint.distance(begin)/(maxDist)));
+            force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist)/body->getInvMass(); // compression force
+            //force = btUpVector * (1-dist) * 50; // compression force
+            force -= currentForce;
+
+            body->applyForce(force,begin);
+            qDebug() << "Ray "<<i<<" Hit: " << currentForce.x()<< " " << currentForce.y() << " "  << currentForce.z() << " "<< dist ;
         }
 
 
     }
 
-    if (onGround)
-    {
-        body->setDamping(0.2,0.1);
-        body->applyDamping(delta_time);
-    }
 
 
     elapsedTimer.restart();

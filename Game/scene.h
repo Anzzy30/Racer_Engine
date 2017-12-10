@@ -5,7 +5,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
-#include <QOpenGLTexture>
+#include <QElapsedTimer>
 
 #include <QFile>
 
@@ -77,7 +77,7 @@ private:
     Mesh *mesh;
 
     ResourceManager RM;
-
+    QElapsedTimer elapsedTimer;
     bool IG = false;
 
     MeshRenderer * meshrend;

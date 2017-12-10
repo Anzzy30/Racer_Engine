@@ -80,7 +80,6 @@ QMatrix4x4 FirstPersonCamera::getViewMatrix()
 {
     Transform *transform = getComponent<Transform>();
     QVector3D position = transform->getPosition();
-    qDebug() << position;
     viewMatrix.setToIdentity();
     viewMatrix.lookAt(QVector3D(position.x(),position.y(),position.z()),QVector3D(position.x()+lookAt.x(),position.y()+lookAt.y(),position.z()+lookAt.z()),QVector3D(0,1,0));
 
