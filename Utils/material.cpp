@@ -7,6 +7,7 @@ Material::Material()
     Ni = 0.0f;
     d = 0.0f;
     illum = 0;
+    map_Kd = NULL;
 }
 
 Material::Material(QString name, QVector3D Ka, QVector3D Kd, QVector3D Ks, float Ns, float Ni, float d, int illum):

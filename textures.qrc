@@ -6,5 +6,7 @@
         <file>Resources/Texture/Cube1_auv.png</file>
         <file>Resources/Texture/car.png</file>
         <file>Resources/Texture/TextureCircuit.png</file>
+        <file>Resources/Texture/gradient-texture-cubes.jpg</file>
+      
     </qresource>
 </RCC>

@@ -90,6 +90,7 @@ void OpenGLWindow::resizeGL(int w, int h)
     scene->getFollowCamera()->setProjectionMatrix(projection);
     scene->getDebugCamera()->setProjectionMatrix(projection);
 
+
 }
 
 
@@ -97,6 +98,7 @@ void OpenGLWindow::resizeGL(int w, int h)
 
 void OpenGLWindow::paintGL()
 {
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     scene->update();

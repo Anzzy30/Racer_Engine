@@ -450,3 +450,18 @@ QVector<Material> Mesh::getMaterials() const
 {
     return materials;
 }
+
+void Mesh::setArrayBuf(const QOpenGLBuffer &value)
+{
+    arrayBuf = value;
+}
+
+void Mesh::setIndexBuf(const QOpenGLBuffer &value)
+{
+    indexBuf = value;
+}
+
+void Mesh::addMaterial(Material mat)
+{
+    materials.push_back(mat);
+}

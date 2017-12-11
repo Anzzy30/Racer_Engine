@@ -69,6 +69,12 @@ public:
     void meshToCollisionShape(btTriangleMesh * btMesh);
     QVector<Material> getMaterials() const;
 
+    void setArrayBuf(const QOpenGLBuffer &value);
+
+    void setIndexBuf(const QOpenGLBuffer &value);
+
+    void addMaterial(Material mat);
+
 private:
     QString name;
     QOpenGLBuffer arrayBuf;

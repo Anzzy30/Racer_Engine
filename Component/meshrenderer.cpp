@@ -28,11 +28,13 @@ void MeshRenderer::renderMesh()
     if(!p)
         return;
     QOpenGLShaderProgram * program = p->getProgram();
+    if(mesh->getMaterials().at(0).getMap_Kd() != NULL)
+        mesh->getMaterials().at(0).getMap_Kd()->bind(0);
 
-    mesh->getMaterials().at(0).getMap_Kd()->bind(0);
     mesh->getArrayBuf().bind();
     mesh->getIndexBuf().bind();
     quintptr offset = 0;
+
     int vertexLocation = program->attributeLocation("a_position");
     program->enableAttributeArray(vertexLocation);
     program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(Vertex));

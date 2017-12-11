@@ -115,7 +115,6 @@ void VehicleComponent::update()
 
 
     float delta_time = elapsedTimer.elapsed()/1000.0f;
-    qDebug() << delta_time;
     Rigidbody *body = gameObject->getComponent<Rigidbody>();
     body->activate(true);
 
@@ -138,8 +137,6 @@ void VehicleComponent::update()
     btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
     btVector3 force;
     onGround = false;
-    qDebug() <<"Center "<< model*gameObject->getCenter();
-    qDebug() <<"mass center "<< body->getCenterOfMassPosition().x() << " " << body->getCenterOfMassPosition().y() << " " << body->getCenterOfMassPosition().z();
 
     for (int i=0;i<4;i++)
     {

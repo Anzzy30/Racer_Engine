@@ -28,7 +28,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
 
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-    dynamicsWorld->setGravity(btVector3(0, -10, 0));
+    dynamicsWorld->setGravity(btVector3(0, 0, 0));
 
     /// FIN INITIALISATION PHYSIQUE
 
@@ -96,19 +96,19 @@ void Scene::initScene()
     initBind();
     debugCamera = new FirstPersonCamera();
     mainCamera = debugCamera;
+    mesh = new Mesh();
+    mesh->objLoader(":/Resources/Models/cube.obj");
 
 
     if(IG)
     {
-        mesh = new Mesh();
-        mesh->objLoader(":/Resources/Models/cube.obj");
         RM.storeMesh("CarMesh", mesh);
         QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
         mCar = new Model("Car",QVector3D(0,-40,0),q,QVector3D(7,3,14),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar,this));
         followCamera = new ThirdPersonCamera(mCar);
-        mainCamera =followCamera;
+        mainCamera = followCamera;
         {
             //create a dynamic rigidbody
             btTriangleMesh *btMesh = new btTriangleMesh();
@@ -124,7 +124,7 @@ void Scene::initScene()
             /// Create Dynamic Objects
             btTransform startTransform;
             startTransform.setIdentity();
-            btScalar mass(30.0f);
+            btScalar mass(0.0f);
             btCompoundShape* compound = new btCompoundShape();
             btTransform localTrans;
             localTrans.setIdentity();
@@ -193,7 +193,7 @@ void Scene::initScene()
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
     sampleMesh->objLoader(":/Resources/Models/circuit.obj");
-    m1 = new Model("Model",QVector3D(0,-100,0),q,QVector3D(500,500,500),sampleMesh);
+    m1 = new Model("Model",QVector3D(0,0,0),q,QVector3D(10,10,10),sampleMesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
@@ -205,6 +205,12 @@ void Scene::initScene()
 
     gameObjects.push_back(m1);
     gameObjects.push_back(m2);
+
+    Circuit *c = new Circuit();
+    c->addComponent(new ProgramShader(c));
+
+    gameObjects.push_back(c);
+
     //gameObjects.push_back(m3);
 
 
@@ -254,7 +260,7 @@ void Scene::initScene()
         btTransform startTransform;
         startTransform.setIdentity();
 
-        btScalar mass(10.f);
+        btScalar mass(0.0f);
 
         //rigidbody is dynamic if and only if mass is non zero, otherwise static
         bool isDynamic = (mass != 0.f);
@@ -274,46 +280,6 @@ void Scene::initScene()
 
     }
 
-
-
-    /*{
-        //create a dynamic rigidbody
-        btTriangleMesh *btMesh = new btTriangleMesh();
-        QVector3D scale = m3->getComponent<Transform>()->getScale();
-        QVector3D position = m3->getComponent<Transform>()->getPosition();
-        QQuaternion q = m3->getComponent<Transform>()->getRotation();
-
-        sampleMesh->meshToCollisionShape(btMesh);
-        btMesh->setScaling(btVector3(scale.x(),
-                                     scale.y(),
-                                     scale.z()));
-
-        btBvhTriangleMeshShape* colShape = new btBvhTriangleMeshShape(btMesh,true);
-        collisionShapes.push_back(colShape);
-
-        /// Create Dynamic Objects
-        btTransform startTransform;
-        startTransform.setIdentity();
-
-        btScalar mass(0.f);
-
-        //rigidbody is dynamic if and only if mass is non zero, otherwise static
-        bool isDynamic = (mass != 0.f);
-
-        btVector3 localInertia(0, 0, 0);
-        if (isDynamic)
-            colShape->calculateLocalInertia(mass, localInertia);
-
-        startTransform.setOrigin(btVector3(0, 0, 0));
-        startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
-        //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-        btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
-        Rigidbody* body = new Rigidbody(m3,rbInfo);
-        m3->addComponent(body);
-        dynamicsWorld->addRigidBody(body);
-
-    }*/
 
 
 
@@ -652,5 +618,3 @@ ThirdPersonCamera *Scene::getFollowCamera() const
 {
     return followCamera;
 }
-
-

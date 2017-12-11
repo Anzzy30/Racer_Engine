@@ -8,9 +8,7 @@ in vec3 a_normal;
 
 void main()
 {
-        if(v_texcoord.x == 0. && v_texcoord.y == 0.)
-            gl_FragColor=vec4(1,0,0,0);
-        else
+
         gl_FragColor = vec4(texture2D(texture,v_texcoord));
 }
 

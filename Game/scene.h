@@ -19,6 +19,8 @@
 #include "Component/vehiclecomponent.h"
 #include "Utils/resourcemanager.h"
 
+#include "GameObject/circuit.h"
+
 #ifdef QT_DEBUG
     #include <Logger/logger.h>
 #endif

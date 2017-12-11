@@ -1,7 +1,0 @@
-#include "circuit.h"
-
-Circuit::Circuit():
-    GameObject(name,position,rotation,scale)
-{
-
-}
