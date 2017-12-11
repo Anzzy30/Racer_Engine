@@ -7,6 +7,6 @@
         <file>Resources/Texture/car.png</file>
         <file>Resources/Texture/TextureCircuit.png</file>
         <file>Resources/Texture/gradient-texture-cubes.jpg</file>
-      
+        <file>Resources/Texture/dirt_texture_by_prototstar.jpg</file>
     </qresource>
 </RCC>

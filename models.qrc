@@ -14,5 +14,7 @@
         <file>Resources/Models/car.mtl</file>
         <file>Resources/Models/circuit.obj</file>
         <file>Resources/Models/circuit.mtl</file>
+        <file>Resources/Models/desertjump.obj</file>
+        <file>Resources/Models/desertjump.mtl</file>
     </qresource>
 </RCC>

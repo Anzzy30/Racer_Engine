@@ -136,7 +136,7 @@ void Mesh::objLoader(QString path)
     Logger::Info(("objLoader()"),0);
     QFile objFile(path);
     if(!objFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        Logger::Warning("Unable to open obj file (objLoader)",0);
+        Logger::Warning("Unable to open obj file (objLoader)"+path,0);
         return;
     }
     QTextStream in(&objFile);

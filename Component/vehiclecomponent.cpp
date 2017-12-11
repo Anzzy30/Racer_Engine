@@ -33,7 +33,7 @@ void VehicleComponent::accelerate()
 
     btVector3 end = begin-btUpVector*4;
 
-    if(onGround || true) {
+    if(onGround) {
 
 
         gameObject->getComponent<Rigidbody>()->activate(true);
@@ -51,7 +51,7 @@ void VehicleComponent::accelerate()
         btTransform transCenterMass = body->getCenterOfMassTransform();
         btTransform transCenterMassSwitch;
         btVector3 scale = btVector3(trans->getScale().x(),trans->getScale().y(),trans->getScale().z());
-        transCenterMassSwitch.setOrigin(btCenter - btUpVector*scale*2);
+        transCenterMassSwitch.setOrigin(btCenter - btUpVector*scale);
         body->setCenterOfMassTransform(transCenterMassSwitch);
         gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
         body->setCenterOfMassTransform(transCenterMass);
@@ -61,17 +61,41 @@ void VehicleComponent::accelerate()
 void VehicleComponent::decelerate()
 {
     qDebug() << "decelerate" ;
-    gameObject->getComponent<Rigidbody>()->activate(true);
-    Transform *transform = gameObject->getComponent<Transform>();
 
-    QQuaternion q = transform->getRotation();
-    QVector3D backwardDirection = -Utils::getForwardVectorFromQuat(q);
+    Rigidbody *body = gameObject->getComponent<Rigidbody>();
+    QMatrix4x4 model = gameObject->getModelMatrix();
+    Transform * trans = gameObject->getComponent<Transform>();
+    QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
+    btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
+    QVector3D center = model*gameObject->getCenter();
+    btVector3 btCenter = btVector3(center.x(),center.y(),center.z());
+    btVector3 begin = btCenter - btUpVector*3;
 
-    backwardDirection *= decelerateFactor;
+    btVector3 end = begin-btUpVector*4;
 
-    btVector3 force = btVector3(btScalar(backwardDirection.x()),btScalar(backwardDirection.y()),btScalar(backwardDirection.z()));
-    gameObject->getComponent<Rigidbody>()->applyCentralImpulse(force);
+    if(onGround) {
 
+
+        gameObject->getComponent<Rigidbody>()->activate(true);
+        Transform *transform = gameObject->getComponent<Transform>();
+
+        QQuaternion q = transform->getRotation();
+        QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
+
+        QVector3D ptsAvant = center + forwardDirection * trans->getScale();
+        qDebug()<<ptsAvant <<center;
+        btVector3 btAvant = btVector3(ptsAvant.x(),ptsAvant.y(),ptsAvant.z());
+        forwardDirection *= -decelerateFactor*70;
+
+        btVector3 force = btVector3(btScalar(forwardDirection.x()),btScalar(forwardDirection.y()),btScalar(forwardDirection.z()));
+        btTransform transCenterMass = body->getCenterOfMassTransform();
+        btTransform transCenterMassSwitch;
+        btVector3 scale = btVector3(trans->getScale().x(),trans->getScale().y(),trans->getScale().z());
+        transCenterMassSwitch.setOrigin(btCenter - btUpVector*scale*2);
+        body->setCenterOfMassTransform(transCenterMassSwitch);
+        gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
+        body->setCenterOfMassTransform(transCenterMass);
+    }
 }
 
 void VehicleComponent::turnLeft()
@@ -173,8 +197,8 @@ void VehicleComponent::update()
     btVector3 force;
     btTransform centerTranform ;
     onGround = false;
-    body->setDamping(0.5,0.8);
-    body->applyDamping(0.05);
+    //0.5 0.8 ok
+    body->setDamping(0.5,0.5);
     for (int i=0;i<4;i++)
     {
         QVector3D QBeginD = model*QBegin[i];
@@ -187,7 +211,6 @@ void VehicleComponent::update()
         btDynamicsWorld * world = scene->getWorld();
         world->rayTest(begin, end, RayCallback);
         bool hasHitOther = false;
-        //body->setContactStiffnessAndDamping(0.02,0.02);
         if(RayCallback.hasHit()) {
             int j;
             for(j=0;j<RayCallback.m_hitPointWorld.size();++j){
