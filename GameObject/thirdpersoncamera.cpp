@@ -22,7 +22,7 @@ void ThirdPersonCamera::update()
 
     forwardQ.normalize();
     upQ.normalize();
-    transform->setPosition(transformTarget->getPosition()+(-offset)*forwardQ + 30*upQ);
+    transform->setPosition(transformTarget->getPosition()+(-offset)*forwardQ + 30*QVector3D(0,1,0));
     transform->setRotation(transformTarget->getRotation());
 
     QVector3D position = transform->getPosition();

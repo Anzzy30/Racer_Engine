@@ -33,11 +33,7 @@ void VehicleComponent::accelerate()
 
     btVector3 end = begin-btUpVector*4;
 
-
-    btDynamicsWorld::ClosestRayResultCallback RayCallback(begin, end);
-    btDynamicsWorld * world = scene->getWorld();
-    world->rayTest(begin, end, RayCallback);
-    if(onGround) {
+    if(onGround || true) {
 
 
         gameObject->getComponent<Rigidbody>()->activate(true);
@@ -45,7 +41,11 @@ void VehicleComponent::accelerate()
 
         QQuaternion q = transform->getRotation();
         QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
-        forwardDirection *= accelerateFactor * 30;
+
+        QVector3D ptsAvant = center + forwardDirection * trans->getScale();
+        qDebug()<<ptsAvant <<center;
+        btVector3 btAvant = btVector3(ptsAvant.x(),ptsAvant.y(),ptsAvant.z());
+        forwardDirection *= accelerateFactor*30;
 
         btVector3 force = btVector3(btScalar(forwardDirection.x()),btScalar(forwardDirection.y()),btScalar(forwardDirection.z()));
         gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
@@ -74,12 +74,23 @@ void VehicleComponent::turnLeft()
     gameObject->getComponent<Rigidbody>()->activate(true);
     Transform *transform = gameObject->getComponent<Transform>();
 
+    Rigidbody *body = gameObject->getComponent<Rigidbody>();
+    QMatrix4x4 model = gameObject->getModelMatrix();
+    Transform * trans = gameObject->getComponent<Transform>();
+    QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
+    QVector3D center = model*gameObject->getCenter();
+
     QQuaternion q = transform->getRotation();
-    QVector3D upVector = Utils::getUpVectorFromQuat(q);
+    QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
+    QVector3D strafe = QVector3D::crossProduct(upVector,forwardDirection);
 
-    upVector*=turnFactor;
+    QVector3D back = center - forwardDirection * trans->getScale() + strafe* trans->getScale()- upVector * trans->getScale();
+    btVector3 btBack = btVector3(back.x(),back.y(),back.z());
+    qDebug() << center << back << strafe;
+    strafe*=turnFactor*10;
+    btVector3 btStrafe = btVector3(strafe.x(),strafe.y(),strafe.z());
 
-    gameObject->getComponent<Rigidbody>()->applyTorqueImpulse(btVector3(upVector.x(),upVector.y(),upVector.z()));
+    gameObject->getComponent<Rigidbody>()->applyForce(btStrafe,btBack);
 }
 
 void VehicleComponent::turnRight()
@@ -136,8 +147,10 @@ void VehicleComponent::update()
     QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
     btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
     btVector3 force;
+    btTransform centerTranform ;
     onGround = false;
-
+    body->setDamping(0.5,0.8);
+    body->applyDamping(0.05);
     for (int i=0;i<4;i++)
     {
         QVector3D QBeginD = model*QBegin[i];
@@ -146,25 +159,38 @@ void VehicleComponent::update()
         begin = btVector3(QBeginD.x(),QBeginD.y(),QBeginD.z());
         end = btVector3(QEnd.x(),QEnd.y(),QEnd.z());
 
-        btDynamicsWorld::ClosestRayResultCallback RayCallback(begin, end);
+        btDynamicsWorld::AllHitsRayResultCallback RayCallback(begin, end);
         btDynamicsWorld * world = scene->getWorld();
         world->rayTest(begin, end, RayCallback);
+        bool hasHitOther = false;
+        //body->setContactStiffnessAndDamping(0.02,0.02);
         if(RayCallback.hasHit()) {
-            onGround = true;
+            int j;
+            for(j=0;j<RayCallback.m_hitPointWorld.size();++j){
+                if(RayCallback.m_collisionObjects.at(j) != body){
+                    hasHitOther = true;
+                    break;
+                }
+            }
+            if(hasHitOther){
+                onGround = true;
+                btVector3 hitPoint = RayCallback.m_hitPointWorld.at(j);
+                btVector3 vel= body->getVelocityInLocalPoint(btVector3(QBegin[i].x()*trans->getPosition().x(),QBegin[i].y()*trans->getPosition().y(),QBegin[i].z()*trans->getPosition().z()));;
+                btVector3 currentForce = btUpVector*btUpVector.dot(vel) ;
+                dist = ((hitPoint.distance(begin)/(maxDist)));
+                //force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist) / body->getInvMass(); // compression force
+                force = btUpVector * (1-dist) * 250;
+                force -= currentForce;
 
-            btVector3 hitPoint = RayCallback.m_hitPointWorld;
+                body->applyForce(force,begin);
+                //qDebug() << "Ray "<<i<<" Hit: " << force.x()<< " " << force.y() << " "  << force.z() << " "<< dist ;
+            }
+        }
+        if(!hasHitOther){
+            force = btVector3(0,1,0) * -1/4*1/body->getInvMass(); // compression force
 
-            btVector3 vel= body->getVelocityInLocalPoint(btVector3(QBegin[i].x()*7,QBegin[i].y()*3,QBegin[i].z()*14));;
-            btVector3 currentForce = btUpVector*btUpVector.dot(vel) ;
-
-
-            dist = ((hitPoint.distance(begin)/(maxDist)));
-            force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist)/body->getInvMass(); // compression force
-            //force = btUpVector * (1-dist) * 100; // compression force
-            //force -= currentForce;
-
-            body->applyForce(force,btVector3(QBegin[i].x()*trans->getScale().x(),QBegin[i].y()*trans->getScale().y(),QBegin[i].z()*trans->getScale().z()));
-            qDebug() << "Ray "<<i<<" Hit: " << currentForce.x()<< " " << currentForce.y() << " "  << currentForce.z() << " "<< dist ;
+            //force = btUpVector * 1 * 100; // compression force
+            body->setGravity(btVector3(0,-100,0));
         }
 
 

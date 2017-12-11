@@ -24,8 +24,9 @@
 #ifdef QT_DEBUG
     #include <Logger/logger.h>
 #endif
-
 #include "external\bullet3-2.87\src\btBulletDynamicsCommon.h"
+#include "external/bullet3-2.87/src/BulletCollision/Gimpact/btGImpactShape.h"
+#include "external/bullet3-2.87/src/BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
 
 class OpenGLWindow;
 
@@ -52,6 +53,8 @@ public:
     FirstPersonCamera *getDebugCamera() const;
 
     ThirdPersonCamera *getFollowCamera() const;
+
+    btGImpactMeshShape *getShapeRoute() const;
 
 private:
     OpenGLWindow *openGLWindow;
@@ -83,6 +86,9 @@ private:
     bool IG = false;
 
     MeshRenderer * meshrend;
+
+
+    btGImpactMeshShape* shapeRoute;
 };
 
 #endif // SCENE_H

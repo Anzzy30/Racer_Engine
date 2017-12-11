@@ -18,12 +18,13 @@ class Circuit :public GameObject
 public:
     Circuit();
 
-    void addPoint();
+    void genLine(QVector3D pos, QVector3D tan, QVector3D normal, int numPts);
+
+
 private:
 
-    void genCurve();
     void initCircuit();
-
+    void genMesh();
     Mesh *circuitMesh;
 
 

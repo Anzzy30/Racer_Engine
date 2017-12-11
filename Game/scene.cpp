@@ -19,6 +19,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
 
     ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
     dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
 
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
     overlappingPairCache = new btDbvtBroadphase();
@@ -28,7 +29,7 @@ Scene::Scene(OpenGLWindow *oglWindow, InputHandler *input):
 
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-    dynamicsWorld->setGravity(btVector3(0, 0, 0));
+    dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
     /// FIN INITIALISATION PHYSIQUE
 
@@ -104,7 +105,7 @@ void Scene::initScene()
     {
         RM.storeMesh("CarMesh", mesh);
         QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
-        mCar = new Model("Car",QVector3D(0,-40,0),q,QVector3D(7,3,14),mesh);
+        mCar = new Model("Car",QVector3D(0,100,0),q,QVector3D(20,3,50),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar,this));
         followCamera = new ThirdPersonCamera(mCar);
@@ -117,33 +118,17 @@ void Scene::initScene()
             QQuaternion q = mCar->getComponent<Transform>()->getRotation();
 
             mesh->meshToCollisionShape(btMesh);
-            btMesh->setScaling(btVector3(scale.x(),
-                                         scale.y(),
-                                         scale.z()));
-            btConvexTriangleMeshShape* colShape = new btConvexTriangleMeshShape(btMesh,true);
+
+            btGImpactMeshShape* colShape = new btGImpactMeshShape(btMesh);
+            colShape->setLocalScaling(btVector3(scale.x(),scale.y(),scale.z()));
+            colShape->updateBound();
             /// Create Dynamic Objects
             btTransform startTransform;
             startTransform.setIdentity();
-            btScalar mass(0.0f);
-            btCompoundShape* compound = new btCompoundShape();
-            btTransform localTrans;
-            localTrans.setIdentity();
-
-            QMatrix4x4 model = mCar->getModelMatrix();
-            Transform * trans = mCar->getComponent<Transform>();
-            QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
-            btVector3 btUpVector = btVector3(upVector.x(),upVector.y(),upVector.z());
-            QVector3D center(model*mCar->getCenter());
-            btVector3 btCenter(center.x(),center.y(),center.z());
-            btTransform transformCenter;
-            transformCenter.setIdentity();
-            transformCenter.setOrigin(btCenter - btUpVector*6);
-
-            localTrans.setOrigin(btCenter);
-            compound->addChildShape(transformCenter,colShape);
+            btScalar mass(30.0f);
+            btVector3 btCenter(position.x(),position.y(),position.z());
 
             collisionShapes.push_back(colShape);
-            collisionShapes.push_back(compound);
 
 
             //rigidbody is dynamic if and only if mass is non zero, otherwise static
@@ -159,7 +144,7 @@ void Scene::initScene()
             startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
 
             btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-            btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, compound, localInertia);
+            btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
             Rigidbody* body = new Rigidbody(mCar,rbInfo);
             mCar->addComponent(body);
             dynamicsWorld->addRigidBody(body);
@@ -192,16 +177,14 @@ void Scene::initScene()
 
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
-    sampleMesh->objLoader(":/Resources/Models/circuit.obj");
-    m1 = new Model("Model",QVector3D(0,0,0),q,QVector3D(10,10,10),sampleMesh);
+    sampleMesh->objLoader(":/Resources/Models/cube.obj");
+    m1 = new Model("Model",QVector3D(0,-100,0),q,QVector3D(500,50,500),sampleMesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
     m2->addComponent(new ProgramShader(m2));
 
-    q = QQuaternion().fromEulerAngles(0,0,0);
-    m3 = new Model("Model",QVector3D(0,0,0),q,QVector3D(100,100,100),sampleMesh);
-    m3->addComponent(new ProgramShader(m3));
+
 
     gameObjects.push_back(m1);
     gameObjects.push_back(m2);
@@ -211,21 +194,22 @@ void Scene::initScene()
 
     gameObjects.push_back(c);
 
-    //gameObjects.push_back(m3);
 
 
     {
+
+
         btTriangleMesh *btMesh = new btTriangleMesh();
         QVector3D scale = m1->getComponent<Transform>()->getScale();
         QVector3D position = m1->getComponent<Transform>()->getPosition();
         QQuaternion q = m1->getComponent<Transform>()->getRotation();
 
         sampleMesh->meshToCollisionShape(btMesh);
-        btMesh->setScaling(btVector3(scale.x()+1,
-                                     scale.y()+1,
-                                     scale.z()+1));
-        btBvhTriangleMeshShape* colShape = new btBvhTriangleMeshShape(btMesh,true);
-        collisionShapes.push_back(colShape);
+        shapeRoute = new btGImpactMeshShape(btMesh);
+        shapeRoute->setLocalScaling(btVector3(scale.x(),scale.y(),scale.z()));
+        shapeRoute->updateBound();
+
+        collisionShapes.push_back(shapeRoute);
 
         /// Create Dynamic Objects
         btTransform startTransform;
@@ -237,14 +221,14 @@ void Scene::initScene()
 
         btVector3 localInertia(0, 0, 0);
         if (isDynamic)
-            colShape->calculateLocalInertia(mass, localInertia);
+            shapeRoute->calculateLocalInertia(mass, localInertia);
 
 
         startTransform.setOrigin(btVector3(position.x(), position.y(), position.z()));
         startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
-        //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+
         btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shapeRoute, localInertia);
         Rigidbody* body = new Rigidbody(m1,rbInfo);
         m1->addComponent(body);
         dynamicsWorld->addRigidBody(body);
@@ -260,7 +244,7 @@ void Scene::initScene()
         btTransform startTransform;
         startTransform.setIdentity();
 
-        btScalar mass(0.0f);
+        btScalar mass(5.0f);
 
         //rigidbody is dynamic if and only if mass is non zero, otherwise static
         bool isDynamic = (mass != 0.f);
@@ -617,4 +601,9 @@ FirstPersonCamera *Scene::getDebugCamera() const
 ThirdPersonCamera *Scene::getFollowCamera() const
 {
     return followCamera;
+}
+
+btGImpactMeshShape *Scene::getShapeRoute() const
+{
+    return shapeRoute;
 }

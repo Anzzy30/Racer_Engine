@@ -27,7 +27,6 @@ public:
     void actionKey();
     void boostKey();
 
-    void updateSuspensionForce();
 
     virtual void update();
 private:
@@ -39,10 +38,7 @@ private:
     float decelerateFactor;
 
     float suspensionLenght;
-    btDynamicsWorld::ClosestRayResultCallback *frontLeft;
-    btDynamicsWorld::ClosestRayResultCallback *frontRight;
-    btDynamicsWorld::ClosestRayResultCallback *backLeft;
-    btDynamicsWorld::ClosestRayResultCallback *backRight;
+
     bool onGround;
 };
 
