@@ -5,8 +5,8 @@ VehicleComponent::VehicleComponent(GameObject * gameObject,Scene * _scene):
 {
     scene = _scene;
     turnFactor = 45;
-    accelerateFactor = 100;
-    decelerateFactor = 70;
+    accelerateFactor = 500;
+    decelerateFactor = 400;
 
     elapsedTimer.start();
 
@@ -42,16 +42,17 @@ void VehicleComponent::accelerate()
         QQuaternion q = transform->getRotation();
         QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
 
-        QVector3D ptsAvant = center + forwardDirection * trans->getScale();
+        QVector3D ptsAvant = center + forwardDirection * trans->getScale()/2 - upVector*trans->getScale()/2;
         qDebug()<<ptsAvant <<center;
         btVector3 btAvant = btVector3(ptsAvant.x(),ptsAvant.y(),ptsAvant.z());
-        forwardDirection *= accelerateFactor*70;
+        forwardDirection *= accelerateFactor/body->getInvMass();
 
+        body->setDamping(0,0);
         btVector3 force = btVector3(btScalar(forwardDirection.x()),btScalar(forwardDirection.y()),btScalar(forwardDirection.z()));
         btTransform transCenterMass = body->getCenterOfMassTransform();
         btTransform transCenterMassSwitch;
         btVector3 scale = btVector3(trans->getScale().x(),trans->getScale().y(),trans->getScale().z());
-        transCenterMassSwitch.setOrigin(btCenter - btUpVector*scale);
+        transCenterMassSwitch.setOrigin(btCenter - btUpVector*scale*2);
         body->setCenterOfMassTransform(transCenterMassSwitch);
         gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
         body->setCenterOfMassTransform(transCenterMass);
@@ -82,12 +83,10 @@ void VehicleComponent::decelerate()
         QQuaternion q = transform->getRotation();
         QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
 
-        QVector3D ptsAvant = center + forwardDirection * trans->getScale();
-        qDebug()<<ptsAvant <<center;
-        btVector3 btAvant = btVector3(ptsAvant.x(),ptsAvant.y(),ptsAvant.z());
-        forwardDirection *= -decelerateFactor*70;
+        forwardDirection *= -decelerateFactor/body->getInvMass();
 
         btVector3 force = btVector3(btScalar(forwardDirection.x()),btScalar(forwardDirection.y()),btScalar(forwardDirection.z()));
+
         btTransform transCenterMass = body->getCenterOfMassTransform();
         btTransform transCenterMassSwitch;
         btVector3 scale = btVector3(trans->getScale().x(),trans->getScale().y(),trans->getScale().z());
@@ -180,10 +179,10 @@ void VehicleComponent::update()
 
     // Vecteurs de rays
     QVector3D QBegin[4];
-    QBegin[0] = QVector3D(-1.f,-0.9f,1.f);
-    QBegin[1] = QVector3D(1.f,-0.9f,1.f);
-    QBegin[2] = QVector3D(-1.f,-0.9f,-1.f);
-    QBegin[3] = QVector3D(1.f,-0.9f,-1.f);
+    QBegin[0] = QVector3D(-1.f,-1.f,1.f);
+    QBegin[1] = QVector3D(1.f,-1.f,1.f);
+    QBegin[2] = QVector3D(-1.f,-1.f,-1.f);
+    QBegin[3] = QVector3D(1.f,-1.f,-1.f);
 
 
     float dist = 0;
@@ -198,9 +197,9 @@ void VehicleComponent::update()
     btTransform centerTranform ;
     onGround = false;
     //0.5 0.8 ok
-    body->setDamping(0.5,0.5);
     for (int i=0;i<4;i++)
     {
+
         QVector3D QBeginD = model*QBegin[i];
 
         QVector3D QEnd = QBeginD-upVector*maxDist;
@@ -212,6 +211,9 @@ void VehicleComponent::update()
         world->rayTest(begin, end, RayCallback);
         bool hasHitOther = false;
         if(RayCallback.hasHit()) {
+            body->setDamping(0.5,0.5);
+            body->applyDamping(0.05);
+
             int j;
             for(j=0;j<RayCallback.m_hitPointWorld.size();++j){
                 if(RayCallback.m_collisionObjects.at(j) != body){
@@ -227,13 +229,8 @@ void VehicleComponent::update()
                 dist = ((hitPoint.distance(begin)/(maxDist)));
                 force = btUpVector * (-body->getGravity()/4/0.75)*(1-dist) / body->getInvMass(); // compression force
 
-                btTransform transCenterMass = body->getCenterOfMassTransform();
-                btTransform transCenterMassSwitch;
-                transCenterMassSwitch.setOrigin(begin);
-                //body->setCenterOfMassTransform(transCenterMassSwitch);
                 body->applyCentralForce(force);
                 qDebug() << "Ray "<<i<<" Hit: " << force.x()<< " " << force.y() << " "  << force.z() << " "<< dist ;
-                //body->setCenterOfMassTransform(transCenterMass);
 
             }
         }
@@ -241,6 +238,7 @@ void VehicleComponent::update()
 
     }
 
+    body->setDamping(0,0);
 
 
     elapsedTimer.restart();

@@ -105,7 +105,7 @@ void Scene::initScene()
     {
         RM.storeMesh("CarMesh", mesh);
         QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
-        mCar = new Model("Car",QVector3D(0,100,0),q,QVector3D(20,3,50),mesh);
+        mCar = new Model("Car",QVector3D(0,100,0),q,QVector3D(20,10,50),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar,this));
         followCamera = new ThirdPersonCamera(mCar);
