@@ -27,8 +27,6 @@ VehicleComponent::~VehicleComponent()
 void VehicleComponent::accelerate()
 {
     qDebug() << "accelerate" ;
-    float delta_time = elapsedTimer.elapsed()/1000.0f;
-    currentPower+=0.5*gearPowers[(int)gear-1];
     Rigidbody *body = gameObject->getComponent<Rigidbody>();
     QMatrix4x4 model = gameObject->getModelMatrix();
     Transform * trans = gameObject->getComponent<Transform>();
@@ -41,7 +39,7 @@ void VehicleComponent::accelerate()
     btVector3 end = begin-btUpVector*4;
 
     if(onGround) {
-
+        currentPower+=0.5*gearPowers[(int)gear-1];
         accelerating = true;
         gameObject->getComponent<Rigidbody>()->activate(true);
         Transform *transform = gameObject->getComponent<Transform>();
@@ -175,6 +173,11 @@ void VehicleComponent::actionKey()
 void VehicleComponent::boostKey()
 {
     qDebug() << "boostKey" ;
+    if (boostCD <= 0)
+    {
+    currentPower += 200;
+    boostCD = maxBoostCD;
+    }
 }
 
 void VehicleComponent::update()
@@ -187,7 +190,7 @@ void VehicleComponent::update()
     Rigidbody *body = gameObject->getComponent<Rigidbody>();
     body->activate(true);
 
-
+    if (boostCD >=0) {boostCD-=0.1;}
     // Vecteurs de rays
     QVector3D QBegin[4];
     QBegin[0] = QVector3D(-1.f,-1.f,1.f);
@@ -254,37 +257,41 @@ void VehicleComponent::update()
 
 
     }
-
-    if (!onGround) body->setDamping(0,0);
-
-    if (!accelerating) currentPower-=5.5;
-    if (currentPower < 0 )
-    {
-        currentPower = 0;
-        if (gear>1)
-        {
-            gear--;
-            currentPower = 4;
-        }
-    }
-    if (currentPower > 100 ) currentPower = 100;
     btVector3  velo = body->getLinearVelocity();
-    //gear = 1;
-    if (gear == 1 && currentPower >= 100)
+    if (!onGround) body->setDamping(0,0);
+    else
     {
-        gear = 2;
-        currentPower=1;
+        if (!accelerating) currentPower-=5.5;
+        if (currentPower < 0 )
+        {
+            currentPower = 0;
+            if (gear>1)
+            {
+                gear--;
+                currentPower = 4;
+            }
+        }
+
+
+        //gear = 1;
+        if (gear == 1 && currentPower >= 100)
+        {
+            gear = 2;
+            currentPower-=100;
+        }
+        if (gear == 2 && currentPower >= 100)
+        {
+            gear = 3;
+            currentPower-=100;
+        }
+        if (gear == 3 && currentPower >= 100)
+        {
+            gear = 4;
+            currentPower-=100;
+        }
+        if (currentPower > 100 ) currentPower -= 3;
     }
-    if (gear == 2 && currentPower >= 100)
-    {
-        gear = 3;
-        currentPower=1;
-    }
-    if (gear == 3 && currentPower >= 100)
-    {
-        gear = 4;
-        currentPower=1;
-    }
+
     qDebug() << "DOOMPOWER " << velo.length();
     qDebug() << "GEARUDO " << gear << ":" << currentPower;
 
