@@ -289,7 +289,7 @@ void VehicleComponent::update()
             gear = 4;
             currentPower-=100;
         }
-        if (currentPower > 100 ) currentPower -= 3;
+        if (currentPower > 100 ) currentPower -= 2;
     }
 
     qDebug() << "DOOMPOWER " << velo.length();
