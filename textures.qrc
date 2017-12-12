@@ -8,5 +8,6 @@
         <file>Resources/Texture/TextureCircuit.png</file>
         <file>Resources/Texture/gradient-texture-cubes.jpg</file>
         <file>Resources/Texture/dirt_texture_by_prototstar.jpg</file>
+        <file>Resources/Texture/Cylinder1_auv.png</file>
     </qresource>
 </RCC>

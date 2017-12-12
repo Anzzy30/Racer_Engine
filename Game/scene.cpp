@@ -189,13 +189,6 @@ void Scene::initScene()
     gameObjects.push_back(m1);
     gameObjects.push_back(m2);
 
-    Circuit *c = new Circuit();
-    c->addComponent(new ProgramShader(c));
-
-    gameObjects.push_back(c);
-
-
-
     {
 
 
@@ -263,6 +256,55 @@ void Scene::initScene()
         dynamicsWorld->addRigidBody(body);
 
     }
+    /*
+    RM.storeMesh("Megamesh",new Mesh());
+
+    Mesh * megamesh = RM.retrieveMesh("Megamesh");
+    megamesh->objLoader(":/Resources/Models/La_zouzette.obj");
+    m3 = new Model("Gaming",QVector3D(0,600,0),q,QVector3D(500,500,500),megamesh);
+    m3->addComponent(new ProgramShader(m3));
+
+    gameObjects.push_back(m3);
+
+
+
+    {
+
+
+        btTriangleMesh *btMesh = new btTriangleMesh();
+        QVector3D scale = m3->getComponent<Transform>()->getScale();
+        QVector3D position = m3->getComponent<Transform>()->getPosition();
+        QQuaternion q = m3->getComponent<Transform>()->getRotation();
+
+        megamesh->meshToCollisionShape(btMesh);
+        btBvhTriangleMeshShape * niceshape = new btBvhTriangleMeshShape(btMesh,true);
+        niceshape->setLocalScaling(btVector3(scale.x(),scale.y(),scale.z()));
+        //niceshape->updateBound();
+
+        collisionShapes.push_back(niceshape);
+
+        /// Create Dynamic Objects
+        btTransform startTransform;
+        startTransform.setIdentity();
+        btScalar mass(0.0f);
+
+        //rigidbody is dynamic if and only if mass is non zero, otherwise static
+        bool isDynamic = (mass != 0.f);
+
+        btVector3 localInertia(0, 0, 0);
+        if (isDynamic)
+            niceshape->calculateLocalInertia(mass, localInertia);
+
+
+        startTransform.setOrigin(btVector3(position.x(), position.y(), position.z()));
+        startTransform.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
+
+        btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, niceshape, localInertia);
+        Rigidbody* body = new Rigidbody(m3,rbInfo);
+        m1->addComponent(body);
+        dynamicsWorld->addRigidBody(body);
+    }*/
 
 
 

@@ -7,6 +7,12 @@ VehicleComponent::VehicleComponent(GameObject * gameObject,Scene * _scene):
     turnFactor = 45;
     accelerateFactor = 500;
     decelerateFactor = 400;
+    gearPowers[0] = 2.3f;
+    gearPowers[1] = 1.5f;
+    gearPowers[2] = 1.1f;
+    gearPowers[3] = 1.0f;
+    gearPowers[4] = 0.74f;
+    gearPowers[5] = 0.50f;
 
     elapsedTimer.start();
 
@@ -21,7 +27,8 @@ VehicleComponent::~VehicleComponent()
 void VehicleComponent::accelerate()
 {
     qDebug() << "accelerate" ;
-
+    float delta_time = elapsedTimer.elapsed()/1000.0f;
+    currentPower+=0.5*gearPowers[(int)gear-1];
     Rigidbody *body = gameObject->getComponent<Rigidbody>();
     QMatrix4x4 model = gameObject->getModelMatrix();
     Transform * trans = gameObject->getComponent<Transform>();
@@ -35,7 +42,7 @@ void VehicleComponent::accelerate()
 
     if(onGround) {
 
-
+        accelerating = true;
         gameObject->getComponent<Rigidbody>()->activate(true);
         Transform *transform = gameObject->getComponent<Transform>();
 
@@ -47,14 +54,14 @@ void VehicleComponent::accelerate()
         btVector3 btAvant = btVector3(ptsAvant.x(),ptsAvant.y(),ptsAvant.z());
         forwardDirection *= accelerateFactor/body->getInvMass();
 
-        body->setDamping(0,0);
+        //body->setDamping(0,0);
         btVector3 force = btVector3(btScalar(forwardDirection.x()),btScalar(forwardDirection.y()),btScalar(forwardDirection.z()));
         btTransform transCenterMass = body->getCenterOfMassTransform();
         btTransform transCenterMassSwitch;
         btVector3 scale = btVector3(trans->getScale().x(),trans->getScale().y(),trans->getScale().z());
         transCenterMassSwitch.setOrigin(btCenter - btUpVector*scale*2);
         body->setCenterOfMassTransform(transCenterMassSwitch);
-        gameObject->getComponent<Rigidbody>()->applyCentralForce(force);
+        gameObject->getComponent<Rigidbody>()->applyCentralForce(((force*1.2*(gear-1))*1)+(force*1.2*1*(std::max((gear==1?10.0f:3.0f),currentPower)/100.0f)));
         body->setCenterOfMassTransform(transCenterMass);
     }
 }
@@ -196,6 +203,7 @@ void VehicleComponent::update()
     btVector3 force;
     btTransform centerTranform ;
     onGround = false;
+    bool applied = false;
     //0.5 0.8 ok
     for (int i=0;i<4;i++)
     {
@@ -211,8 +219,7 @@ void VehicleComponent::update()
         world->rayTest(begin, end, RayCallback);
         bool hasHitOther = false;
         if(RayCallback.hasHit()) {
-            body->setDamping(0.5,0.5);
-            body->applyDamping(0.05);
+
 
             int j;
             for(j=0;j<RayCallback.m_hitPointWorld.size();++j){
@@ -222,6 +229,12 @@ void VehicleComponent::update()
                 }
             }
             if(hasHitOther){
+                if (!applied)
+                {
+                body->setDamping(0.7,0.8);
+                body->applyDamping(0.1);
+                applied = true;
+                }
                 onGround = true;
                 btVector3 hitPoint = RayCallback.m_hitPointWorld.at(j);
                 btVector3 vel= body->getVelocityInLocalPoint(btVector3(QBegin[i].x()*trans->getPosition().x(),QBegin[i].y()*trans->getPosition().y(),QBegin[i].z()*trans->getPosition().z()));;
@@ -238,8 +251,39 @@ void VehicleComponent::update()
 
     }
 
-    body->setDamping(0,0);
+    if (!onGround) body->setDamping(0,0);
 
+    if (!accelerating) currentPower-=5.5;
+    if (currentPower < 0 )
+    {
+        currentPower = 0;
+        if (gear>1)
+        {
+            gear--;
+            currentPower = 4;
+        }
+    }
+    if (currentPower > 100 ) currentPower = 100;
+    btVector3  velo = body->getLinearVelocity();
+    //gear = 1;
+    if (gear == 1 && currentPower >= 100)
+    {
+        gear = 2;
+        currentPower=1;
+    }
+    if (gear == 2 && currentPower >= 100)
+    {
+        gear = 3;
+        currentPower=1;
+    }
+    if (gear == 3 && currentPower >= 100)
+    {
+        gear = 4;
+        currentPower=1;
+    }
+    qDebug() << "DOOMPOWER " << velo.length();
+    qDebug() << "GEARUDO " << gear << ":" << currentPower;
 
+    accelerating = false;
     elapsedTimer.restart();
 }

@@ -8,6 +8,7 @@
 #include "Component/rigidbody.h"
 #include "Game/scene.h"
 #include "QElapsedTimer"
+#include <cmath>
 
 class Component;
 class Scene;
@@ -36,8 +37,15 @@ private:
     float turnFactor;
     float accelerateFactor;
     float decelerateFactor;
+    float maxBoostCD = 5.f;
+    float gearPowers[6];
+    float boostCD = 0;
+    float currentPower=0;
+    bool accelerating = false;
 
     float suspensionLenght;
+
+    float gear = 1;
 
     bool onGround;
 };

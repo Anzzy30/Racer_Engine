@@ -16,5 +16,7 @@
         <file>Resources/Models/circuit.mtl</file>
         <file>Resources/Models/desertjump.obj</file>
         <file>Resources/Models/desertjump.mtl</file>
+        <file>Resources/Models/La_zouzette.mtl</file>
+        <file>Resources/Models/La_zouzette.obj</file>
     </qresource>
 </RCC>
