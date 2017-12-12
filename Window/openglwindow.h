@@ -22,6 +22,9 @@
     #include <Logger/logger.h>
 #endif
 
+#include <QPainter>
+
+
 class Scene;
 
 class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
@@ -31,6 +34,9 @@ class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
 public:
     explicit OpenGLWindow(QWidget *parent = 0);
     ~OpenGLWindow();
+
+    const Scene *getScene() const;
+
 
 protected:
     void timerEvent(QTimerEvent *e) override;

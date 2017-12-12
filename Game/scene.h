@@ -28,6 +28,7 @@
 #include "external/bullet3-2.87/src/BulletCollision/Gimpact/btGImpactShape.h"
 #include "external/bullet3-2.87/src/BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
 
+
 class OpenGLWindow;
 
 class Scene : protected QOpenGLFunctions
@@ -47,7 +48,6 @@ public:
 
     void update();
 
-
     Camera *getMainCamera() const;
 
     FirstPersonCamera *getDebugCamera() const;
@@ -56,18 +56,18 @@ public:
 
     btGImpactMeshShape *getShapeRoute() const;
 
+
+    GameObject *getCar() const;
+
 private:
     OpenGLWindow *openGLWindow;
-
     QOpenGLShaderProgram program;
 
     Camera *mainCamera;
     ThirdPersonCamera *followCamera;
     FirstPersonCamera *debugCamera;
-
-
     InputHandler *input;
-    PlaneTest *plane;
+
     QOpenGLTexture * texture;
 
     QVector<GameObject*> gameObjects;
@@ -86,8 +86,6 @@ private:
     bool IG = false;
 
     MeshRenderer * meshrend;
-
-
     btGImpactMeshShape* shapeRoute;
 };
 

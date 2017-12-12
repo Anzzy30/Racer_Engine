@@ -11,7 +11,7 @@
     #include <Window/openglwindow.h>
 #endif
 
-
+#include<Game/hud.h>
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +21,6 @@ int main(int argc, char *argv[])
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(format);
-
     app.setApplicationName("Racer Engine");
     app.setApplicationVersion("0.1");
 
@@ -31,11 +30,15 @@ int main(int argc, char *argv[])
     #endif
 
 
-
     #ifndef QT_NO_OPENGL
         OpenGLWindow window;
         window.setWindowTitle("Main Window");
         window.show();
+        HUD hud(&window);
+        hud.setScene(window.getScene());
+        hud.setParent(&window,Qt::WindowStaysOnTopHint);
+        hud.show();
+
     #else
 
         QLabel note("Application needs OpenGL up to date to execute properly.");

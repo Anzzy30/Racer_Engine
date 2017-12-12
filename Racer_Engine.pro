@@ -235,7 +235,8 @@ SOURCES += main.cpp \
     Component/vehiclecomponent.cpp \
     Utils/utils.cpp \
     GameObject/circuit.cpp \
-    Component/shipcomponent.cpp
+    Component/shipcomponent.cpp \
+    Game/hud.cpp
 
 
 
@@ -665,7 +666,8 @@ HEADERS += \
     Component/vehiclecomponent.h \
     Utils/utils.h \
     GameObject/circuit.h \
-    Component/shipcomponent.h
+    Component/shipcomponent.h \
+    Game/hud.h
 
 RESOURCES += \
     shaders.qrc \

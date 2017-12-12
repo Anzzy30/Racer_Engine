@@ -9,6 +9,8 @@ OpenGLWindow::OpenGLWindow(QWidget *parent) :
 #endif
     input = new InputHandler();
     scene = new Scene(this,input);
+
+    setAutoFillBackground(false);
 }
 
 OpenGLWindow::~OpenGLWindow()
@@ -27,6 +29,7 @@ void OpenGLWindow::timerEvent(QTimerEvent *)
     Logger::Debug("Update tick",7);
 #endif
     update();
+
 }
 
 
@@ -34,6 +37,8 @@ void OpenGLWindow::timerEvent(QTimerEvent *)
 void OpenGLWindow::initializeGL()
 {
     initializeOpenGLFunctions();
+
+
     glClearColor(0, 0, 0, 1);
 
     scene->initScene();
@@ -54,8 +59,6 @@ void OpenGLWindow::initializeGL()
     projection.perspective(fov, aspect, zNear, zFar);
 
     scene->getMainCamera()->setProjectionMatrix(projection);
-
-
 }
 
 
@@ -98,9 +101,13 @@ void OpenGLWindow::resizeGL(int w, int h)
 
 void OpenGLWindow::paintGL()
 {
+    makeCurrent();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     scene->update();
+}
 
+const Scene *OpenGLWindow::getScene() const
+{
+    return scene;
 }

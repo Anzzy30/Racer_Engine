@@ -80,7 +80,6 @@ Scene::~Scene()
     collisionShapes.clear();
 
     /// FIN CLEANUP PHYSIQUE
-    delete plane;
     for(auto &g : gameObjects)
         delete g;
 
@@ -95,6 +94,9 @@ void Scene::initScene()
     initShaders();
     initTextures();
     initBind();
+
+    //hud = HUD::initFreeType();
+
     debugCamera = new FirstPersonCamera();
     mainCamera = debugCamera;
     mesh = new Mesh();
@@ -158,7 +160,6 @@ void Scene::initScene()
 
     //loadScene();
 
-    plane = new PlaneTest();
     QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
 
     //quat rotation example
@@ -464,7 +465,8 @@ void Scene::initIGBind()
                             Transform * transform = mCar->getComponent<Transform>();
                             Rigidbody * rig = mCar->getComponent<Rigidbody>();
                             QQuaternion q = transform->getRotation();
-                            q *= QQuaternion::fromEulerAngles(0,0,180);
+                            QVector3D rot = q.toEulerAngles();
+                            q = QQuaternion::fromEulerAngles(rot.x(),rot.y(),0);
                             QVector3D pos = transform->getPosition();
                             pos.setY(pos.y()+100);
                             transform->setPosition(pos);
@@ -640,10 +642,7 @@ void Scene::update()
         g->update();
 
     }
-
-
 }
-
 
 
 
@@ -665,4 +664,9 @@ ThirdPersonCamera *Scene::getFollowCamera() const
 btGImpactMeshShape *Scene::getShapeRoute() const
 {
     return shapeRoute;
+}
+
+GameObject *Scene::getCar() const
+{
+    return mCar;
 }

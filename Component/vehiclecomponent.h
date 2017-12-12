@@ -28,6 +28,7 @@ public:
     void actionKey();
     void boostKey();
 
+    float getSpeed() const;
 
     virtual void update();
 private:
@@ -46,6 +47,8 @@ private:
     float suspensionLenght;
 
     float gear = 1;
+
+    float currentSpeed = 0;
 
     bool onGround;
 };

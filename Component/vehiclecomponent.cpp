@@ -180,6 +180,11 @@ void VehicleComponent::boostKey()
     }
 }
 
+float VehicleComponent::getSpeed() const
+{
+    return currentSpeed;
+}
+
 void VehicleComponent::update()
 {
 
@@ -293,6 +298,7 @@ void VehicleComponent::update()
     }
 
     qDebug() << "DOOMPOWER " << velo.length();
+    currentSpeed = velo.length();
     qDebug() << "GEARUDO " << gear << ":" << currentPower;
 
     accelerating = false;
