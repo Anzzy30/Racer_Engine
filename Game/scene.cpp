@@ -458,7 +458,24 @@ void Scene::initIGBind()
                         }
                     }
                 }));
-
+    input->bind(Qt::Key_F,new Command([&](State state){
+                    if(mainCamera == followCamera){
+                        if(state == PRESSED){
+                            Transform * transform = mCar->getComponent<Transform>();
+                            Rigidbody * rig = mCar->getComponent<Rigidbody>();
+                            QQuaternion q = transform->getRotation();
+                            q *= QQuaternion::fromEulerAngles(0,0,180);
+                            QVector3D pos = transform->getPosition();
+                            pos.setY(pos.y()+100);
+                            transform->setPosition(pos);
+                            transform->setRotation(q);
+                            btTransform btTrans = rig->getWorldTransform();
+                            btTrans.setOrigin(btVector3(pos.x(),pos.y(),pos.z()));
+                            btTrans.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
+                            rig->setWorldTransform(btTrans);
+                        }
+                    }
+                }));
 
 }
 

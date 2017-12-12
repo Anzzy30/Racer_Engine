@@ -106,61 +106,65 @@ void VehicleComponent::decelerate()
 
 void VehicleComponent::turnLeft()
 {
-    qDebug() << "turnLeft" ;
-    gameObject->getComponent<Rigidbody>()->activate(true);
-    Transform *transform = gameObject->getComponent<Transform>();
+    if(onGround){
+        qDebug() << "turnLeft" ;
+        gameObject->getComponent<Rigidbody>()->activate(true);
+        Transform *transform = gameObject->getComponent<Transform>();
 
-    Rigidbody *body = gameObject->getComponent<Rigidbody>();
-    QMatrix4x4 model = gameObject->getModelMatrix();
-    Transform * trans = gameObject->getComponent<Transform>();
-    QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
-    QVector3D center = model*gameObject->getCenter();
+        Rigidbody *body = gameObject->getComponent<Rigidbody>();
+        QMatrix4x4 model = gameObject->getModelMatrix();
+        Transform * trans = gameObject->getComponent<Transform>();
+        QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
+        QVector3D center = model*gameObject->getCenter();
 
-    QQuaternion q = transform->getRotation();
-    QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
-    QVector3D strafe = QVector3D::crossProduct(upVector,forwardDirection);
-    btVector3 vel = body->getVelocityInLocalPoint(body->getCenterOfMassPosition());
-    QVector3D back = center - forwardDirection * trans->getScale() + strafe* trans->getScale()- upVector * trans->getScale();
-    btVector3 btBack = btVector3(back.x(),back.y(),back.z());
+        QQuaternion q = transform->getRotation();
+        QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
+        QVector3D strafe = QVector3D::crossProduct(upVector,forwardDirection);
+        btVector3 vel = body->getVelocityInLocalPoint(body->getCenterOfMassPosition());
+        QVector3D back = center - forwardDirection * trans->getScale() + strafe* trans->getScale()- upVector * trans->getScale();
+        btVector3 btBack = btVector3(back.x(),back.y(),back.z());
 
-    //strafe*=turnFactor*10;
+        //strafe*=turnFactor*10;
 
-    btVector3 btStrafe = btVector3(strafe.x(),strafe.y(),strafe.z());
-    btVector3 opositeForce = vel*btStrafe;
-    gameObject->getComponent<Rigidbody>()->applyCentralForce(opositeForce);
+        btVector3 btStrafe = btVector3(strafe.x(),strafe.y(),strafe.z());
+        btVector3 opositeForce = vel*btStrafe;
+        gameObject->getComponent<Rigidbody>()->applyCentralForce(opositeForce);
 
-    upVector*=turnFactor*5000;
-    gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
+        upVector*=turnFactor*5000;
+        gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
+    }
 
 }
 
 void VehicleComponent::turnRight()
 {
-    qDebug() << "turnRight" ;
-    gameObject->getComponent<Rigidbody>()->activate(true);
-    Transform *transform = gameObject->getComponent<Transform>();
+    if(onGround){
+        qDebug() << "turnRight" ;
+        gameObject->getComponent<Rigidbody>()->activate(true);
+        Transform *transform = gameObject->getComponent<Transform>();
 
-    Rigidbody *body = gameObject->getComponent<Rigidbody>();
-    QMatrix4x4 model = gameObject->getModelMatrix();
-    Transform * trans = gameObject->getComponent<Transform>();
-    QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
-    QVector3D center = model*gameObject->getCenter();
+        Rigidbody *body = gameObject->getComponent<Rigidbody>();
+        QMatrix4x4 model = gameObject->getModelMatrix();
+        Transform * trans = gameObject->getComponent<Transform>();
+        QVector3D upVector = Utils::getUpVectorFromQuat(trans->getRotation());
+        QVector3D center = model*gameObject->getCenter();
 
-    QQuaternion q = transform->getRotation();
-    QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
-    QVector3D strafe = QVector3D::crossProduct(upVector,forwardDirection);
-    btVector3 vel = body->getVelocityInLocalPoint(body->getCenterOfMassPosition());
-    QVector3D back = center - forwardDirection * trans->getScale() + strafe* trans->getScale()- upVector * trans->getScale();
-    btVector3 btBack = btVector3(back.x(),back.y(),back.z());
+        QQuaternion q = transform->getRotation();
+        QVector3D forwardDirection = Utils::getForwardVectorFromQuat(q);
+        QVector3D strafe = QVector3D::crossProduct(upVector,forwardDirection);
+        btVector3 vel = body->getVelocityInLocalPoint(body->getCenterOfMassPosition());
+        QVector3D back = center - forwardDirection * trans->getScale() + strafe* trans->getScale()- upVector * trans->getScale();
+        btVector3 btBack = btVector3(back.x(),back.y(),back.z());
 
-    //strafe*=turnFactor*10;
+        //strafe*=turnFactor*10;
 
-    btVector3 btStrafe = btVector3(strafe.x(),strafe.y(),strafe.z());
-    btVector3 opositeForce = vel*btStrafe;
-    gameObject->getComponent<Rigidbody>()->applyCentralForce(opositeForce);
+        btVector3 btStrafe = btVector3(strafe.x(),strafe.y(),strafe.z());
+        btVector3 opositeForce = vel*btStrafe;
+        gameObject->getComponent<Rigidbody>()->applyCentralForce(opositeForce);
 
-    upVector*=-turnFactor*5000;
-    gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
+        upVector*=-turnFactor*5000;
+        gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
+    }
 }
 
 void VehicleComponent::actionKey()
@@ -231,9 +235,9 @@ void VehicleComponent::update()
             if(hasHitOther){
                 if (!applied)
                 {
-                body->setDamping(0.7,0.8);
-                body->applyDamping(0.1);
-                applied = true;
+                    body->setDamping(0.7,0.8);
+                    body->applyDamping(0.1);
+                    applied = true;
                 }
                 onGround = true;
                 btVector3 hitPoint = RayCallback.m_hitPointWorld.at(j);
