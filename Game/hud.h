@@ -8,11 +8,14 @@
 #include <QFont>
 #include "Game/scene.h"
 #include "GameObject/gameobject.h"
+
 /*Racer HUD*/
 
 
 struct HUDInfo{
     float speed = 0;
+    float boostCD = 0;
+    float maxBoostCD = 0;
 };
 
 class HUD: public QWidget

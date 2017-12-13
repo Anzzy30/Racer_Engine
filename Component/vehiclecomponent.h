@@ -31,6 +31,12 @@ public:
     float getSpeed() const;
 
     virtual void update();
+    bool getOnGround() const;
+
+    float getBoostCD() const;
+
+    float getMaxBoostCD() const;
+
 private:
     Scene * scene;
     QElapsedTimer elapsedTimer;

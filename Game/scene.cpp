@@ -631,7 +631,6 @@ void Scene::update()
     program.setUniformValue("texture", 0);
     //plane->drawPlane(&program);
 
-
     for(auto &g : gameObjects){
         ProgramShader *p = g->getComponent<ProgramShader>();
         if(!p)

@@ -11,6 +11,7 @@
     #include <Logger/logger.h>
 #endif
 
+
 class Material
 {
 

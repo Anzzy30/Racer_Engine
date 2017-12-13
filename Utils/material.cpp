@@ -117,10 +117,11 @@ void Material::loadMap_Kd(QString path)
     qDebug() <<path;
 
     map_Kd = new QOpenGLTexture(QImage(path).mirrored());
+    map_Kd->generateMipMaps();
 
     map_Kd->setMinificationFilter(QOpenGLTexture::Nearest);
 
-    map_Kd->setMagnificationFilter(QOpenGLTexture::Linear);
+    map_Kd->setMagnificationFilter(QOpenGLTexture::NearestMipMapLinear);
 
     map_Kd->setWrapMode(QOpenGLTexture::Repeat);
 }

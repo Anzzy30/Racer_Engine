@@ -12,7 +12,8 @@ public:
     void update();
 private:
     GameObject* target;
-
+    QVector3D targetPreviousPosition;
+    int lerpTime;
     float offset;
 
 };

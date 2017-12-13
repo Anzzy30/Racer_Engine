@@ -23,3 +23,9 @@ QVector3D Utils::getForwardVectorFromQuat(const QQuaternion &q)
                        2 * (q.y() * q.z() - q.scalar() * q.x()),
                        1 - 2 * (q.x() * q.x() + q.y() * q.y()));
 }
+
+
+QVector3D Utils::lerp(const QVector3D& begin, const QVector3D& end, float t ){
+    return end*t + begin*(1.f-t) ;
+
+}

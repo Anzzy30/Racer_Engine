@@ -298,9 +298,24 @@ void VehicleComponent::update()
     }
 
     qDebug() << "DOOMPOWER " << velo.length();
-    currentSpeed = velo.length();
+    currentSpeed = velo.length()/3; //gitano to mucho el vitesso /3
     qDebug() << "GEARUDO " << gear << ":" << currentPower;
 
     accelerating = false;
     elapsedTimer.restart();
+}
+
+bool VehicleComponent::getOnGround() const
+{
+    return onGround;
+}
+
+float VehicleComponent::getBoostCD() const
+{
+    return boostCD;
+}
+
+float VehicleComponent::getMaxBoostCD() const
+{
+    return maxBoostCD;
 }

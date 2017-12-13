@@ -1,5 +1,5 @@
 #include "thirdpersoncamera.h"
-
+#include "Component/vehiclecomponent.h"
 # define M_PI 3.14159265358979323846  /* pi */
 
 
@@ -7,7 +7,8 @@ ThirdPersonCamera::ThirdPersonCamera(GameObject *target):
     target(target)
 {
     offset = 450;
-
+    Transform *transformTarget = target->getComponent<Transform>();
+    targetPreviousPosition = transformTarget->getPosition();
 }
 
 void ThirdPersonCamera::update()
@@ -18,24 +19,36 @@ void ThirdPersonCamera::update()
 
     QVector3D forwardQ = Utils::getForwardVectorFromQuat(q);
 
-    QVector3D upQ = Utils::getUpVectorFromQuat(q);
+    QVector3D upQ = Utils::getUpVectorFromQuat(transform->getRotation());
 
-    forwardQ.normalize();
-    upQ.normalize();
-    transform->setPosition(transformTarget->getPosition()+(-offset)*forwardQ + 450/3*QVector3D(0,1,0));
-    transform->setRotation(transformTarget->getRotation());
+    QVector3D pos = transform->getPosition();
+    float dst = pos.distanceToPoint(transformTarget->getPosition()) - pos.distanceToPoint(targetPreviousPosition) ;
+    qDebug() << dst;
 
+    if(targetPreviousPosition != transformTarget->getPosition()){
+        pos += (transformTarget->getPosition()-targetPreviousPosition).normalized() * dst;
+    }
+
+    if(target->getComponent<VehicleComponent>()->getOnGround()){
+        QVector3D next_Pos = transformTarget->getPosition()+(-offset)*forwardQ + transformTarget->getScale()*10*upQ;
+        next_Pos = Utils::lerp(pos,next_Pos,0.09);
+        transform->setPosition(next_Pos);
+    }else{
+        QVector3D next_Pos = transformTarget->getPosition()+(-offset/2)*forwardQ + transformTarget->getScale()*75*upQ;
+        next_Pos = Utils::lerp(pos,next_Pos,0.009);
+        transform->setPosition(next_Pos);
+    }
     QVector3D position = transform->getPosition();
 
     viewMatrix.setToIdentity();
     viewMatrix.lookAt(position,(transformTarget->getPosition()),upQ);
 
+    targetPreviousPosition = transformTarget->getPosition();
 }
 
 
 
 QMatrix4x4 ThirdPersonCamera::getViewMatrix()
 {
-
     return viewMatrix;
 }
