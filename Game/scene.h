@@ -18,7 +18,7 @@
 #include "Component/rigidbody.h"
 #include "Component/vehiclecomponent.h"
 #include "Utils/resourcemanager.h"
-
+#include "skybox.h"
 #include "GameObject/circuit.h"
 
 #ifdef QT_DEBUG
@@ -87,6 +87,8 @@ private:
 
     MeshRenderer * meshrend;
     btGImpactMeshShape* shapeRoute;
+
+    Skybox *skybox;
 };
 
 #endif // SCENE_H

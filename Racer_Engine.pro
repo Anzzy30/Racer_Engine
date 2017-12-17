@@ -236,7 +236,8 @@ SOURCES += main.cpp \
     Utils/utils.cpp \
     GameObject/circuit.cpp \
     Component/shipcomponent.cpp \
-    Game/hud.cpp
+    Game/hud.cpp \
+    Game/skybox.cpp
 
 
 
@@ -667,7 +668,8 @@ HEADERS += \
     Utils/utils.h \
     GameObject/circuit.h \
     Component/shipcomponent.h \
-    Game/hud.h
+    Game/hud.h \
+    Game/skybox.h
 
 RESOURCES += \
     shaders.qrc \

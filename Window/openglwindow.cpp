@@ -46,7 +46,7 @@ void OpenGLWindow::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     int msec = 1000/60;
     timer.start(msec, this);

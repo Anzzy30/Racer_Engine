@@ -107,7 +107,7 @@ void Scene::initScene()
     {
         RM.storeMesh("CarMesh", mesh);
         QQuaternion q = QQuaternion().fromEulerAngles(0,0,0);
-        mCar = new Model("Car",QVector3D(0,100,0),q,QVector3D(20,10,50),mesh);
+        mCar = new Model("Car",QVector3D(0,100,0),q,QVector3D(5,2,10),mesh);
         mCar->addComponent(new ProgramShader(mCar));
         mCar->addComponent(new VehicleComponent(mCar,this));
         followCamera = new ThirdPersonCamera(mCar);
@@ -179,7 +179,7 @@ void Scene::initScene()
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
     sampleMesh->objLoader(":/Resources/Models/desertjump.obj");
-    m1 = new Model("Model",QVector3D(0,-100,0),q,QVector3D(500,500,500),sampleMesh);
+    m1 = new Model("Model",QVector3D(0,-100,0),q,QVector3D(250,250,250),sampleMesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);
@@ -310,6 +310,8 @@ void Scene::initScene()
 
 
 
+    skybox = new Skybox();
+    skybox->initSkybox();
 }
 
 void Scene::initBind()
@@ -614,7 +616,6 @@ void Scene::update()
 {
 
 
-
     float time_step = 1/(elapsedTimer.elapsed()/1000.0f);
     //qDebug() << 1/time_step;
     dynamicsWorld->stepSimulation(0.05, 60);
@@ -641,6 +642,11 @@ void Scene::update()
         g->update();
 
     }
+    model.setToIdentity();
+    mvp = mainCamera->getProjectionMatrix() * mainCamera->getViewMatrix() * model;
+    program.setUniformValue("mvp_matrix", mvp);
+
+    skybox->renderSkybox(&program);
 }
 
 
