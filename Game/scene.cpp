@@ -178,8 +178,8 @@ void Scene::initScene()
 
     Mesh * sampleMesh = RM.retrieveMesh(meshName);
 
-    sampleMesh->objLoader(":/Resources/Models/desertjump.obj");
-    m1 = new Model("Model",QVector3D(0,-100,0),q,QVector3D(250,250,250),sampleMesh);
+    sampleMesh->objLoader(":/Resources/Models/testcircuit.obj");
+    m1 = new Model("Model",QVector3D(0,-100,0),q,QVector3D(500,500,500),sampleMesh);
     m1->addComponent(new ProgramShader(m1));
 
     m2 = new Model("Model",QVector3D(51,10,0),QQuaternion(),QVector3D(2,2,2),mesh);

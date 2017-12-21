@@ -4,12 +4,12 @@
         <file>Resources/Texture/textures_4096.png</file>
         <file>Resources/Texture/crate_1.jpg</file>
         <file>Resources/Texture/Cube1_auv.png</file>
-        <file>Resources/Texture/car.png</file>
         <file>Resources/Texture/TextureCircuit.png</file>
         <file>Resources/Texture/gradient-texture-cubes.jpg</file>
         <file>Resources/Texture/dirt_texture_by_prototstar.jpg</file>
         <file>Resources/Texture/Cylinder1_auv.png</file>
         <file>Resources/Texture/CircuitPart.png</file>
         <file>Resources/Texture/skybox.jpg</file>
+        <file>Resources/Texture/circuit.png</file>
     </qresource>
 </RCC>

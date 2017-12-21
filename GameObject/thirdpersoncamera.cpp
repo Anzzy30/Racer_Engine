@@ -30,11 +30,11 @@ void ThirdPersonCamera::update()
     }
 
     if(target->getComponent<VehicleComponent>()->getOnGround()){
-        QVector3D next_Pos = transformTarget->getPosition()+(-offset)*forwardQ + transformTarget->getScale()*25*upQ;
+        QVector3D next_Pos = transformTarget->getPosition()+(-offset)*forwardQ + 30*upQ;
         next_Pos = Utils::lerp(pos,next_Pos,0.09);
         transform->setPosition(next_Pos);
     }else{
-        QVector3D next_Pos = transformTarget->getPosition()+(-offset/2)*forwardQ + transformTarget->getScale()*75*upQ;
+        QVector3D next_Pos = transformTarget->getPosition()+(-offset/2)*forwardQ + 75*upQ;
         next_Pos = Utils::lerp(pos,next_Pos,0.009);
         transform->setPosition(next_Pos);
     }

@@ -125,8 +125,8 @@ void VehicleComponent::turnLeft()
         //strafe*=turnFactor*10;
 
         btVector3 btStrafe = btVector3(strafe.x(),strafe.y(),strafe.z());
-        btVector3 opositeForce = vel*btStrafe;
-        gameObject->getComponent<Rigidbody>()->applyCentralForce(opositeForce);
+        btVector3 opositeForce = vel*-btStrafe;
+        //gameObject->getComponent<Rigidbody>()->applyCentralForce(opositeForce);
 
         upVector*=turnFactor;
         gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
@@ -158,7 +158,7 @@ void VehicleComponent::turnRight()
 
         btVector3 btStrafe = btVector3(strafe.x(),strafe.y(),strafe.z());
         btVector3 opositeForce = vel*btStrafe;
-        gameObject->getComponent<Rigidbody>()->applyCentralForce(opositeForce);
+        //gameObject->getComponent<Rigidbody>()->applyCentralForce(opositeForce);
 
         upVector*=-turnFactor;
         gameObject->getComponent<Rigidbody>()->applyTorque(btVector3(upVector.x(),upVector.y(),upVector.z()));
@@ -243,7 +243,7 @@ void VehicleComponent::update()
             if(hasHitOther){
                 if (!applied)
                 {
-                    body->setDamping(0.7,0.8);
+                    body->setDamping(0.8,0.8);
                     body->applyDamping(0.1);
                     applied = true;
                 }
@@ -298,7 +298,7 @@ void VehicleComponent::update()
     }
 
     qDebug() << "DOOMPOWER " << velo.length();
-    currentSpeed = velo.length(); //gitano to mucho el vitesso /3
+    currentSpeed = velo.length()/3; //gitano to mucho el vitesso /3
     qDebug() << "GEARUDO " << gear << ":" << currentPower;
 
     accelerating = false;
