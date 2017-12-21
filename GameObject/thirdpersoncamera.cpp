@@ -6,7 +6,7 @@
 ThirdPersonCamera::ThirdPersonCamera(GameObject *target):
     target(target)
 {
-    offset = 150;
+    offset = 220;
     Transform *transformTarget = target->getComponent<Transform>();
     targetPreviousPosition = transformTarget->getPosition();
 }
@@ -30,12 +30,12 @@ void ThirdPersonCamera::update()
     }
 
     if(target->getComponent<VehicleComponent>()->getOnGround()){
-        QVector3D next_Pos = transformTarget->getPosition()+(-offset)*forwardQ + 30*upQ;
+        QVector3D next_Pos = transformTarget->getPosition()+(-offset)*forwardQ + 50*upQ;
         next_Pos = Utils::lerp(pos,next_Pos,0.09);
         transform->setPosition(next_Pos);
     }else{
-        QVector3D next_Pos = transformTarget->getPosition()+(-offset/2)*forwardQ + 75*upQ;
-        next_Pos = Utils::lerp(pos,next_Pos,0.009);
+        QVector3D next_Pos = transformTarget->getPosition()+(-offset/1.3)*forwardQ + 150*upQ;
+        next_Pos = Utils::lerp(pos,next_Pos,0.02);
         transform->setPosition(next_Pos);
     }
     QVector3D position = transform->getPosition();

@@ -6,7 +6,7 @@ Skybox::Skybox():    indexBuf(QOpenGLBuffer::IndexBuffer)
     initializeOpenGLFunctions();
     arrayBuf.create();
     indexBuf.create();
-    scale = 150000;
+    scale = 15000;
 }
 
 Skybox::~Skybox()

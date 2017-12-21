@@ -477,10 +477,27 @@ void Scene::initIGBind()
                             btTrans.setOrigin(btVector3(pos.x(),pos.y(),pos.z()));
                             btTrans.setRotation(btQuaternion(q.x(),q.y(),q.z(),q.scalar()));
                             rig->setWorldTransform(btTrans);
+                            rig->setLinearVelocity(btVector3(0,0,0));
+                            rig->setAngularVelocity(btVector3(0,0,0));
                         }
                     }
                 }));
-
+    input->bind(Qt::Key_R,new Command([&](State state){
+                    if(mainCamera == followCamera){
+                        if(state == PRESSED){
+                            Transform * transform = mCar->getComponent<Transform>();
+                            transform->setPosition(QVector3D(0,100,0));
+                            transform->setRotation(QQuaternion());
+                            Rigidbody * rig = mCar->getComponent<Rigidbody>();
+                            btTransform btTrans = rig->getWorldTransform();
+                            btTrans.setOrigin(btVector3(0.,100,0.));
+                            btTrans.setRotation(btQuaternion());
+                            rig->setWorldTransform(btTrans);
+                            rig->setLinearVelocity(btVector3(0,0,0));
+                            rig->setAngularVelocity(btVector3(0,0,0));
+                        }
+                    }
+                }));
 }
 
 void Scene::initShaders()

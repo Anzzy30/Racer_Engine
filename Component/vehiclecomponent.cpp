@@ -6,7 +6,7 @@ VehicleComponent::VehicleComponent(GameObject * gameObject,Scene * _scene):
     scene = _scene;
     turnFactor = 10000;
     accelerateFactor = 400;
-    decelerateFactor = 200;
+    decelerateFactor = 300;
     gearPowers[0] = 2.3f;
     gearPowers[1] = 1.5f;
     gearPowers[2] = 1.1f;
@@ -263,7 +263,7 @@ void VehicleComponent::update()
 
     }
     btVector3  velo = body->getLinearVelocity();
-    if (!onGround) body->setDamping(0,0);
+    if (!onGround) body->setDamping(0.,0.3);
     else
     {
         if (!accelerating) currentPower-=5.5;
@@ -298,7 +298,7 @@ void VehicleComponent::update()
     }
 
     qDebug() << "DOOMPOWER " << velo.length();
-    currentSpeed = velo.length()/3; //gitano to mucho el vitesso /3
+    currentSpeed = velo.length()/2; //gitano to mucho el vitesso /3
     qDebug() << "GEARUDO " << gear << ":" << currentPower;
 
     accelerating = false;

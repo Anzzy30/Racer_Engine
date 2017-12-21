@@ -44,7 +44,7 @@ private:
     float turnFactor;
     float accelerateFactor;
     float decelerateFactor;
-    float maxBoostCD = 50.f;
+    float maxBoostCD = 10.f;
     float gearPowers[6];
     float boostCD = 0;
     float currentPower=0;
